@@ -11,47 +11,47 @@ inputs:
     default: 'v'
 runs:
   using: "composite"
-  runs-on: ubuntu-latest
   steps:
     - name: Install rust
       uses: actions-rs/toolchain@v1
       with:
         toolchain: nightly
         profile: minimal
-    - run: |
-      # Colorize output, since GitHub Actions terminals support color.
-      export CARGO_TERM_COLOR=always
+    - name: Build rustdoc and check it
+      run: |
+        # Colorize output, since GitHub Actions terminals support color.
+        export CARGO_TERM_COLOR=always
 
-      # Record the current git sha, so we can come back to it after generating the baseline.
-      export CURRENT_GIT_SHA="$(git rev-parse HEAD)"
+        # Record the current git sha, so we can come back to it after generating the baseline.
+        export CURRENT_GIT_SHA="$(git rev-parse HEAD)"
 
-      # Ensure this action's scripts are available to run on the path.
-      echo "${{ github.action_path }}" >> $GITHUB_PATH
+        # Ensure this action's scripts are available to run on the path.
+        echo "${{ github.action_path }}" >> $GITHUB_PATH
 
-      export PACKAGE_NAME="${{ inputs.crate-name }}"
-      if [[ "$PACKAGE_NAME" == '' ]]; then
-        export PACKAGE_NAME="$(find_workspace_crates.sh)"
-      fi
-      export PACKAGE_NAME_WITH_UNDERSCORES="$(echo $"PACKAGE_NAME" | tr '-' '_')"
+        export PACKAGE_NAME="${{ inputs.crate-name }}"
+        if [[ "$PACKAGE_NAME" == '' ]]; then
+          export PACKAGE_NAME="$(find_workspace_crates.sh)"
+        fi
+        export PACKAGE_NAME_WITH_UNDERSCORES="$(echo $"PACKAGE_NAME" | tr '-' '_')"
 
-      # Switch to the tag for the correct baseline version,
-      # then build rustdoc JSON.
-      #
-      # We *do not* want to record and reuse the target directory path
-      # across different git commits, since it may be at a different location
-      # in different commits.
-      git checkout "${{ inputs.version-tag-prefix }}$(find_comparison_version.sh "$PACKAGE_NAME")"
-      cargo +nightly rustdoc -- -Zunstable-options --output-format json
-      mv "$(cargo metadata --format-version 1 | jq -r .target_directory)/doc/$PACKAGE_NAME_WITH_UNDERSCORES.json" /tmp/baseline.json
+        # Switch to the tag for the correct baseline version,
+        # then build rustdoc JSON.
+        #
+        # We *do not* want to record and reuse the target directory path
+        # across different git commits, since it may be at a different location
+        # in different commits.
+        git checkout "${{ inputs.version-tag-prefix }}$(find_comparison_version.sh "$PACKAGE_NAME")"
+        cargo +nightly rustdoc -- -Zunstable-options --output-format json
+        mv "$(cargo metadata --format-version 1 | jq -r .target_directory)/doc/$PACKAGE_NAME_WITH_UNDERSCORES.json" /tmp/baseline.json
 
-      # Return to the original git sha.
-      git checkout "$CURRENT_GIT_SHA"
+        # Return to the original git sha.
+        git checkout "$CURRENT_GIT_SHA"
 
-      # Build rustdoc JSON for the current version, and move it to /tmp/
-      # so it doesn't get overwritten by the baseline build.
-      cargo +nightly rustdoc -- -Zunstable-options --output-format json
-      mv "$(cargo metadata --format-version 1 | jq -r .target_directory)/doc/$PACKAGE_NAME_WITH_UNDERSCORES.json" /tmp/current.json
+        # Build rustdoc JSON for the current version, and move it to /tmp/
+        # so it doesn't get overwritten by the baseline build.
+        cargo +nightly rustdoc -- -Zunstable-options --output-format json
+        mv "$(cargo metadata --format-version 1 | jq -r .target_directory)/doc/$PACKAGE_NAME_WITH_UNDERSCORES.json" /tmp/current.json
 
-      # Check for semver violations.
-      cargo install cargo-semver-checks
-      cargo semver-checks check-release --current /tmp/current.json --baseline /tmp/baseline.json
+        # Check for semver violations.
+        cargo install cargo-semver-checks
+        cargo semver-checks check-release --current /tmp/current.json --baseline /tmp/baseline.json
