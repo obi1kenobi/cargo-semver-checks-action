@@ -18,6 +18,7 @@ runs:
         toolchain: nightly
         profile: minimal
     - name: Build rustdoc and check it
+      shell: bash
       run: |
         # Colorize output, since GitHub Actions terminals support color.
         export CARGO_TERM_COLOR=always
