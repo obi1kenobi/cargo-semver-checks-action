@@ -1,5 +1,5 @@
 name: 'cargo-semver-checks'
-description: 'Ensure your Rust crate's public API follows semantic versioning'
+description: 'Ensure your Rust crate\'s public API follows semantic versioning'
 inputs:
   crate-name:
     description: 'The crate whose API to check for semver'
