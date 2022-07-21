@@ -32,7 +32,7 @@ runs:
         if [[ "$PACKAGE_NAME" == '' ]]; then
           export PACKAGE_NAME="$("$GITHUB_ACTION_PATH/find_workspace_crates.sh")"
         fi
-        export PACKAGE_NAME_WITH_UNDERSCORES="$(echo $"PACKAGE_NAME" | tr '-' '_')"
+        export PACKAGE_NAME_WITH_UNDERSCORES="$(echo "$PACKAGE_NAME" | tr '-' '_')"
 
         # Switch to the tag for the correct baseline version,
         # then build rustdoc JSON.
