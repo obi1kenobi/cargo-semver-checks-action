@@ -7,10 +7,6 @@ By default, this action assumes that:
 
 Single-crate workspaces can use it as:
 ```
-steps:
-- uses: actions/checkout@v3
-  with:
-    fetch-depth: 0
 - name: Check semver
   uses: obi1kenobi/cargo-semver-checks-action@v1
 - name: Publish to crates.io
@@ -23,10 +19,6 @@ To use it in a workspace with more than one crate:
 
 For example, this is publishing `my-crate` whose releases are tagged as `my-crate-v1.2.3`:
 ```
-steps:
-- uses: actions/checkout@v3
-  with:
-    fetch-depth: 0
 - name: Check semver
   uses: obi1kenobi/cargo-semver-checks-action@v1
   with:
