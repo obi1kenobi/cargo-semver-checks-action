@@ -42,7 +42,7 @@ runs:
         # in different commits.
         export COMPARISON_TAG="${{ inputs.version-tag-prefix }}$("$GITHUB_ACTION_PATH/find_comparison_version.sh" "$PACKAGE_NAME")"
         git fetch origin "$COMPARISON_TAG"
-        git checkout "$COMPARISON_TAG"
+        git checkout "tags/$COMPARISON_TAG"
         cargo +nightly rustdoc -- -Zunstable-options --output-format json
         mv "$(cargo metadata --format-version 1 | jq -r .target_directory)/doc/$PACKAGE_NAME_WITH_UNDERSCORES.json" /tmp/baseline.json
 
