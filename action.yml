@@ -5,6 +5,10 @@ inputs:
     description: 'The crate whose API to check for semver'
     required: false
     default: ''
+  crate-target:
+    description: 'By default, check the library target of the crate. If you'd like to check a different target (e.g. a binary target), set this to `--bin <NAME>`'
+    required: false
+    default: '--lib'
   version-tag-prefix:
     description: 'The prefix to use for the git tag for a version; the default "v" creates tags like "v1.0.0"'
     required: false
@@ -28,9 +32,23 @@ runs:
         # Record the current git sha, so we can come back to it after generating the baseline.
         export CURRENT_GIT_SHA="$(git rev-parse HEAD)"
 
+        # We add `--all-features` to semver-check every part of the crate.
+        # In principle, semver can be broken by moving public API code into a feature.
+        # Checking this requires rebuilding rustdoc multiple times with different sets of features,
+        # which can get expensive and is therefore left to individual maintainers' discretion.
+        #
+        # We add `--document-private-items` because for some reason, rustdoc seems to not always
+        # generate all implemented trait information without it:
+        # https://github.com/obi1kenobi/cargo-semver-check/issues/32
+        export RUSTDOC_EARLY_FLAGS="${{ inputs.crate-target }} --all-features"
+        export RUSTDOC_LATE_FLAGS="--document-private-items -Zunstable-options --output-format json"
+
         export PACKAGE_NAME="${{ inputs.crate-name }}"
         if [[ "$PACKAGE_NAME" == '' ]]; then
           export PACKAGE_NAME="$("$GITHUB_ACTION_PATH/find_workspace_crates.sh")"
+        else
+          # cargo rustdoc uses the exact package name, not the "underscores" version.
+          export RUSTDOC_EARLY_FLAGS="--package $PACKAGE_NAME $RUSTDOC_EARLY_FLAGS"
         fi
         export PACKAGE_NAME_WITH_UNDERSCORES="$(echo "$PACKAGE_NAME" | tr '-' '_')"
 
@@ -43,7 +61,7 @@ runs:
         export COMPARISON_TAG="${{ inputs.version-tag-prefix }}$("$GITHUB_ACTION_PATH/find_comparison_version.sh" "$PACKAGE_NAME")"
         git fetch --depth=1 origin "+refs/tags/$COMPARISON_TAG:refs/tags/$COMPARISON_TAG"
         git checkout "$COMPARISON_TAG"
-        cargo +nightly rustdoc -- -Zunstable-options --output-format json
+        cargo +nightly rustdoc $RUSTDOC_EARLY_FLAGS -- $RUSTDOC_LATE_FLAGS
         mv "$(cargo metadata --format-version 1 | jq -r .target_directory)/doc/$PACKAGE_NAME_WITH_UNDERSCORES.json" /tmp/baseline.json
 
         # Return to the original git sha.
@@ -51,7 +69,7 @@ runs:
 
         # Build rustdoc JSON for the current version, and move it to /tmp/
         # so it doesn't get overwritten by the baseline build.
-        cargo +nightly rustdoc -- -Zunstable-options --output-format json
+        cargo +nightly rustdoc $RUSTDOC_EARLY_FLAGS -- $RUSTDOC_LATE_FLAGS
         mv "$(cargo metadata --format-version 1 | jq -r .target_directory)/doc/$PACKAGE_NAME_WITH_UNDERSCORES.json" /tmp/current.json
 
         # Check for semver violations.
