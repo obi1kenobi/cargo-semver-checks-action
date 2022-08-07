@@ -6,7 +6,7 @@ inputs:
     required: false
     default: ''
   crate-target:
-    description: 'By default, check the library target of the crate. If you'd like to check a different target (e.g. a binary target), set this to `--bin <NAME>`'
+    description: 'By default, check the library target of the crate. To check a different target (e.g. a binary target), set this to `--bin <NAME>`'
     required: false
     default: '--lib'
   version-tag-prefix:
