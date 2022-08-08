@@ -6,7 +6,7 @@ By default, this action assumes that:
 - Your releases are tagged in git as `v{major}.{minor}.{patch}`, for example `v1.2.3`.
 
 Single-crate workspaces can use it as:
-```
+```yaml
 - name: Check semver
   uses: obi1kenobi/cargo-semver-checks-action@v1
 - name: Publish to crates.io
@@ -18,7 +18,7 @@ In a workspace with more than one crate:
 - use the `version-tag-prefix` setting to override the default prefix `v` to match the way the releases of your crate are tagged. The version number `1.2.3` will be appended to this prefix.
 
 For example, this is publishing `my-crate` whose releases are tagged as `my-crate-v1.2.3`:
-```
+```yaml
 - name: Check semver
   uses: obi1kenobi/cargo-semver-checks-action@v1
   with:
@@ -29,7 +29,7 @@ For example, this is publishing `my-crate` whose releases are tagged as `my-crat
 ```
 
 To check a different (non-library) target in a crate, use the `crate-target` setting:
-```
+```yaml
 - name: Check semver for my_binary
   uses: obi1kenobi/cargo-semver-checks-action@v1
   with:
