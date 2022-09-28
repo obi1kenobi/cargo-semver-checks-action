@@ -1,7 +1,7 @@
 name: 'cargo-semver-checks'
 description: 'Ensure the public API in your Rust crate follows semantic versioning'
 branding:
-  icon: 'check-circle'  
+  icon: 'check-circle'
   color: 'green'
 inputs:
   crate-name:
@@ -22,7 +22,7 @@ runs:
     - name: Install rust
       uses: actions-rs/toolchain@v1
       with:
-        toolchain: nightly
+        toolchain: stable
         profile: minimal
     - name: Build rustdoc and check it
       shell: bash
@@ -64,7 +64,7 @@ runs:
         export COMPARISON_TAG="${{ inputs.version-tag-prefix }}$("$GITHUB_ACTION_PATH/find_comparison_version.sh" "$PACKAGE_NAME")"
         git fetch --depth=1 origin "+refs/tags/$COMPARISON_TAG:refs/tags/$COMPARISON_TAG"
         git checkout "$COMPARISON_TAG"
-        cargo +nightly rustdoc $RUSTDOC_EARLY_FLAGS -- $RUSTDOC_LATE_FLAGS
+        RUSTC_BOOTSTRAP=1 cargo rustdoc $RUSTDOC_EARLY_FLAGS -- $RUSTDOC_LATE_FLAGS
         mv "$(cargo metadata --format-version 1 | jq -r .target_directory)/doc/$PACKAGE_NAME_WITH_UNDERSCORES.json" /tmp/baseline.json
 
         # Return to the original git sha.
@@ -72,7 +72,7 @@ runs:
 
         # Build rustdoc JSON for the current version, and move it to /tmp/
         # so it doesn't get overwritten by the baseline build.
-        cargo +nightly rustdoc $RUSTDOC_EARLY_FLAGS -- $RUSTDOC_LATE_FLAGS
+        RUSTC_BOOTSTRAP=1 cargo rustdoc $RUSTDOC_EARLY_FLAGS -- $RUSTDOC_LATE_FLAGS
         mv "$(cargo metadata --format-version 1 | jq -r .target_directory)/doc/$PACKAGE_NAME_WITH_UNDERSCORES.json" /tmp/current.json
 
         # Check for semver violations.
