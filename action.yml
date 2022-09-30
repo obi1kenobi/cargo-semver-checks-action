@@ -16,14 +16,23 @@ inputs:
     description: 'The prefix to use for the git tag for a version; the default "v" creates tags like "v1.0.0"'
     required: false
     default: 'v'
+  rust-toolchain:
+    description: 'Rust toolchain version to use.'
+    required: false
+    default: 'stable'
+  rust-override:
+    description: 'Whether to override the Rust version installed previously or set in a toolchain file.'
+    required: false
+    default: false
 runs:
   using: "composite"
   steps:
     - name: Install rust
       uses: actions-rs/toolchain@v1
       with:
-        toolchain: stable
+        toolchain: ${{ inputs.rust-toolchain }}
         profile: minimal
+        override: ${{ inputs.rust-override }}
     - name: Build rustdoc and check it
       shell: bash
       run: |
