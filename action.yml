@@ -76,5 +76,5 @@ runs:
         mv "$(cargo metadata --format-version 1 | jq -r .target_directory)/doc/$PACKAGE_NAME_WITH_UNDERSCORES.json" /tmp/current.json
 
         # Check for semver violations.
-        cargo install cargo-semver-checks
+        cargo install cargo-semver-checks --locked
         cargo semver-checks check-release --current /tmp/current.json --baseline /tmp/baseline.json
