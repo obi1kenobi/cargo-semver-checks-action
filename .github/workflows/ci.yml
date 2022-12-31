@@ -21,7 +21,7 @@ jobs:
           repository: 'mgr0dzicki/cargo-semver-action-ref-slice@patch_change'
           persist-credentials: true
       - name: Run action
-        uses: ${{ github.repository }}
+        uses: ./
   run-on-major-change:
     name: Test with semver violation
     runs-on: ubuntu-latest
@@ -33,7 +33,7 @@ jobs:
           persist-credentials: true
       - name: Run action
         id: action
-        uses: ${{ github.repository }}
+        uses: ./
         continue-on-error: true
       - name: Check if the action failed
         if: steps.action.outcome != 'failure'
