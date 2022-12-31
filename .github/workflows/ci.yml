@@ -26,6 +26,7 @@ jobs:
         with:
           path: action
       - name: Run action
+        id: action
         uses: ./action/
   run-on-major-change:
     name: Test with semver violation
@@ -42,6 +43,7 @@ jobs:
         with:
           path: action
       - name: Run action
+        id: action
         uses: ./action/
         continue-on-error: true
       - name: Debug print steps
