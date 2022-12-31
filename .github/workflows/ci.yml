@@ -44,6 +44,8 @@ jobs:
       - name: Run action
         uses: ./action/
         continue-on-error: true
+      - name: Debug print steps
+        run: echo '${{ toJSON(steps) }}'
       - name: Check if the action failed
         if: steps.action.outcome != 'failure'
         run: exit 1
