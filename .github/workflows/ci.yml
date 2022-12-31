@@ -18,7 +18,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          repository: 'mgr0dzicki/cargo-semver-action-ref-slice@patch_change'
+          repository: mgr0dzicki/cargo-semver-action-ref-slice@patch_change
           persist-credentials: true
       - name: Run action
         uses: ./
@@ -29,7 +29,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          repository: 'mgr0dzicki/cargo-semver-action-ref-slice@major_change'
+          repository: mgr0dzicki/cargo-semver-action-ref-slice@major_change
           persist-credentials: true
       - name: Run action
         id: action
