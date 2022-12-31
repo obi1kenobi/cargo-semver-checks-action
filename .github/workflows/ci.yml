@@ -15,27 +15,34 @@ jobs:
     name: Test without semver violation
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout test repo
         uses: actions/checkout@v3
         with:
           repository: mgr0dzicki/cargo-semver-action-ref-slice
           ref: patch_change
           persist-credentials: true
+      - name: Checkout action
+        uses: actions/checkout@v3
+        with:
+          path: action
       - name: Run action
-        uses: ./
+        uses: ./action/
   run-on-major-change:
     name: Test with semver violation
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout test repo
         uses: actions/checkout@v3
         with:
           repository: mgr0dzicki/cargo-semver-action-ref-slice
           ref: major_change
           persist-credentials: true
+      - name: Checkout action
+        uses: actions/checkout@v3
+        with:
+          path: action
       - name: Run action
-        id: action
-        uses: ./
+        uses: ./action/
         continue-on-error: true
       - name: Check if the action failed
         if: steps.action.outcome != 'failure'
