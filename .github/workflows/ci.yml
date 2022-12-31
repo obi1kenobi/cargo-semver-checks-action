@@ -28,15 +28,14 @@ jobs:
       - name: Checkout branch patch_change
         run: git checkout patch_change
       - name: Run action
-        id: action
         uses: ./action/
       # test with semver violation
       - name: Checkout branch major_change
         run: git checkout major_change
       - name: Run action
-        id: action
+        id: action_major
         uses: ./action/
         continue-on-error: true
       - name: Check if the action failed
-        if: steps.action.outcome != 'failure'
+        if: steps.action_major.outcome != 'failure'
         run: exit 1
