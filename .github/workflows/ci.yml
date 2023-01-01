@@ -37,6 +37,11 @@ jobs:
         id: action_major
         uses: ./action/
         continue-on-error: true
-      - name: Check if the action failed
-        if: steps.action_major.outcome != 'failure'
-        run: exit 1
+      - name: Check action outcome
+        run: |
+          if [[ "${{ steps.action_major.outcome }}" != 'failure' ]]; then
+            echo "Error! The action should have failed because of the breaking change, but it has not."
+            exit 1
+          else
+            echo "OK! The action has failed as expected on the breaking change."
+          fi
