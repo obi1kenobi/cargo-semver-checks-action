@@ -15,29 +15,27 @@ jobs:
     name: Test the action
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout test repository
+      - name: Checkout the test repository
         uses: actions/checkout@v3
         with:
           repository: mgr0dzicki/cargo-semver-action-ref-slice
           fetch-depth: 0
           persist-credentials: true
-      - name: Checkout action
+      - name: Checkout the action
         uses: actions/checkout@v3
         with:
           path: action
-      # test without semver violation
-      - name: Checkout branch patch_change
+      - name: Checkout the test with patch change and patch version bump
         run: git checkout patch_change
-      - name: Run action
+      - name: Run the action
         uses: ./action/
-      # test with semver violation
-      - name: Checkout branch major_change
+      - name: Checkout the test with major change and patch version bump
         run: git checkout major_change
-      - name: Run action
+      - name: Run the action (allowed to fail)
         id: action_major
         uses: ./action/
         continue-on-error: true
-      - name: Check action outcome
+      - name: Check the action outcome
         run: |
           if [[ "${{ steps.action_major.outcome }}" != 'failure' ]]; then
             echo "Error! The action should have failed because of the breaking change, but it has not."
