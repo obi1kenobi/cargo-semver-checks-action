@@ -19,15 +19,15 @@ Every argument is optional.
 
 | Input              | Description                                                                                                                       | Default |
 |--------------------|-----------------------------------------------------------------------------------------------------------------------------------|---------|
-| crate-name         | The crate whose API to check for semver                                                                                           |         |
-| crate-target       | By default, check the library target of the crate. To check a different target (e.g. a binary target), set this to `--bin <NAME>` | `--lib` |
-| version-tag-prefix | The prefix to use for the git tag for a version; the default "v" creates tags like "v1.0.0"                                       | `v`       |
+| crate-name         | The crate whose API to check for semver (needed only in multi-crate workspaces). | |
+| crate-target       | (Deprecated) By default, check the library target of the crate. To check a different target (e.g. a binary target), set this to `--bin <NAME>`. Will be removed in future versions, as bin targets do not have library-like API to check. | `--lib` |
+| version-tag-prefix | The prefix to use for the git tag for a version; the default "v" creates tags like "v1.0.0". | `v` |
 
 # Scenarios
 
 - [Use with a different version tag format](#use-with-a-different-version-tag-format)
 - [Use in workspaces with more than one crate](#use-in-workspaces-with-more-than-one-crate)
-- [Use with binary crates or crates with more than one target](#use-with-binary-crates-or-crates-with-more-than-one-target)
+- [(Deprecated) Use with binary crates or crates with more than one target](#deprecated-use-with-binary-crates-or-crates-with-more-than-one-target)
 
 ## Use with a different version tag format
 
@@ -60,7 +60,7 @@ For example, this will check `my-crate` whose releases are tagged as `my-crate-v
   run: # your `cargo publish` code here
 ```
 
-## Use with binary crates or crates with more than one target
+## (Deprecated) Use with binary crates or crates with more than one target
 
 To check a different (non-library) target in a crate, use the `crate-target` setting:
 ```yaml
