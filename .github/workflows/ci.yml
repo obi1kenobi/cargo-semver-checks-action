@@ -27,12 +27,20 @@ jobs:
           path: action
       # Assumes that the latest published normal version of `ref_slice` smaller
       # than 1.2.2 is 1.2.1.
+      # TODO: Change the crate version in the corresponding branch `patch_change`
+      # to 1.2.1 once new logic of choosing baseline is adapted. Otherwise
+      # if new version 1.2.2 of `ref_slice` is released, the tests might stop
+      # working correctly.
       - name: Checkout the test with patch change and patch version bump
         run: git checkout patch_change
       - name: Run the action
         uses: ./action/
       # Assumes that the latest published normal version of `ref_slice` smaller
       # than 1.2.2 exports a public function `ref_slice`.
+      # TODO: Change the crate version in the corresponding branch `major_change`
+      # to 1.2.1 once new logic of choosing baseline is adapted. Otherwise
+      # if new version 1.2.2 of `ref_slice` is released, the tests might stop
+      # working correctly.
       - name: Checkout the test with major change and patch version bump
         run: git checkout major_change
       - name: Run the action (allowed to fail)
