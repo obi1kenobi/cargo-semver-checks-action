@@ -15,6 +15,7 @@ Every argument is optional.
 | Input              | Description                                                                                                                       | Default |
 |--------------------|-----------------------------------------------------------------------------------------------------------------------------------|---------|
 | crate-name         | The crate whose API to check for semver. If not set, all crates in the workspace are processed. | |
+| manifest-path      | Path to Cargo.toml of crate or workspace to check. Has an effect only if `crate-name` is not specified. | |
 
 # Scenarios
 
@@ -22,7 +23,7 @@ Every argument is optional.
 
 ## Use in workspaces with more than one crate
 
-By default, if workspace contains multiple crates, all of them are checked against semver violations. You can specify single crate to be checked instead using `crate-name`.
+By default, if workspace contains multiple crates, all of them are checked against semver violations. You can specify single crate to be checked instead using `crate-name` or `manifest-path`.
 
 For example, this will check `my-crate`:
 ```yaml
