@@ -1,14 +1,9 @@
 # cargo-semver-checks-action
 Lint your crate API changes for semver violations.
 
-By default, this action assumes that:
-- Your cargo workspace contains a single crate which contains a library target.
-- Your releases are tagged in git as `v{major}.{minor}.{patch}`, for example `v1.2.3`.
-
-Single-crate workspaces can use it as:
 ```yaml
 - name: Check semver
-  uses: obi1kenobi/cargo-semver-checks-action@v1
+  uses: obi1kenobi/cargo-semver-checks-action@v2
 - name: Publish to crates.io
   run: # your `cargo publish` code here
 ```
@@ -19,33 +14,15 @@ Every argument is optional.
 
 | Input              | Description                                                                                                                       | Default |
 |--------------------|-----------------------------------------------------------------------------------------------------------------------------------|---------|
-| crate-name         | The crate whose API to check for semver (needed only in multi-crate workspaces). | |
-| crate-target       | (Deprecated) By default, check the library target of the crate. To check a different target (e.g. a binary target), set this to `--bin <NAME>`. Will be removed in future versions, as bin targets do not have library-like API to check. | `--lib` |
-| version-tag-prefix | The prefix to use for the git tag for a version; the default "v" creates tags like "v1.0.0". | `v` |
+| crate-name         | The crate whose API to check for semver. If not set, all crates in the workspace are processed. | |
 
 # Scenarios
 
-- [Use with a different version tag format](#use-with-a-different-version-tag-format)
 - [Use in workspaces with more than one crate](#use-in-workspaces-with-more-than-one-crate)
-- [(Deprecated) Use with binary crates or crates with more than one target](#deprecated-use-with-binary-crates-or-crates-with-more-than-one-target)
-
-## Use with a different version tag format
-
-Change the `version-tag-prefix` setting to reflect the prefix used to create the version tag. The setting's default value `'v'` creates version tags like `v1.2.3`.
-
-For example, if your versions are tagged as `1.2.3`, you can set `version-tag-prefix` to be the empty string:
-```yaml
-- name: Check semver
-  uses: obi1kenobi/cargo-semver-checks-action@v1
-  with:
-    version-tag-prefix: ''
-- name: Publish my-crate to crates.io
-  run: # your `cargo publish` code here
-```
 
 ## Use in workspaces with more than one crate
 
-You'll need to specify which crate should be checked, and the format used for version tags for that crate:
+By default, if workspace contains multiple crates, all of them are checked against semver violations. You can specify single crate to be checked instead, along with the format used for version tags for that crate:
 - `crate-name` specifies the crate to check, and
 - `version-tag-prefix` sets the text prepended to the version number to create the git tag for that release.
 
@@ -56,18 +33,6 @@ For example, this will check `my-crate` whose releases are tagged as `my-crate-v
   with:
     crate-name: my-crate
     version-tag-prefix: my-crate-v
-- name: Publish my-crate to crates.io
-  run: # your `cargo publish` code here
-```
-
-## (Deprecated) Use with binary crates or crates with more than one target
-
-To check a different (non-library) target in a crate, use the `crate-target` setting:
-```yaml
-- name: Check semver for my_binary
-  uses: obi1kenobi/cargo-semver-checks-action@v1
-  with:
-    crate-target: --bin my_binary
 - name: Publish my-crate to crates.io
   run: # your `cargo publish` code here
 ```
