@@ -8,6 +8,10 @@ inputs:
     description: 'The crate whose API to check for semver. If not set, all crates in the workspace are processed.'
     required: false
     default: ''
+  manifest-path:
+    description: 'Path to Cargo.toml of crate or workspace to check. Has an effect only if crate-name is not specified.'
+    required: false
+    default: ''
 runs:
   using: "composite"
   steps:
@@ -24,14 +28,11 @@ runs:
         # Colorize output, since GitHub Actions terminals support color.
         export CARGO_TERM_COLOR=always
 
-        # If crate to check is specified, pass it to cargo-semver-checks,
-        # otherwise use `--workspace` option.
-        if [[ "${{ inputs.crate-name }}" == '' ]]; then
-          export PACKAGE_OPTION="--workspace"
-        else
-          export PACKAGE_OPTION="--package ${{ inputs.crate-name }}"
-        fi
+        export CRATE_NAME="${{ inputs.crate-name }}"
+        export MANIFEST_PATH="${{ inputs.manifest-path }}"
+        
+        export SEMVER_CHECKS_OPTIONS="${CRATE_NAME:+"--package $CRATE_NAME"} ${MANIFEST_PATH:+"--manifest-path $MANIFEST_PATH"}"
 
         # Check for semver violations.
         cargo install cargo-semver-checks --locked
-        cargo semver-checks check-release $PACKAGE_OPTION
+        cargo semver-checks check-release $SEMVER_CHECKS_OPTIONS
