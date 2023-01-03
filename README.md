@@ -16,6 +16,7 @@ Every argument is optional.
 |--------------------|-----------------------------------------------------------------------------------------------------------------------------------|---------|
 | crate-name         | The crate whose API to check for semver. If not set, all crates in the workspace are processed. | |
 | manifest-path      | Path to Cargo.toml of crate or workspace to check. Has an effect only if `crate-name` is not specified. | |
+| verbose            | Enables verbose output of `cargo-semver-checks`. | `false` |
 
 # Scenarios
 
