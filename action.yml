@@ -12,6 +12,11 @@ inputs:
     description: 'Path to Cargo.toml of crate or workspace to check. Has an effect only if crate-name is not specified.'
     required: false
     default: ''
+  verbose:
+    description: 'Enables verbose output of `cargo-semver-checks`.'
+    type: boolean
+    required: true
+    default: false
 runs:
   using: "composite"
   steps:
@@ -31,7 +36,13 @@ runs:
         export CRATE_NAME="${{ inputs.crate-name }}"
         export MANIFEST_PATH="${{ inputs.manifest-path }}"
         
-        export SEMVER_CHECKS_OPTIONS="${CRATE_NAME:+"--package $CRATE_NAME"} ${MANIFEST_PATH:+"--manifest-path $MANIFEST_PATH"}"
+        if [[ ${{ inputs.verbose }} == 'true' ]]; then
+          export VERBOSE_FLAG="--verbose"
+        else
+          export VERBOSE_FLAG=""
+        fi
+
+        export SEMVER_CHECKS_OPTIONS="${CRATE_NAME:+"--package $CRATE_NAME"} ${MANIFEST_PATH:+"--manifest-path $MANIFEST_PATH"} $VERBOSE_FLAG"
 
         # Check for semver violations.
         cargo install cargo-semver-checks --locked
