@@ -25,10 +25,14 @@ jobs:
         uses: actions/checkout@v3
         with:
           path: action
+      # Assumes that the latest published normal version of `ref_slice` smaller
+      # than 1.2.2 is 1.2.1.
       - name: Checkout the test with patch change and patch version bump
         run: git checkout patch_change
       - name: Run the action
         uses: ./action/
+      # Assumes that the latest published normal version of `ref_slice` smaller
+      # than 1.2.2 exports a public function `ref_slice`.
       - name: Checkout the test with major change and patch version bump
         run: git checkout major_change
       - name: Run the action (allowed to fail)
