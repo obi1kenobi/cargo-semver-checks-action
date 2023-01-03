@@ -22,17 +22,14 @@ Every argument is optional.
 
 ## Use in workspaces with more than one crate
 
-By default, if workspace contains multiple crates, all of them are checked against semver violations. You can specify single crate to be checked instead, along with the format used for version tags for that crate:
-- `crate-name` specifies the crate to check, and
-- `version-tag-prefix` sets the text prepended to the version number to create the git tag for that release.
+By default, if workspace contains multiple crates, all of them are checked against semver violations. You can specify single crate to be checked instead using `crate-name`.
 
-For example, this will check `my-crate` whose releases are tagged as `my-crate-v1.2.3`:
+For example, this will check `my-crate`:
 ```yaml
 - name: Check semver
   uses: obi1kenobi/cargo-semver-checks-action@v1
   with:
     crate-name: my-crate
-    version-tag-prefix: my-crate-v
 - name: Publish my-crate to crates.io
   run: # your `cargo publish` code here
 ```
