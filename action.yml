@@ -18,32 +18,5 @@ inputs:
     required: true
     default: false
 runs:
-  using: "composite"
-  steps:
-    - name: Install rust
-      uses: actions-rs/toolchain@v1
-      with:
-        toolchain: stable
-        profile: minimal
-    - name: Check for semver violations
-      shell: bash
-      run: |
-        set -euxo pipefail
-
-        # Colorize output, since GitHub Actions terminals support color.
-        export CARGO_TERM_COLOR=always
-
-        export CRATE_NAME="${{ inputs.crate-name }}"
-        export MANIFEST_PATH="${{ inputs.manifest-path }}"
-        
-        if [[ ${{ inputs.verbose }} == 'true' ]]; then
-          export VERBOSE_FLAG="--verbose"
-        else
-          export VERBOSE_FLAG=""
-        fi
-
-        export SEMVER_CHECKS_OPTIONS="${CRATE_NAME:+"--package $CRATE_NAME"} ${MANIFEST_PATH:+"--manifest-path $MANIFEST_PATH"} $VERBOSE_FLAG"
-
-        # Check for semver violations.
-        cargo install cargo-semver-checks --locked
-        cargo semver-checks check-release $SEMVER_CHECKS_OPTIONS
+  using: 'node16'
+  main: 'dist/index.js'

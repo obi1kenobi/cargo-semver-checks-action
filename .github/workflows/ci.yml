@@ -6,52 +6,21 @@ on:
     branches:
       - main
 
-env:
-  RUST_BACKTRACE: 1
-  CARGO_TERM_COLOR: always
-
 jobs:
   test-action:
-    name: Test the action
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout the test repository
-        uses: actions/checkout@v3
-        with:
-          repository: mgr0dzicki/cargo-semver-action-ref-slice
-          fetch-depth: 0
-          persist-credentials: true
-      - name: Checkout the action
-        uses: actions/checkout@v3
-        with:
-          path: action
-      # Assumes that the latest published normal version of `ref_slice` smaller
-      # than 1.2.2 is 1.2.1.
-      # TODO: Change the crate version in the corresponding branch `patch_change`
-      # to 1.2.1 once new logic of choosing baseline is adapted. Otherwise
-      # if new version 1.2.2 of `ref_slice` is released, the tests might stop
-      # working correctly.
-      - name: Checkout the test with patch change and patch version bump
-        run: git checkout patch_change
-      - name: Run the action
-        uses: ./action/
-      # Assumes that the latest published normal version of `ref_slice` smaller
-      # than 1.2.2 exports a public function `ref_slice`.
-      # TODO: Change the crate version in the corresponding branch `major_change`
-      # to 1.2.1 once new logic of choosing baseline is adapted. Otherwise
-      # if new version 1.2.2 of `ref_slice` is released, the tests might stop
-      # working correctly.
-      - name: Checkout the test with major change and patch version bump
-        run: git checkout major_change
-      - name: Run the action (allowed to fail)
-        id: action_major
-        uses: ./action/
-        continue-on-error: true
-      - name: Check the action outcome
-        run: |
-          if [[ "${{ steps.action_major.outcome }}" != 'failure' ]]; then
-            echo "Error! The action should have failed because of the breaking change, but it has not."
-            exit 1
-          else
-            echo "OK! The action has failed as expected on the breaking change."
-          fi
+    name: Test the action on ubuntu-latest
+    uses: ./.github/workflows/test-action.yml
+    with:
+      runs-on: ubuntu-latest
+
+  test-action-windows-latest:
+    name: Test the action on windows-latest
+    uses: ./.github/workflows/test-action.yml
+    with:
+      runs-on: windows-latest
+
+  test-action-macos-latest:
+    name: Test the action on macos-latest
+    uses: ./.github/workflows/test-action.yml
+    with:
+      runs-on: macos-latest
