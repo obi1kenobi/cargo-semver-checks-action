@@ -1,0 +1,31 @@
+{
+  "name": "cargo-semver-checks-action",
+  "version": "2.0.0",
+  "description": "Lint your crate API changes for semver violations.",
+  "main": "index.js",
+  "scripts": {
+    "build": "ncc build src/main.ts --license licenses.txt --minify"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mgr0dzicki/cargo-semver-checks-action.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mgr0dzicki/cargo-semver-checks-action/issues"
+  },
+  "homepage": "https://github.com/mgr0dzicki/cargo-semver-checks-action#readme",
+  "dependencies": {
+    "@actions-rs/core": "^0.1.6",
+    "@actions/core": "^1.10.0",
+    "@actions/github": "^5.1.1",
+    "@actions/io": "^1.1.2",
+    "@actions/tool-cache": "^2.0.1",
+    "@types/node-fetch": "^2.6.2"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.18"
+  }
+}
