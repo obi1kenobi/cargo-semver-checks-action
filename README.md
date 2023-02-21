@@ -24,7 +24,7 @@ Every argument is optional.
 
 ## Use in workspaces with more than one crate
 
-By default, if workspace contains multiple crates, all of them are checked against semver violations. You can specify single crate to be checked instead using `crate-name` or `manifest-path`.
+By default, if workspace contains multiple crates, all of them are checked for semver violations. You can specify a single crate to be checked instead using `crate-name` or `manifest-path`.
 
 For example, this will check `my-crate`:
 ```yaml
