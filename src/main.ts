@@ -1,5 +1,6 @@
 import os = require('os');
 
+import * as exec from '@actions/exec';
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import * as io from '@actions/io';
@@ -63,6 +64,10 @@ async function installRustUp(): Promise<void> {
     await rustup.call(['show']);
     await rustup.setProfile('minimal');
     await rustup.installToolchain('stable');
+
+    // [TODO] Remove this temporary fix once the underlying issue is fixed.
+    if (os.platform() == 'win32')
+        exec.exec('mkdir C:\\Users\\runneradmin\\.cargo\\registry\\index');
 }
 
 async function runCargoSemverChecks(cargo: rustCore.Cargo): Promise<void> {
