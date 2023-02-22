@@ -27,7 +27,7 @@ function optionIfValueProvided(option: string, value?: string): string {
 
 function getCheckReleaseArguments(): string[] {
     return [
-        optionIfValueProvided("--package", rustCore.input.getInput("crate-name")),
+        optionIfValueProvided("--package", rustCore.input.getInput("package")),
         optionIfValueProvided("--manifest-path", rustCore.input.getInput("manifest-path")),
         rustCore.input.getInputBool("verbose") ? " --verbose" : "",
     ].filter((el) => el != "");
