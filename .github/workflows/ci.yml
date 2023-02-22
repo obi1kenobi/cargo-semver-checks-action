@@ -8,8 +8,8 @@ on:
 
 jobs:
   compare-dist:
-    name: Check if compiled action in dist/ matches the source files
-    uses: ./.github/workflows/compare-dist.yml
+    name: Test build
+    uses: ./.github/workflows/test-build.yml
 
   test-action:
     name: Test the action on ubuntu-latest
