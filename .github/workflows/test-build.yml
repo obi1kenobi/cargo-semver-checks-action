@@ -1,11 +1,11 @@
-name: Check if compiled action in dist/ matches the source files
+name: Test action build
 
 on:
   workflow_call:
 
 jobs:
-  compare-dist:
-    name: Check dist/
+  test-build:
+    name: Check if the source files build successfully and match dist/ directory
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the action
@@ -23,17 +23,30 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Rebuild the action
-        run: npm run build
+        run: npm run all
+      - name: Compare the expected and actual src/ directories
+        run: |
+          if [ "$(git diff src/ | wc -l)" -gt "0" ]; then
+            echo "Source files are not properly formatted!"
+            exit 1
+          fi
+        id: diff_src
+      - name: Upload the expected version of src/ in case of failure
+        uses: actions/upload-artifact@v3
+        if: ${{ failure() && steps.diff_src.conclusion == 'failure' }}
+        with:
+          name: expected-src
+          path: src/
       - name: Compare the expected and actual dist/ directories
         run: |
           if [ "$(git diff dist/ | wc -l)" -gt "0" ]; then
-            echo "Detected uncommitted changes after build."
+            echo "Built sources do not match the content of the dist/ directory!"
             exit 1
           fi
-        id: diff
-      - name: Upload the expected version in case of failure
+        id: diff_dist
+      - name: Upload the expected version of dist/ in case of failure
         uses: actions/upload-artifact@v3
-        if: ${{ failure() && steps.diff.conclusion == 'failure' }}
+        if: ${{ failure() && steps.diff_dist.conclusion == 'failure' }}
         with:
           name: expected-dist
           path: dist/
