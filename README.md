@@ -14,8 +14,8 @@ Every argument is optional.
 
 | Input              | Description                                                                                                                       | Default |
 |--------------------|-----------------------------------------------------------------------------------------------------------------------------------|---------|
-| crate-name         | The crate whose API to check for semver. If not set, all crates in the workspace are processed. | |
-| manifest-path      | Path to Cargo.toml of crate or workspace to check. Has an effect only if `crate-name` is not specified. | |
+| package        | The package whose API to check for semver (in Package Id Specification format, see https://doc.rust-lang.org/cargo/reference/pkgid-spec.html for reference). If not set, all packages in the workspace are processed. | |
+| manifest-path      | Path to Cargo.toml of crate or workspace to check. Has an effect only if `package` is not specified. | |
 | verbose            | Enables verbose output of `cargo-semver-checks`. | `false` |
 
 # Scenarios
@@ -24,14 +24,14 @@ Every argument is optional.
 
 ## Use in workspaces with more than one crate
 
-By default, if workspace contains multiple crates, all of them are checked for semver violations. You can specify a single crate to be checked instead using `crate-name` or `manifest-path`.
+By default, if workspace contains multiple crates, all of them are checked for semver violations. You can specify a single crate to be checked instead using `package` or `manifest-path`.
 
 For example, this will check `my-crate`:
 ```yaml
 - name: Check semver
-  uses: obi1kenobi/cargo-semver-checks-action@v1
+  uses: obi1kenobi/cargo-semver-checks-action@v2
   with:
-    crate-name: my-crate
+    package: my-crate
 - name: Publish my-crate to crates.io
   run: # your `cargo publish` code here
 ```

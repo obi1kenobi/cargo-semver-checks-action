@@ -4,12 +4,12 @@ branding:
   icon: 'check-circle'
   color: 'green'
 inputs:
-  crate-name:
-    description: 'The crate whose API to check for semver. If not set, all crates in the workspace are processed.'
+  package:
+    description: 'The package whose API to check for semver (in Package Id Specification format, see https://doc.rust-lang.org/cargo/reference/pkgid-spec.html for reference). If not set, all packages in the workspace are processed.'
     required: false
     default: ''
   manifest-path:
-    description: 'Path to Cargo.toml of crate or workspace to check. Has an effect only if crate-name is not specified.'
+    description: 'Path to Cargo.toml of crate or workspace to check. Has an effect only if package is not specified.'
     required: false
     default: ''
   verbose:
