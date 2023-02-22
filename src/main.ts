@@ -68,7 +68,11 @@ async function installRustUp(): Promise<void> {
 
     // [TODO] Remove this temporary fix once the underlying issue is fixed.
     if (os.platform() == "win32") {
-        exec.exec("mkdir C:\\Users\\runneradmin\\.cargo\\registry\\index");
+        try {
+            await exec.exec("mkdir C:\\Users\\runneradmin\\.cargo\\registry\\index");
+        } catch (error: any) {
+            core.info(`Failed to create registry index directory: ${error.message}`);
+        }
     }
 }
 
