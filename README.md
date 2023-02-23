@@ -14,7 +14,8 @@ Every argument is optional.
 
 | Input              | Description                                                                                                                       | Default |
 |--------------------|-----------------------------------------------------------------------------------------------------------------------------------|---------|
-| package        | The package whose API to check for semver (in Package Id Specification format, see https://doc.rust-lang.org/cargo/reference/pkgid-spec.html for reference). If not set, all packages in the workspace are processed. | |
+| github-token       | The `GITHUB_TOKEN` secret, which is necessary to download precompiled binaries from GitHub API. By default, the [automatic GitHub token](https://docs.github.com/en/actions/security-guides/automatic-token-authentication) provided to the workflow will be used. The token may be alternatively passed in an environment variable `GITHUB_TOKEN`. | |
+| package            | The package whose API to check for semver (in Package Id Specification format, see https://doc.rust-lang.org/cargo/reference/pkgid-spec.html for reference). If not set, all packages in the workspace are processed. | |
 | manifest-path      | Path to Cargo.toml of crate or workspace to check. Has an effect only if `package` is not specified. | |
 | verbose            | Enables verbose output of `cargo-semver-checks`. | `false` |
 
