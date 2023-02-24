@@ -7,6 +7,14 @@ import * as io from "@actions/io";
 import * as toolCache from "@actions/tool-cache";
 import * as rustCore from "@actions-rs/core";
 
+function getErrorMessage(error: unknown): string {
+    if (error instanceof Error) {
+        return error.message;
+    } else {
+        return String(error);
+    }
+}
+
 function getPlatformMatchingTarget(): string {
     const platform = os.platform() as string;
     switch (platform) {
@@ -70,8 +78,8 @@ async function installRustUp(): Promise<void> {
     if (os.platform() == "win32") {
         try {
             await exec.exec("mkdir C:\\Users\\runneradmin\\.cargo\\registry\\index");
-        } catch (error: any) {
-            core.info(`Failed to create registry index directory: ${error.message}`);
+        } catch (error) {
+            core.info(`Failed to create registry index directory: ${getErrorMessage(error)}`);
         }
     }
 }
@@ -106,9 +114,9 @@ async function installCargoSemverChecks(cargo: rustCore.Cargo): Promise<void> {
 
     try {
         await installCargoSemverChecksFromPrecompiledBinary();
-    } catch (error: any) {
+    } catch (error) {
         core.info("Failed to download precompiled binary of cargo-semver-checks.");
-        core.info(`Error: ${error.message}`);
+        core.info(`Error: ${getErrorMessage(error)}`);
         core.info("Installing using cargo install...");
 
         await installCargoSemverChecksUsingCargo(cargo);
@@ -127,8 +135,8 @@ async function run(): Promise<void> {
 async function main() {
     try {
         await run();
-    } catch (error: any) {
-        core.setFailed(error.message);
+    } catch (error) {
+        core.setFailed(getErrorMessage(error));
     }
 }
 
