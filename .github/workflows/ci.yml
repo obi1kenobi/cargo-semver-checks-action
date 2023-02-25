@@ -12,10 +12,14 @@ jobs:
     uses: ./.github/workflows/test-build.yml
 
   test-action:
-    name: Test the action
+    name: Smoke test the action
     uses: ./.github/workflows/test-action.yml
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
     with:
       runs-on: ${{ matrix.os }}
+
+  test-inputs:
+    name: Test action inputs
+    uses: ./.github/workflows/test-inputs.yml
