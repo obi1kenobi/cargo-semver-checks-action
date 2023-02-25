@@ -1,0 +1,181 @@
+name: Test action inputs
+
+# Assumes that the latest published normal version of `ref_slice` smaller
+# than 1.2.2 is 1.2.1.
+# TODO: Change the crate version in the corresponding branches `patch_change`
+# and `major_change` to 1.2.1 once new logic of choosing baseline is adapted.
+# Otherwise if new version 1.2.2 of `ref_slice` is released, the tests might
+# stop working correctly.
+
+on:
+  workflow_call:
+
+env:
+  RUST_BACKTRACE: 1
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test-package:
+    name: Test input package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the action
+        uses: actions/checkout@v3
+        with:
+          path: action
+      - name: Setup the workspace
+        uses: ./action/.github/workflows/setup-test-workspace
+      - name: Checkout the test with patch change and patch version bump
+        run: |
+          cd ref_slice
+          git checkout patch_change
+      - name: Run the action on ref_slice patch change
+        uses: ./action/
+        with:
+          package: ref_slice
+      - name: Run the action on the whole workspace (allowed to fail)
+        id: action_all
+        uses: ./action/
+        continue-on-error: true
+      - name: Fail if the action has not returned any errors (but it should have)
+        if: steps.action_all.outcome != 'failure'
+        run: |
+          echo "Error! The action should have failed because of checking the dummy crate, but it has not!"
+          exit 1
+      - name: Checkout the test with major change and patch version bump
+        run: |
+          cd ref_slice
+          git checkout major_change
+      - name: Run the action on ref_slice major change (allowed to fail)
+        id: action_major
+        uses: ./action/
+        with:
+          package: ref_slice
+        continue-on-error: true
+      - name: Fail if the action has not returned any errors (but it should have)
+        if: steps.action_major.outcome != 'failure'
+        run: |
+          echo "Error! The action should have failed because of the breaking change, but it has not."
+          exit 1
+
+  test-verbose:
+    # There is currently no way of asserting that the output is indeed verbose,
+    # so we at least check if the action runs without an error when the
+    # verbose option is enabled.
+    name: Test input verbose
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the test repository
+        uses: actions/checkout@v3
+        with:
+          repository: mgr0dzicki/cargo-semver-action-ref-slice
+          ref: patch_change
+      - name: Checkout the action
+        uses: actions/checkout@v3
+        with:
+          path: action
+      - name: Run the action on ref_slice patch change
+        uses: ./action/
+        with:
+          verbose: true
+
+  test-manifest-path:
+    name: Test input manifest-path
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the action
+        uses: actions/checkout@v3
+        with:
+          path: action
+      - name: Setup the workspace
+        uses: ./action/.github/workflows/setup-test-workspace
+      - name: Checkout the test with patch change and patch version bump
+        run: |
+          cd ref_slice
+          git checkout patch_change
+      - name: Run the action on ref_slice patch change (Cargo.toml path)
+        uses: ./action/
+        with:
+          manifest-path: ref_slice/Cargo.toml
+      - name: Run the action on ref_slice patch change (crate path)
+        uses: ./action/
+        with:
+          manifest-path: ref_slice
+      - name: Run the action on the whole workspace (Cargo.toml path, allowed to fail)
+        id: action_all_cargo_toml
+        uses: ./action/
+        with:
+          manifest-path: ./Cargo.toml
+        continue-on-error: true
+      - name: Fail if the action has not returned any errors (but it should have)
+        if: steps.action_all_cargo_toml.outcome != 'failure'
+        run: |
+          echo "Error! The action should have failed because of checking the dummy crate, but it has not!"
+          exit 1
+      - name: Checkout the test with major change and patch version bump
+        run: |
+          cd ref_slice
+          git checkout major_change
+      - name: Run the action on ref_slice major change (Cargo.toml path, allowed to fail)
+        id: action_major_cargo_toml
+        uses: ./action/
+        with:
+          manifest-path: ref_slice/Cargo.toml
+        continue-on-error: true
+      - name: Fail if the action has not returned any errors (but it should have)
+        if: steps.action_major_cargo_toml.outcome != 'failure'
+        run: |
+          echo "Error! The action should have failed because of the breaking change, but it has not."
+          exit 1
+      - name: Run the action on ref_slice major change (crate path, allowed to fail)
+        id: action_major_crate
+        uses: ./action/
+        with:
+          manifest-path: ref_slice
+        continue-on-error: true
+      - name: Fail if the action has not returned any errors (but it should have)
+        if: steps.action_major_crate.outcome != 'failure'
+        run: |
+          echo "Error! The action should have failed because of the breaking change, but it has not."
+          exit 1
+
+  test-manifest-path-with-space:
+    name: Test input manifest-path against path containing space
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the test repository
+        uses: actions/checkout@v3
+        with:
+          # Space inside the directory name is used in order to ensure it will
+          # be handled properly by the action.
+          path: 'ref slice'
+          repository: mgr0dzicki/cargo-semver-action-ref-slice
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Checkout the action
+        uses: actions/checkout@v3
+        with:
+          path: action
+      - name: Checkout the test with patch change and patch version bump
+        run: |
+          cd "ref slice"
+          git checkout patch_change
+      - name: Run the action
+        uses: ./action/
+        with:
+          manifest-path: 'ref slice/Cargo.toml'
+      - name: Checkout the test with major change and patch version bump
+        run: |
+          cd "ref slice"
+          git checkout major_change
+      - name: Run the action (allowed to fail)
+        id: action_major
+        uses: ./action/
+        with:
+          manifest-path: 'ref slice/Cargo.toml'
+        continue-on-error: true
+      - name: Fail if the action has not returned any errors (but it should have)
+        if: steps.action_major.outcome != 'failure'
+        run: |
+          echo "Error! The action should have failed because of the breaking change, but it has not."
+          exit 1

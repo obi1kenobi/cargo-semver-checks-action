@@ -29,16 +29,16 @@ function getPlatformMatchingTarget(): string {
     }
 }
 
-function optionIfValueProvided(option: string, value?: string): string {
-    return value ? ` ${option} ${value}` : "";
+function optionIfValueProvided(option: string, value?: string): string[] {
+    return value ? [option, value] : [];
 }
 
 function getCheckReleaseArguments(): string[] {
     return [
         optionIfValueProvided("--package", rustCore.input.getInput("package")),
         optionIfValueProvided("--manifest-path", rustCore.input.getInput("manifest-path")),
-        rustCore.input.getInputBool("verbose") ? " --verbose" : "",
-    ].filter((el) => el != "");
+        rustCore.input.getInputBool("verbose") ? ["--verbose"] : [],
+    ].flat();
 }
 
 function getGitHubToken(): string {
