@@ -4,16 +4,12 @@ branding:
   icon: 'check-circle'
   color: 'green'
 inputs:
-  github-token:
-    description: 'The GITHUB_TOKEN secret, which is necessary to download precompiled binaries from GitHub API. By default, the automatic GitHub token provided to the workflow will be used.'
-    required: false
-    default: ${{ github.token }}
   package:
     description: 'The package whose API to check for semver (in Package Id Specification format, see https://doc.rust-lang.org/cargo/reference/pkgid-spec.html for reference). If not set, all packages in the workspace are processed.'
     required: false
     default: ''
   manifest-path:
-    description: 'Path to Cargo.toml of crate or workspace to check. Has an effect only if package is not specified.'
+    description: 'Path to Cargo.toml of crate or workspace to check.'
     required: false
     default: ''
   verbose:
@@ -21,6 +17,10 @@ inputs:
     type: boolean
     required: true
     default: false
+  github-token:
+    description: 'The `GITHUB_TOKEN` secret used to download precompiled binaries from GitHub API. If not specified, the automatic GitHub token provided to the workflow will be used.'
+    required: false
+    default: ${{ github.token }}
 runs:
   using: 'node16'
   main: 'dist/index.js'
