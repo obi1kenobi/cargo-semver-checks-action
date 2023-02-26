@@ -17,9 +17,11 @@ jobs:
       - name: Install npm-cli-login
         run: npm install -g npm-cli-login
       - name: Login to GitHub npm registry
+        # Both username and email address are irrelevant here, but they must be
+        # specified because otherwise npm-cli-login fails.
         run: |
           npm-cli-login -s @actions-rs -r https://npm.pkg.github.com \
-            -u $ -p ${{ secrets.GITHUB_TOKEN }} -e test@example.com
+            -u does_not_matter -p ${{ secrets.GITHUB_TOKEN }} -e does_not_m@ter.com
       - name: Install dependencies
         run: npm ci
       - name: Rebuild the action
