@@ -157,23 +157,19 @@ jobs:
     name: Test input manifest-path against path containing space
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout the test repository
+      - name: Checkout the test repository and test with patch change and patch version bump
         uses: actions/checkout@v3
         with:
           # Space inside the directory name is used in order to ensure it will
           # be handled properly by the action.
           path: 'ref slice'
           repository: mgr0dzicki/cargo-semver-action-ref-slice
-          fetch-depth: 0
+          ref: patch_change
           persist-credentials: true
       - name: Checkout the action
         uses: actions/checkout@v3
         with:
           path: action
-      - name: Checkout the test with patch change and patch version bump
-        run: |
-          cd "ref slice"
-          git checkout patch_change
       - name: Run the action
         uses: ./action/
         with:
@@ -181,6 +177,7 @@ jobs:
       - name: Checkout the test with major change and patch version bump
         run: |
           cd "ref slice"
+          git fetch origin major_change
           git checkout major_change
       - name: Run the action (allowed to fail)
         id: action_major
