@@ -15,20 +15,18 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  test-package:
-    name: Test input package
+  test-package-patch:
+    name: Test input package (patch change)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the action
         uses: actions/checkout@v3
         with:
           path: action
-      - name: Setup the workspace
+      - name: Setup the workspace with ref_slice patch change
         uses: ./action/.github/workflows/setup-test-workspace
-      - name: Checkout the test with patch change and patch version bump
-        run: |
-          cd ref_slice
-          git checkout patch_change
+        with:
+          ref-slice-ref: patch_change
       - name: Run the action on ref_slice patch change
         uses: ./action/
         with:
@@ -42,10 +40,19 @@ jobs:
         run: |
           echo "Error! The action should have failed because of checking the dummy crate, but it has not!"
           exit 1
-      - name: Checkout the test with major change and patch version bump
-        run: |
-          cd ref_slice
-          git checkout major_change
+
+  test-package-major:
+    name: Test input package (major change)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the action
+        uses: actions/checkout@v3
+        with:
+          path: action
+      - name: Setup the workspace with ref_slice major change
+        uses: ./action/.github/workflows/setup-test-workspace
+        with:
+          ref-slice-ref: major_change
       - name: Run the action on ref_slice major change (allowed to fail)
         id: action_major
         uses: ./action/
@@ -79,20 +86,18 @@ jobs:
         with:
           verbose: true
 
-  test-manifest-path:
-    name: Test input manifest-path
+  test-manifest-path-patch:
+    name: Test input manifest-path (patch change)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the action
         uses: actions/checkout@v3
         with:
           path: action
-      - name: Setup the workspace
+      - name: Setup the workspace with ref_slice patch change
         uses: ./action/.github/workflows/setup-test-workspace
-      - name: Checkout the test with patch change and patch version bump
-        run: |
-          cd ref_slice
-          git checkout patch_change
+        with:
+          ref-slice-ref: patch_change
       - name: Run the action on ref_slice patch change (Cargo.toml path)
         uses: ./action/
         with:
@@ -112,10 +117,19 @@ jobs:
         run: |
           echo "Error! The action should have failed because of checking the dummy crate, but it has not!"
           exit 1
-      - name: Checkout the test with major change and patch version bump
-        run: |
-          cd ref_slice
-          git checkout major_change
+
+  test-manifest-path-major:
+    name: Test input manifest-path (major change)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the action
+        uses: actions/checkout@v3
+        with:
+          path: action
+      - name: Setup the workspace with ref_slice major change
+        uses: ./action/.github/workflows/setup-test-workspace
+        with:
+          ref-slice-ref: major_change
       - name: Run the action on ref_slice major change (Cargo.toml path, allowed to fail)
         id: action_major_cargo_toml
         uses: ./action/
