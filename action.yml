@@ -7,11 +7,9 @@ inputs:
   package:
     description: 'The package whose API to check for semver (in Package Id Specification format, see https://doc.rust-lang.org/cargo/reference/pkgid-spec.html for reference). If not set, all packages in the workspace are processed.'
     required: false
-    default: ''
   manifest-path:
     description: 'Path to Cargo.toml of crate or workspace to check.'
     required: false
-    default: ''
   verbose:
     description: 'Enables verbose output of `cargo-semver-checks`.'
     type: boolean

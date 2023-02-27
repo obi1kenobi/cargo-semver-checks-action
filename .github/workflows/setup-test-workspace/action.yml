@@ -1,9 +1,8 @@
 name: Setup test workspace
 inputs:
   ref-slice-ref:
-    description: 'Reference of the ref_slice to checkout'
+    description: 'Git reference (branch name, tag or commit hash) of the ref_slice test fork to checkout'
     required: false
-    default: ''
 runs:
   using: 'composite'
   steps:
