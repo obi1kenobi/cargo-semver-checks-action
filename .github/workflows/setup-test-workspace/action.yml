@@ -1,4 +1,9 @@
 name: Setup test workspace
+inputs:
+  ref-slice-ref:
+    description: 'Reference of the ref_slice to checkout'
+    required: false
+    default: ''
 runs:
   using: 'composite'
   steps:
@@ -6,7 +11,7 @@ runs:
         uses: actions/checkout@v3
         with:
           repository: mgr0dzicki/cargo-semver-action-ref-slice
-          fetch-depth: 0
+          ref: ${{ inputs.ref-slice-ref }}
           persist-credentials: true
           path: ref_slice
       - name: Create dummy crate
