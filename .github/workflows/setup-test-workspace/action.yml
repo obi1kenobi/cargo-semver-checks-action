@@ -2,7 +2,7 @@ name: Setup test workspace
 inputs:
   ref-slice-ref:
     description: 'Git reference (branch name, tag or commit hash) of the ref_slice test fork to checkout'
-    required: false
+    required: true
 runs:
   using: 'composite'
   steps:
