@@ -5,10 +5,10 @@ branding:
   color: 'green'
 inputs:
   package:
-    description: 'The package whose API to check for semver (in Package Id Specification format, see https://doc.rust-lang.org/cargo/reference/pkgid-spec.html for reference). If not set, all packages in the workspace are processed.'
+    description: 'The package whose API to check for semver (in Package Id Specification format, see https://doc.rust-lang.org/cargo/reference/pkgid-spec.html for reference). If not set, all packages defined in the Cargo.toml file are processed.'
     required: false
   manifest-path:
-    description: 'Path to Cargo.toml of crate or workspace to check. By default, the action will assume it exists in the current directory.'
+    description: 'Path to Cargo.toml of crate or workspace to check. If not specified, the action assumes the manifest is under the default `GITHUB_WORKSPACE` path.'
     required: false
   verbose:
     description: 'Enables verbose output of `cargo-semver-checks`.'
