@@ -61,32 +61,28 @@ export class RustdocCache {
     }
 
     private async getRustcVersion(): Promise<string> {
-        return await this.keyFromCommandCall("rustc", ["--version"]);
+        const stdout = { s: "" };
+        await exec.exec("rustc", ["--version"], this.makeExecOptions(stdout));
+        return this.removeWhitespaces(stdout.s);
     }
 
     private async getCargoSemverChecksVersion(): Promise<string> {
-        return await this.keyFromCommandCall(this.cargo, ["semver-checks", "--version"]);
+        const stdout = { s: "" };
+        await this.cargo.call(["semver-checks", "--version"], this.makeExecOptions(stdout));
+        return this.removeWhitespaces(stdout.s);
     }
 
-    private async keyFromCommandCall(
-        command: string | rustCore.Cargo,
-        args: string[]
-    ): Promise<string> {
-        let stdout = "";
-        const execOptions = {
+    private makeExecOptions(stdout: { s: string }): exec.ExecOptions {
+        return {
             listeners: {
                 stdout: (buffer: Buffer): void => {
-                    stdout += buffer.toString();
+                    stdout.s += buffer.toString();
                 },
             },
         };
+    }
 
-        if (command instanceof rustCore.Cargo) {
-            await command.call(args, execOptions);
-        } else {
-            await exec.exec(command, args, execOptions);
-        }
-
-        return stdout.trim().replace(/\s/g, "-");
+    private removeWhitespaces(str: string): string {
+        return str.trim().replace(/\s/g, "-");
     }
 }
