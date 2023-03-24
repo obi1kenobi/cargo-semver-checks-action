@@ -87,7 +87,11 @@ async function installRustUp(): Promise<void> {
 }
 
 async function runCargoSemverChecks(cargo: rustCore.Cargo): Promise<void> {
+    // The default location of the target directory varies depending on whether
+    // the action is run inside a workspace or on a single crate. We therefore
+    // need to set the target directory explicitly.
     process.env["CARGO_TARGET_DIR"] = "target";
+
     await cargo.call(["semver-checks", "check-release"].concat(getCheckReleaseArguments()));
 }
 
