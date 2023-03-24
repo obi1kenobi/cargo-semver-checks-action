@@ -7,6 +7,8 @@ import * as io from "@actions/io";
 import * as toolCache from "@actions/tool-cache";
 import * as rustCore from "@actions-rs/core";
 
+import { RustdocCache } from "./rustdoc-cache";
+
 function getErrorMessage(error: unknown): string {
     if (error instanceof Error) {
         return error.message;
@@ -85,6 +87,7 @@ async function installRustUp(): Promise<void> {
 }
 
 async function runCargoSemverChecks(cargo: rustCore.Cargo): Promise<void> {
+    process.env["CARGO_TARGET_DIR"] = "target";
     await cargo.call(["semver-checks", "check-release"].concat(getCheckReleaseArguments()));
 }
 
@@ -129,7 +132,15 @@ async function run(): Promise<void> {
     const cargo = await rustCore.Cargo.get();
 
     await installCargoSemverChecks(cargo);
+
+    const cache = new RustdocCache(cargo);
+    const cacheFound = await cache.restore();
+
     await runCargoSemverChecks(cargo);
+
+    if (!cacheFound) {
+        await cache.save();
+    }
 }
 
 async function main() {

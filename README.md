@@ -18,7 +18,8 @@ Every argument is optional.
 |--------------------|-----------------------------------------------------------------------------------------------------------------------------------|---------|
 | `package`            | The package whose API to check for semver (in Package Id Specification format, see https://doc.rust-lang.org/cargo/reference/pkgid-spec.html for reference). If not set, all packages defined in the Cargo.toml file are processed. | |
 | `manifest-path`      | Path to Cargo.toml of crate or workspace to check. If not specified, the action assumes the manifest is under the default [`GITHUB_WORKSPACE`](https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables) path. | |
-| `verbose`           | Enables verbose output of `cargo-semver-checks`. | `false` |
+| `verbose`            | Enables verbose output of `cargo-semver-checks`. | `false` |
+| `cache-key`          | Rustdoc baseline is cached separately for runs that differ in at least one of the following: runner OS, `rustc` version, `cargo-semver-checks` version, or any of the `Cargo.lock` files in the current workspace. This input might be used to further separate the caches by providing the unique key (by default the job name) for each of them. | `github.job` |
 | `github-token`       | The `GITHUB_TOKEN` secret used to download precompiled binaries from GitHub API. If not specified, the [automatic GitHub token](https://docs.github.com/en/actions/security-guides/automatic-token-authentication) provided to the workflow will be used. The token may be alternatively passed in an environment variable `GITHUB_TOKEN`. | |
 
 # Use in workspaces with a single crate
