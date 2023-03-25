@@ -22,13 +22,15 @@ function removeWhitespaces(str: string): string {
 }
 
 export class RustdocCache {
-    private readonly cachePath;
     private readonly cargo;
+    private readonly cachePath;
+    private readonly workspaceRoot;
     private __cacheKey = "";
 
-    constructor(cargo: rustCore.Cargo, cachePath: string) {
-        this.cachePath = path.resolve(cachePath);
+    constructor(cargo: rustCore.Cargo, cachePath: string, workspaceRoot: string) {
         this.cargo = cargo;
+        this.cachePath = path.resolve(cachePath);
+        this.workspaceRoot = path.resolve(workspaceRoot);
     }
 
     async save(): Promise<void> {
@@ -67,10 +69,8 @@ export class RustdocCache {
     }
 
     private getCargoLocksHash(): string {
-        const manifestPath = rustCore.input.getInput("manifest-path") || "./";
-        const manifestDir = path.extname(manifestPath) ? path.dirname(manifestPath) : manifestPath;
         return hashFiles.sync({
-            files: [path.join(manifestDir, "**", "Cargo.lock")],
+            files: [path.join(this.workspaceRoot, "**", "Cargo.lock")],
         });
     }
 
