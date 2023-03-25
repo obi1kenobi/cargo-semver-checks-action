@@ -26,8 +26,8 @@ export class RustdocCache {
     private readonly cargo;
     private __cacheKey = "";
 
-    constructor(cargo: rustCore.Cargo) {
-        this.cachePath = path.join("target", "semver-checks", "cache");
+    constructor(cargo: rustCore.Cargo, cachePath: string) {
+        this.cachePath = path.resolve(cachePath);
         this.cargo = cargo;
     }
 

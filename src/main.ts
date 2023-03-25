@@ -1,5 +1,6 @@
 import os = require("os");
 
+import * as path from "path";
 import * as exec from "@actions/exec";
 import * as core from "@actions/core";
 import * as github from "@actions/github";
@@ -137,7 +138,7 @@ async function run(): Promise<void> {
 
     await installCargoSemverChecks(cargo);
 
-    const cache = new RustdocCache(cargo);
+    const cache = new RustdocCache(cargo, path.join("target", "semver-checks", "cache"));
     const cacheFound = await cache.restore();
 
     await runCargoSemverChecks(cargo);
