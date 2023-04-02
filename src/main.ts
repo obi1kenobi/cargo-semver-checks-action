@@ -10,6 +10,8 @@ import * as rustCore from "@actions-rs/core";
 
 import { RustdocCache } from "./rustdoc-cache";
 
+const CARGO_TARGET_DIR = path.join("semver-checks", "target");
+
 function getErrorMessage(error: unknown): string {
     if (error instanceof Error) {
         return error.message;
@@ -91,7 +93,7 @@ async function runCargoSemverChecks(cargo: rustCore.Cargo): Promise<void> {
     // The default location of the target directory varies depending on whether
     // the action is run inside a workspace or on a single crate. We therefore
     // need to set the target directory explicitly.
-    process.env["CARGO_TARGET_DIR"] = "target";
+    process.env["CARGO_TARGET_DIR"] = CARGO_TARGET_DIR;
 
     await cargo.call(["semver-checks", "check-release"].concat(getCheckReleaseArguments()));
 }
@@ -143,7 +145,7 @@ async function run(): Promise<void> {
 
     const cache = new RustdocCache(
         cargo,
-        path.join("target", "semver-checks", "cache"),
+        path.join(CARGO_TARGET_DIR, "semver-checks", "cache"),
         manifestDir
     );
     const cacheFound = await cache.restore();
