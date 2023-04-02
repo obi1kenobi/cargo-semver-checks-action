@@ -131,12 +131,10 @@ async function installCargoSemverChecks(cargo: rustCore.Cargo): Promise<void> {
     }
 }
 
-function getManifestDir(): string {
-    const manifestPath = rustCore.input.getInput("manifest-path") || "./";
-    return path.extname(manifestPath) ? path.dirname(manifestPath) : manifestPath;
-}
-
 async function run(): Promise<void> {
+    const manifestPath = path.resolve(rustCore.input.getInput("manifest-path") || "./");
+    const manifestDir = path.extname(manifestPath) ? path.dirname(manifestPath) : manifestPath;
+
     await installRustUp();
 
     const cargo = await rustCore.Cargo.get();
@@ -146,7 +144,7 @@ async function run(): Promise<void> {
     const cache = new RustdocCache(
         cargo,
         path.join("target", "semver-checks", "cache"),
-        getManifestDir()
+        manifestDir
     );
     const cacheFound = await cache.restore();
 
