@@ -21,10 +21,19 @@ function removeWhitespaces(str: string): string {
     return str.trim().replace(/\s/g, "-");
 }
 
+function hashFilesOrEmpty(patterns: string[]): string {
+    try {
+        return hashFiles.sync({ files: patterns });
+    } catch (error) {
+        return "";
+    }
+}
+
 export class RustdocCache {
     private readonly cargo;
     private readonly cachePath;
     private readonly workspaceRoot;
+    private restoredCacheKey = "";
     private __cacheKey = "";
 
     constructor(cargo: rustCore.Cargo, cachePath: string, workspaceRoot: string) {
@@ -34,8 +43,14 @@ export class RustdocCache {
     }
 
     async save(): Promise<void> {
-        core.info("Saving rustdoc cache...");
-        await cache.saveCache([this.cachePath], await this.cacheKey());
+        const cacheKeyWithLocalHash = `${await this.cacheKey()}-${this.getLocalCacheHash()}`;
+        if (this.restoredCacheKey == cacheKeyWithLocalHash) {
+            core.info("Rustdoc cache is up to date, skipping saving.");
+        } else {
+            core.info(`Saving rustdoc cache using key ${cacheKeyWithLocalHash}`);
+            await cache.saveCache([this.cachePath], cacheKeyWithLocalHash);
+            this.restoredCacheKey = cacheKeyWithLocalHash;
+        }
     }
 
     async restore(): Promise<boolean> {
@@ -43,9 +58,12 @@ export class RustdocCache {
         core.info(`Rustdoc cache path: ${this.cachePath}.`);
         core.info(`Rustdoc cache key: ${await this.cacheKey()}.`);
 
-        const key = await cache.restoreCache([this.cachePath], await this.cacheKey());
+        const key = await cache.restoreCache([this.cachePath], await this.cacheKey(), [
+            await this.cacheKey(),
+        ]);
         if (key) {
-            core.info(`Restored rustdoc cache.`);
+            core.info(`Restored rustdoc cache using key ${key}.`);
+            this.restoredCacheKey = key;
             return true;
         } else {
             core.info(`Rustdoc cache not found.`);
@@ -68,10 +86,12 @@ export class RustdocCache {
         return this.__cacheKey;
     }
 
+    private getLocalCacheHash(): string {
+        return hashFilesOrEmpty([path.join(this.cachePath, "**")]);
+    }
+
     private getCargoLocksHash(): string {
-        return hashFiles.sync({
-            files: [path.join(this.workspaceRoot, "**", "Cargo.lock")],
-        });
+        return hashFilesOrEmpty([path.join(this.workspaceRoot, "**", "Cargo.lock")]);
     }
 
     private async getRustcVersion(): Promise<string> {
