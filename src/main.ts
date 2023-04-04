@@ -1,11 +1,16 @@
 import os = require("os");
 
+import * as path from "path";
 import * as exec from "@actions/exec";
 import * as core from "@actions/core";
 import * as github from "@actions/github";
 import * as io from "@actions/io";
 import * as toolCache from "@actions/tool-cache";
 import * as rustCore from "@actions-rs/core";
+
+import { RustdocCache } from "./rustdoc-cache";
+
+const CARGO_TARGET_DIR = path.join("semver-checks", "target");
 
 function getErrorMessage(error: unknown): string {
     if (error instanceof Error) {
@@ -85,6 +90,11 @@ async function installRustUp(): Promise<void> {
 }
 
 async function runCargoSemverChecks(cargo: rustCore.Cargo): Promise<void> {
+    // The default location of the target directory varies depending on whether
+    // the action is run inside a workspace or on a single crate. We therefore
+    // need to set the target directory explicitly.
+    process.env["CARGO_TARGET_DIR"] = CARGO_TARGET_DIR;
+
     await cargo.call(["semver-checks", "check-release"].concat(getCheckReleaseArguments()));
 }
 
@@ -124,12 +134,24 @@ async function installCargoSemverChecks(cargo: rustCore.Cargo): Promise<void> {
 }
 
 async function run(): Promise<void> {
+    const manifestPath = path.resolve(rustCore.input.getInput("manifest-path") || "./");
+    const manifestDir = path.extname(manifestPath) ? path.dirname(manifestPath) : manifestPath;
+
     await installRustUp();
 
     const cargo = await rustCore.Cargo.get();
 
     await installCargoSemverChecks(cargo);
+
+    const cache = new RustdocCache(
+        cargo,
+        path.join(CARGO_TARGET_DIR, "semver-checks", "cache"),
+        manifestDir
+    );
+
+    await cache.restore();
     await runCargoSemverChecks(cargo);
+    await cache.save();
 }
 
 async function main() {
