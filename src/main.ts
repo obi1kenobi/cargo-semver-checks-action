@@ -1,7 +1,6 @@
 import os = require("os");
 
 import * as path from "path";
-import * as exec from "@actions/exec";
 import * as core from "@actions/core";
 import * as github from "@actions/github";
 import * as io from "@actions/io";
@@ -78,15 +77,6 @@ async function installRustUp(): Promise<void> {
     await rustup.call(["show"]);
     await rustup.setProfile("minimal");
     await rustup.installToolchain("stable");
-
-    // [TODO] Remove this temporary fix once the underlying issue is fixed.
-    if (os.platform() == "win32") {
-        try {
-            await exec.exec("mkdir C:\\Users\\runneradmin\\.cargo\\registry\\index");
-        } catch (error) {
-            core.info(`Failed to create registry index directory: ${getErrorMessage(error)}`);
-        }
-    }
 }
 
 async function runCargoSemverChecks(cargo: rustCore.Cargo): Promise<void> {
