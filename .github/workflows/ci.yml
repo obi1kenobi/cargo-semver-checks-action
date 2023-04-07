@@ -27,3 +27,7 @@ jobs:
   test-inputs:
     name: Test action inputs
     uses: ./.github/workflows/test-inputs.yml
+
+  test-cache:
+    name: Test rustdoc caching
+    uses: ./.github/workflows/test-cache.yml
