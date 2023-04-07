@@ -16,13 +16,9 @@ inputs:
     required: true
     default: false
   rust-toolchain:
-    description: 'Rust toolchain name to use, e.g. `stable`, `nightly` or `1.32.0`.'
+    description: 'Rust toolchain name to use, e.g. `stable`, `nightly` or `1.68.0`. It will be installed if necessary and used regardless of local overrides and the `rust-toolchain.toml` file. However, if the input is set to be an empty string, the action assumes some Rust toolchain is already installed and uses the default one.'
     required: false
     default: 'stable'
-  rust-override:
-    description: 'If Rust is already installed, whether to override it with version specified in `rust-toolchain`.'
-    required: true
-    default: false
   cache-key:
     description: 'Rustdoc baseline is cached separately for runs that differ in at least one of the following: runner OS, `rustc` version, `cargo-semver-checks` version, or any of the `Cargo.lock` files in the current workspace. This input might be used to further separate the caches by providing the unique key (by default the job name) for each of them.'
     required: false

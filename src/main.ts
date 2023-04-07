@@ -72,13 +72,16 @@ async function getCargoSemverChecksDownloadURL(target: string): Promise<string> 
     return asset.url;
 }
 
-async function installRustUp(): Promise<void> {
-    const rustup = await rustCore.RustUp.getOrInstall();
-    await rustup.call(["show"]);
-    await rustup.setProfile("minimal");
-    await rustup.installToolchain(rustCore.input.getInput("rust-toolchain") || "stable", {
-        override: rustCore.input.getInputBool("rust-override"),
-    });
+async function installRustUpIfRequested(): Promise<void> {
+    const toolchain = rustCore.input.getInput("rust-toolchain");
+    if (toolchain) {
+        const rustup = await rustCore.RustUp.getOrInstall();
+        await rustup.call(["show"]);
+        await rustup.setProfile("minimal");
+        await rustup.installToolchain(toolchain);
+
+        process.env["RUSTUP_TOOLCHAIN"] = toolchain;
+    }
 }
 
 async function runCargoSemverChecks(cargo: rustCore.Cargo): Promise<void> {
@@ -129,7 +132,7 @@ async function run(): Promise<void> {
     const manifestPath = path.resolve(rustCore.input.getInput("manifest-path") || "./");
     const manifestDir = path.extname(manifestPath) ? path.dirname(manifestPath) : manifestPath;
 
-    await installRustUp();
+    await installRustUpIfRequested();
 
     const cargo = await rustCore.Cargo.get();
 
