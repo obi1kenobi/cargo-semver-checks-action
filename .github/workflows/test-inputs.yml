@@ -190,3 +190,90 @@ jobs:
         run: |
           echo "Error! The action should have failed because of the breaking change, but it has not."
           exit 1
+
+  test-toolchain-default:
+    name: Test whether action does not override the toolchain by default
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the test repository
+        uses: actions/checkout@v3
+        with:
+          repository: mgr0dzicki/cargo-semver-action-ref-slice
+          ref: patch_change
+      - name: Checkout the action
+        uses: actions/checkout@v3
+        with:
+          path: action
+      - name: Install latest nightly
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          override: true
+      - name: Run the action
+        uses: ./action/
+      - name: Check the active toolchain
+        run: |
+          if rustup show active-toolchain | grep -q "nightly"; then
+            echo "The active toolchain should be still nightly, but it is $(rustup show active-toolchain)!"
+            exit 1
+          fi
+
+  test-toolchain-without-override:
+    name: Test input rust-toolchain with rust-override set to false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the test repository
+        uses: actions/checkout@v3
+        with:
+          repository: mgr0dzicki/cargo-semver-action-ref-slice
+          ref: patch_change
+      - name: Checkout the action
+        uses: actions/checkout@v3
+        with:
+          path: action
+      - name: Install latest stable
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+      - name: Run the action
+        uses: ./action/
+        with:
+          rust-toolchain: nightly
+          override: false
+      - name: Check the active toolchain
+        run: |
+          if rustup show active-toolchain | grep -q "stable"; then
+            echo "The active toolchain should be still stable, but it is $(rustup show active-toolchain)!"
+            exit 1
+          fi
+
+  test-toolchain-with-override:
+    name: Test input rust-toolchain with rust-override set to true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the test repository
+        uses: actions/checkout@v3
+        with:
+          repository: mgr0dzicki/cargo-semver-action-ref-slice
+          ref: patch_change
+      - name: Checkout the action
+        uses: actions/checkout@v3
+        with:
+          path: action
+      - name: Install latest stable
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+      - name: Run the action
+        uses: ./action/
+        with:
+          rust-toolchain: nightly
+          override: true
+      - name: Check the active toolchain
+        run: |
+          if rustup show active-toolchain | grep -q "nightly"; then
+            echo "The active toolchain should be now nightly, but it is $(rustup show active-toolchain)!"
+            exit 1
+          fi
