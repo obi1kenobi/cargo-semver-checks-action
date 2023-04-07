@@ -240,7 +240,7 @@ jobs:
         uses: ./action/
         with:
           rust-toolchain: nightly
-          override: false
+          rust-override: false
       - name: Check the active toolchain
         run: |
           if ! rustup show active-toolchain | grep -q "stable"; then
@@ -270,7 +270,7 @@ jobs:
         uses: ./action/
         with:
           rust-toolchain: nightly
-          override: true
+          rust-override: true
       - name: Check the active toolchain
         run: |
           if ! rustup show active-toolchain | grep -q "nightly"; then
