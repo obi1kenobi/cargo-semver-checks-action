@@ -76,7 +76,9 @@ async function installRustUp(): Promise<void> {
     const rustup = await rustCore.RustUp.getOrInstall();
     await rustup.call(["show"]);
     await rustup.setProfile("minimal");
-    await rustup.installToolchain("stable");
+    await rustup.installToolchain(rustCore.input.getInput("rust-toolchain") || "stable", {
+        override: rustCore.input.getInputBool("rust-override"),
+    });
 }
 
 async function runCargoSemverChecks(cargo: rustCore.Cargo): Promise<void> {
