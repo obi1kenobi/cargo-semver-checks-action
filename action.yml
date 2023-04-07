@@ -20,7 +20,7 @@ inputs:
     required: false
     default: 'stable'
   rust-override:
-    description: 'Whether to override the Rust version installed previously or set in a toolchain file.'
+    description: 'If Rust is already installed, whether to override it with version specified in `rust-toolchain`.'
     required: true
     default: false
   cache-key:
