@@ -80,6 +80,8 @@ async function installRustUpIfRequested(): Promise<void> {
         await rustup.setProfile("minimal");
         await rustup.installToolchain(toolchain);
 
+        // Setting the environment variable here affects only processes spawned
+        // by this action, so it will not override the default toolchain globally.
         process.env["RUSTUP_TOOLCHAIN"] = toolchain;
     }
 }
