@@ -213,7 +213,7 @@ jobs:
         uses: ./action/
       - name: Check the active toolchain
         run: |
-          if rustup show active-toolchain | grep -q "nightly"; then
+          if ! rustup show active-toolchain | grep -q "nightly"; then
             echo "The active toolchain should be still nightly, but it is $(rustup show active-toolchain)!"
             exit 1
           fi
@@ -243,7 +243,7 @@ jobs:
           override: false
       - name: Check the active toolchain
         run: |
-          if rustup show active-toolchain | grep -q "stable"; then
+          if ! rustup show active-toolchain | grep -q "stable"; then
             echo "The active toolchain should be still stable, but it is $(rustup show active-toolchain)!"
             exit 1
           fi
@@ -273,7 +273,7 @@ jobs:
           override: true
       - name: Check the active toolchain
         run: |
-          if rustup show active-toolchain | grep -q "nightly"; then
+          if ! rustup show active-toolchain | grep -q "nightly"; then
             echo "The active toolchain should be now nightly, but it is $(rustup show active-toolchain)!"
             exit 1
           fi
