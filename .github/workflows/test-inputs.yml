@@ -186,3 +186,157 @@ jobs:
         run: |
           echo "Error! The action should have failed because of the breaking change, but it has not."
           exit 1
+
+  test-rust-toolchain-against-directory-override:
+    name: Test the action against toolchain override set using rustup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the test repository
+        uses: actions/checkout@v3
+        with:
+          repository: mgr0dzicki/cargo-semver-action-ref-slice
+          ref: patch_change
+      - name: Checkout the action
+        uses: actions/checkout@v3
+        with:
+          path: action
+      - name: Install latest beta
+        uses: dtolnay/rust-toolchain@beta
+      - name: Set local override to beta
+        run: rustup override set beta
+      - name: Run the action with rust-toolchain set to nightly
+        uses: ./action/
+        with:
+          rust-toolchain: nightly
+      - name: Get cache key
+        uses: actions/cache/restore@v3
+        id: get-cache-key
+        with:
+          path: ${{ github.workspace }}/semver-checks/target/semver-checks/cache
+          fail-on-cache-miss: true
+          lookup-only: true
+          key: -${{ github.job }}
+          restore-keys: |
+            -${{ github.job }}
+      - name: Fail if the toolchain used by the action is invalid
+        if: ${{ ! contains(steps.get-cache-key.outputs.cache-matched-key, 'nightly') }}
+        run: |
+          echo "The toolchain used by the action should be nightly, but it is not!"
+          exit 1
+      - name: Check the active toolchain
+        run: |
+          if ! rustup show active-toolchain | grep -q "beta"; then
+            echo "The active toolchain should be still beta, but it is $(rustup show active-toolchain)!"
+            exit 1
+          fi
+
+  test-rust-toolchain-against-toml-override:
+    name: Test the action against toolchain override specified in rust-toolchain.toml file
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the test repository
+        uses: actions/checkout@v3
+        with:
+          repository: mgr0dzicki/cargo-semver-action-ref-slice
+          ref: patch_change
+      - name: Checkout the action
+        uses: actions/checkout@v3
+        with:
+          path: action
+      - name: Install latest beta
+        uses: dtolnay/rust-toolchain@beta
+      - name: Set override to beta in rust-toolchain.toml file
+        run: echo -e "[toolchain]\nchannel = \"beta\"" > rust-toolchain.toml
+      - name: Run the action with rust-toolchain set to nightly
+        uses: ./action/
+        with:
+          rust-toolchain: nightly
+      - name: Get cache key
+        uses: actions/cache/restore@v3
+        id: get-cache-key
+        with:
+          path: ${{ github.workspace }}/semver-checks/target/semver-checks/cache
+          fail-on-cache-miss: true
+          lookup-only: true
+          key: -${{ github.job }}
+          restore-keys: |
+            -${{ github.job }}
+      - name: Fail if the toolchain used by the action is invalid
+        if: ${{ ! contains(steps.get-cache-key.outputs.cache-matched-key, 'nightly') }}
+        run: |
+          echo "The toolchain used by the action should be nightly, but it is not!"
+          exit 1
+      - name: Check the active toolchain
+        run: |
+          if ! rustup show active-toolchain | grep -q "beta"; then
+            echo "The active toolchain should be still beta, but it is $(rustup show active-toolchain)!"
+            exit 1
+          fi
+
+  test-rust-toolchain-empty:
+    name: Test whether action works properly with rust-toolchain set to an empty string
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the test repository
+        uses: actions/checkout@v3
+        with:
+          repository: mgr0dzicki/cargo-semver-action-ref-slice
+          ref: patch_change
+      - name: Checkout the action
+        uses: actions/checkout@v3
+        with:
+          path: action
+      - name: Install latest beta
+        uses: dtolnay/rust-toolchain@beta
+      - name: Set local override to beta
+        run: rustup override set beta
+      - name: Run the action with empty rust-toolchain
+        uses: ./action/
+        with:
+          rust-toolchain: ''
+      - name: Get cache key
+        uses: actions/cache/restore@v3
+        id: get-cache-key
+        with:
+          path: ${{ github.workspace }}/semver-checks/target/semver-checks/cache
+          fail-on-cache-miss: true
+          lookup-only: true
+          key: -${{ github.job }}
+          restore-keys: |
+            -${{ github.job }}
+      - name: Fail if the toolchain used by the action is invalid
+        if: ${{ ! contains(steps.get-cache-key.outputs.cache-matched-key, 'beta') }}
+        run: |
+          echo "The toolchain used by the action should be beta, but it is not!"
+          exit 1
+      - name: Uninstall Rust
+        run: rustup self uninstall -y
+      - name: Run the action with empty rust-toolchain (allowed to fail)
+        id: action_without_rust
+        uses: ./action/
+        with:
+          rust-toolchain: ''
+        continue-on-error: true
+      - name: Fail if the action has not returned any errors (but it should have)
+        if: steps.action_without_rust.outcome != 'failure'
+        run: |
+          echo "Error! The action should have failed because the Rust is not installed and rust-toolchain was set to '', but it has not."
+          exit 1
+
+  test-rust-toolchain-installs-rust:
+    name: Test whether action installs Rust toolchain by default
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the test repository
+        uses: actions/checkout@v3
+        with:
+          repository: mgr0dzicki/cargo-semver-action-ref-slice
+          ref: patch_change
+      - name: Checkout the action
+        uses: actions/checkout@v3
+        with:
+          path: action
+      - name: Uninstall Rust
+        run: rustup self uninstall -y
+      - name: Run the action with default arguments
+        uses: ./action/
