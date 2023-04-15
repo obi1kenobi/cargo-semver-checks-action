@@ -5,19 +5,18 @@ name: Smoke test the action
 
 on:
   workflow_call:
-    inputs:
-      runs-on:
-        required: true
-        type: string
 
 env:
   RUST_BACKTRACE: 1
-  CARGO_TERM_COLOR: always
 
 jobs:
   run-tests:
     name: Run tests
-    runs-on: ${{ inputs.runs-on }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        toolchain: ['1.66', 'stable', 'beta', 'nightly']
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout the test repository and test with patch change and patch version bump
         uses: actions/checkout@v3
@@ -31,6 +30,8 @@ jobs:
           path: action
       - name: Run the action
         uses: ./action/
+        with:
+          rust-toolchain: ${{ matrix.toolchain }}
       - name: Checkout the test with major change and patch version bump
         run: |
           git fetch origin major_change
@@ -38,6 +39,8 @@ jobs:
       - name: Run the action (allowed to fail)
         id: action_major
         uses: ./action/
+        with:
+          rust-toolchain: ${{ matrix.toolchain }}
         continue-on-error: true
       - name: Fail if the action has not returned any errors (but it should have)
         if: steps.action_major.outcome != 'failure'

@@ -1,33 +1,11 @@
 import os = require("os");
-import hashFiles = require("hash-files");
 
-import * as exec from "@actions/exec";
 import * as path from "path";
 import * as cache from "@actions/cache";
 import * as core from "@actions/core";
 import * as rustCore from "@actions-rs/core";
 
-function makeExecOptions(stdout: { s: string }): exec.ExecOptions {
-    return {
-        listeners: {
-            stdout: (buffer: Buffer): void => {
-                stdout.s += buffer.toString();
-            },
-        },
-    };
-}
-
-function removeWhitespaces(str: string): string {
-    return str.trim().replace(/\s/g, "-");
-}
-
-function hashFilesOrEmpty(patterns: string[]): string {
-    try {
-        return hashFiles.sync({ files: patterns });
-    } catch (error) {
-        return "";
-    }
-}
+import { getCargoSemverChecksVersion, getRustcVersion, hashFilesOrEmpty } from "./utils";
 
 export class RustdocCache {
     private readonly cargo;
@@ -77,8 +55,8 @@ export class RustdocCache {
                 rustCore.input.getInput("prefix-key") || "",
                 rustCore.input.getInput("cache-key"),
                 os.platform() as string,
-                await this.getRustcVersion(),
-                await this.getCargoSemverChecksVersion(),
+                await getRustcVersion(),
+                await getCargoSemverChecksVersion(this.cargo),
                 this.getCargoLocksHash(),
                 "semver-checks-rustdoc",
             ].join("-");
@@ -93,17 +71,5 @@ export class RustdocCache {
 
     private getCargoLocksHash(): string {
         return hashFilesOrEmpty([path.join(this.workspaceRoot, "**", "Cargo.lock")]);
-    }
-
-    private async getRustcVersion(): Promise<string> {
-        const stdout = { s: "" };
-        await exec.exec("rustc", ["--version"], makeExecOptions(stdout));
-        return removeWhitespaces(stdout.s);
-    }
-
-    private async getCargoSemverChecksVersion(): Promise<string> {
-        const stdout = { s: "" };
-        await this.cargo.call(["semver-checks", "--version"], makeExecOptions(stdout));
-        return removeWhitespaces(stdout.s);
     }
 }

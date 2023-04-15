@@ -8,7 +8,6 @@ on:
 
 env:
   RUST_BACKTRACE: 1
-  CARGO_TERM_COLOR: always
 
 jobs:
   test-build:
@@ -18,11 +17,6 @@ jobs:
   test-action:
     name: Smoke test the action
     uses: ./.github/workflows/test-action.yml
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-    with:
-      runs-on: ${{ matrix.os }}
 
   test-inputs:
     name: Test action inputs
