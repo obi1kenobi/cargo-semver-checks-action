@@ -1,5 +1,3 @@
-import os = require("os");
-
 import * as path from "path";
 import * as core from "@actions/core";
 import * as github from "@actions/github";
@@ -7,35 +5,15 @@ import * as io from "@actions/io";
 import * as toolCache from "@actions/tool-cache";
 import * as rustCore from "@actions-rs/core";
 
+import {
+    getErrorMessage,
+    getPlatformMatchingTarget,
+    getRustcVersion,
+    optionIfValueProvided,
+} from "./utils";
 import { RustdocCache } from "./rustdoc-cache";
 
 const CARGO_TARGET_DIR = path.join("semver-checks", "target");
-
-function getErrorMessage(error: unknown): string {
-    if (error instanceof Error) {
-        return error.message;
-    } else {
-        return String(error);
-    }
-}
-
-function getPlatformMatchingTarget(): string {
-    const platform = os.platform() as string;
-    switch (platform) {
-        case "linux":
-            return "x86_64-unknown-linux-gnu";
-        case "win32":
-            return "x86_64-pc-windows-msvc";
-        case "darwin":
-            return "x86_64-apple-darwin";
-        default:
-            throw new Error("Unsupported runner");
-    }
-}
-
-function optionIfValueProvided(option: string, value?: string): string[] {
-    return value ? [option, value] : [];
-}
 
 function getCheckReleaseArguments(): string[] {
     return [
@@ -83,6 +61,21 @@ async function installRustUpIfRequested(): Promise<void> {
         // Setting the environment variable here affects only processes spawned
         // by this action, so it will not override the default toolchain globally.
         process.env["RUSTUP_TOOLCHAIN"] = toolchain;
+    }
+
+    // Disable incremental compilation.
+    process.env["CARGO_INCREMENTAL"] ||= "0";
+
+    // Enable colors in the output.
+    process.env["CARGO_TERM_COLOR"] ||= "always";
+
+    // Enable sparse checkout for crates.io except for Rust 1.66 and 1.67,
+    // on which it is unstable.
+    if (!process.env["CARGO_REGISTRIES_CRATES_IO_PROTOCOL"]) {
+        const rustcVersion = await getRustcVersion();
+        if (!rustcVersion.startsWith("rustc-1.66") && !rustcVersion.startsWith("rustc-1.67")) {
+            process.env["CARGO_REGISTRIES_CRATES_IO_PROTOCOL"] = "sparse";
+        }
     }
 }
 

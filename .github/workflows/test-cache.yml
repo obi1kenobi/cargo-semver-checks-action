@@ -6,6 +6,9 @@ name: Test rustdoc caching
 on:
   workflow_call:
 
+env:
+  RUST_BACKTRACE: 1
+
 jobs:
   test-cache-exists:
     name: Check if the cache exists after running the action
