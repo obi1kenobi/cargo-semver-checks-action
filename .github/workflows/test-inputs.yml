@@ -60,6 +60,34 @@ jobs:
           echo "Error! The action should have failed because of the breaking change, but it has not."
           exit 1
 
+  test-exclude:
+    name: Test input exclude
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the action
+        uses: actions/checkout@v3
+        with:
+          path: action
+      - name: Setup the workspace with ref_slice major change
+        uses: ./action/.github/workflows/setup-test-workspace
+        with:
+          ref-slice-ref: major_change
+      - name: Run the action excluding both crates (should do nothing)
+        uses: ./action/
+        with:
+          exclude: ref_slice, cargo-semver-action-dummy
+      - name: Run the action excluding only the dummy crate (allowed to fail)
+        id: action_major
+        uses: ./action/
+        with:
+          exclude: cargo-semver-action-dummy
+        continue-on-error: true
+      - name: Fail if the action has not returned any errors (but it should have)
+        if: steps.action_major.outcome != 'failure'
+        run: |
+          echo "Error! The action should have failed because of the breaking change, but it has not."
+          exit 1
+
   test-verbose:
     # There is currently no way of asserting that the output is indeed verbose,
     # so we at least check if the action runs without an error when the
