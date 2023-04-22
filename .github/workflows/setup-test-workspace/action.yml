@@ -14,10 +14,12 @@ runs:
           persist-credentials: true
           path: ref_slice
       - name: Create dummy crate
-        # This crate does not have a matching baseline on crates.io, so any try
-        # of checking it should make cargo-semver-checks fail.
-        run: cargo new cargo-semver-action-dummy --lib
+        # This crates do not have matching baselines on crates.io, so any try
+        # of checking them should make cargo-semver-checks fail.
+        run: |
+          cargo new cargo-semver-action-dummy --lib
+          cargo new cargo-semver-action-dummy-2 --lib
         shell: bash
       - name: Create workspace Cargo.toml
-        run: echo -e "[workspace]\nmembers=['ref_slice','cargo-semver-action-dummy']" > Cargo.toml
+        run: echo -e "[workspace]\nmembers=['ref_slice','cargo-semver-action-dummy','cargo-semver-action-dummy-2']" > Cargo.toml
         shell: bash

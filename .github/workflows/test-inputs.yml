@@ -68,15 +68,15 @@ jobs:
         uses: actions/checkout@v3
         with:
           path: action
-      - name: Setup the workspace with ref_slice major change
+      - name: Setup the workspace with ref_slice patch change
         uses: ./action/.github/workflows/setup-test-workspace
         with:
-          ref-slice-ref: major_change
-      - name: Run the action excluding both crates (should do nothing)
+          ref-slice-ref: patch_change
+      - name: Run the action excluding both dummy crates
         uses: ./action/
         with:
-          exclude: ref_slice, cargo-semver-action-dummy
-      - name: Run the action excluding only the dummy crate (allowed to fail)
+          exclude: cargo-semver-action-dummy, cargo-semver-action-dummy-2
+      - name: Run the action excluding only one of the dummy crates (allowed to fail)
         id: action_major
         uses: ./action/
         with:
