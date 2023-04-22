@@ -16,7 +16,8 @@ Every argument is optional.
 
 | Input              | Description                                                                                                                       | Default |
 |--------------------|-----------------------------------------------------------------------------------------------------------------------------------|---------|
-| `package`            | The package whose API to check for semver (in Package Id Specification format, see https://doc.rust-lang.org/cargo/reference/pkgid-spec.html for reference). If not set, all packages defined in the Cargo.toml file are processed. | |
+| `package`            | Comma-separated list of the packages whose API to check for semver (in Package Id Specification format, see https://doc.rust-lang.org/cargo/reference/pkgid-spec.html for reference). If not set, all packages defined in the Cargo.toml file are processed. | |
+| `exclude`            | Comma-separated list of the packages that will be excluded from being processed. Has effect only if the input `package` is not specified. | |
 | `manifest-path`      | Path to Cargo.toml of crate or workspace to check. If not specified, the action assumes the manifest is under the default [`GITHUB_WORKSPACE`](https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables) path. | |
 | `verbose`            | Enables verbose output of `cargo-semver-checks`. | `false` |
 | `rust-toolchain`     | Rust toolchain name to use, e.g. `stable`, `nightly` or `1.68.0`. It will be installed if necessary and used regardless of local overrides and the `rust-toolchain.toml` file. However, if the input is set to be an empty string, the action assumes some Rust toolchain is already installed and uses the default one. | `stable` |
@@ -38,14 +39,23 @@ The action will work out-of-the-box if it is run inside the package root directo
 
 # Use in workspaces with more than one crate
 
-By default, if workspace contains multiple crates, all of them are checked for semver violations. You can specify a single crate to be checked instead using `package` or `manifest-path`.
+By default, if workspace contains multiple crates, all of them are checked for semver violations. You can specify one or more crates to be checked instead using `package`, `exclude` or `manifest-path`.
 
-For example, this will check `my-crate`:
+For example, this will check `my-crate-api` and `my-crate-core`:
 ```yaml
-- name: Check semver for my-crate from the current workspace
+- name: Check semver for my-crate-api and my-crate-core
   uses: obi1kenobi/cargo-semver-checks-action@v2
   with:
-    package: my-crate
+    package: my-crate-api, my-crate-core
+- name: Publish my-crate to crates.io
+  run: # your `cargo publish` code here
+```
+And this will process all crates from the current workspace except `my-crate-tests`:
+```yaml
+- name: Check semver for all crates except my-crate-tests
+  uses: obi1kenobi/cargo-semver-checks-action@v2
+  with:
+    exclude: my-crate-tests
 - name: Publish my-crate to crates.io
   run: # your `cargo publish` code here
 ```

@@ -31,6 +31,10 @@ export function optionIfValueProvided(option: string, value?: string): string[] 
     return value ? [option, value] : [];
 }
 
+export function optionFromList(option: string, values: string[]): string[] {
+    return values.map((value) => [option, value]).flat();
+}
+
 export function hashFilesOrEmpty(patterns: string[]): string {
     try {
         return hashFiles.sync({ files: patterns });
