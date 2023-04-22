@@ -19,6 +19,7 @@ function getCheckReleaseArguments(): string[] {
     return [
         optionIfValueProvided("--package", rustCore.input.getInput("package")),
         optionIfValueProvided("--manifest-path", rustCore.input.getInput("manifest-path")),
+        optionIfValueProvided("--release-type", rustCore.input.getInput("release-type")),
         rustCore.input.getInputBool("verbose") ? ["--verbose"] : [],
     ].flat();
 }

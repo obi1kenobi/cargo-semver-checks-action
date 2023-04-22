@@ -15,6 +15,13 @@ inputs:
     type: boolean
     required: true
     default: false
+  release-type:
+    description: 'Sets the release type instead of deriving it from the version number specified in the `Cargo.toml` file.'
+    required: false
+    options:
+      - patch
+      - minor
+      - major
   rust-toolchain:
     description: 'Rust toolchain name to use, e.g. `stable`, `nightly` or `1.68.0`. It will be installed if necessary and used regardless of local overrides and the `rust-toolchain.toml` file. However, if the input is set to be an empty string, the action assumes some Rust toolchain is already installed and uses the default one.'
     required: false
