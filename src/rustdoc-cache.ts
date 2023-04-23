@@ -73,7 +73,11 @@ export class RustdocCache {
     private getRunDependentKey(): string {
         return [
             process.env["GITHUB_JOB"] || "",
-            rustCore.input.getInput("package"),
+            "package",
+            rustCore.input.getInputList("package").sort(),
+            "exclude",
+            rustCore.input.getInputList("exclude").sort(),
+            "manifest-path",
             hashIfNotEmpty(rustCore.input.getInput("manifest-path")),
         ].join("-");
     }

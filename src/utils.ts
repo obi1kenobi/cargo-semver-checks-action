@@ -44,7 +44,7 @@ export function hashFilesOrEmpty(patterns: string[]): string {
 }
 
 export function hashIfNotEmpty(str: string): string {
-    return createHash("md5").update(str).digest("hex");
+    return str ? createHash("md5").update(str).digest("hex") : "";
 }
 
 function makeExecOptions(stdout: { s: string }): exec.ExecOptions {
