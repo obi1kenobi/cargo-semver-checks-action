@@ -32,8 +32,6 @@ The action will work out-of-the-box if it is run inside the package root directo
   uses: obi1kenobi/cargo-semver-checks-action@v2
   with:
     manifest-path: semver/my-crate/Cargo.toml  # or just semver/my-crate/
-- name: Publish my-crate to crates.io
-  run: # your `cargo publish` code here
 ```
 
 # Use in workspaces with more than one crate
@@ -46,8 +44,6 @@ For example, this will check `my-crate-api` and `my-crate-core`:
   uses: obi1kenobi/cargo-semver-checks-action@v2
   with:
     package: my-crate-api, my-crate-core
-- name: Publish my-crate to crates.io
-  run: # your `cargo publish` code here
 ```
 And this will process all crates from the current workspace except `my-crate-tests`:
 ```yaml
@@ -55,8 +51,6 @@ And this will process all crates from the current workspace except `my-crate-tes
   uses: obi1kenobi/cargo-semver-checks-action@v2
   with:
     exclude: my-crate-tests
-- name: Publish my-crate to crates.io
-  run: # your `cargo publish` code here
 ```
 
 If the action is not run inside the workspace root directory, you again have to specify the path to its `Cargo.toml` file:
@@ -65,8 +59,6 @@ If the action is not run inside the workspace root directory, you again have to 
   uses: obi1kenobi/cargo-semver-checks-action@v2
   with:
     manifest-path: semver/my-workspace/Cargo.toml  # or just semver/my-workspace/
-- name: Publish my-workspace to crates.io
-  run: # your `cargo publish` code here
 ```
 
 The two above might be also used together:
@@ -76,8 +68,6 @@ The two above might be also used together:
   with:
     manifest-path: semver/my-workspace/Cargo.toml  # or just semver/my-workspace/
     package: my-crate
-- name: Publish my-crate to crates.io
-  run: # your `cargo publish` code here
 ```
 
 # Customizing baseline rustdoc caching strategy
