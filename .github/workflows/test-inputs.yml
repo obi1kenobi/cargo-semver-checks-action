@@ -72,7 +72,7 @@ jobs:
           exit 1
 
   test-package-exclude-rio:
-    name: Test inputs package and exclude on list of crates from Rio library
+    name: Test inputs package and exclude on Rio library
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the Rio repository
