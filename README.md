@@ -21,7 +21,7 @@ Every argument is optional.
 | `manifest-path`      | Path to Cargo.toml of crate or workspace to check. If not specified, the action assumes the manifest is under the default [`GITHUB_WORKSPACE`](https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables) path. | |
 | `verbose`            | Enables verbose output of `cargo-semver-checks`. | `false` |
 | `rust-toolchain`     | Rust toolchain name to use, e.g. `stable`, `nightly` or `1.68.0`. It will be installed if necessary and used regardless of local overrides and the `rust-toolchain.toml` file. However, if the input is set to be an empty string, the action assumes some Rust toolchain is already installed and uses the default one. | `stable` |
-| `shared-key`          | A cache key that will be used instead of the automatic key based on the name of the GitHub job and values of the inputs `package` and `manifest-path`. Might be provided e.g. to share the cache between the jobs. | |
+| `shared-key`          | A cache key that will be used instead of the automatic key based on the name of the GitHub job and values of the inputs `package`, `exclude` and `manifest-path`. Might be provided e.g. to share the cache between the jobs. | |
 | `prefix-key`         | Additional prefix of the cache key, can be set to start a new cache manually. | |
 | `github-token`       | The `GITHUB_TOKEN` secret used to download precompiled binaries from GitHub API. If not specified, the [automatic GitHub token](https://docs.github.com/en/actions/security-guides/automatic-token-authentication) provided to the workflow will be used. The token may be alternatively passed in an environment variable `GITHUB_TOKEN`. | `${{ github.token }}` |
 
@@ -86,7 +86,7 @@ The two above might be also used together:
 The action caches the baseline rustdoc for each package in the workspace. The keys used to distinguish the caches consist of four components:
 
  - `prefix-key` input, which defaults to an empty string,
- - `shared-key` input if provided, otherwise a concatenation of the value of environmental variable `GITHUB_JOB`, the value of `package` and the hashed value of the `manifest-path` variable (not the file it points to),
+ - `shared-key` input if provided, otherwise a concatenation of the value of environmental variable `GITHUB_JOB`, the values of `package`, `exclude` and the hashed value of the `manifest-path` variable (not the file it points to),
  - internal, unchangable component, being a concatenation of the runner OS, `rustc` version, `cargo-semver-checks` version and hash of all `Cargo.lock` files in the current workspace,
  - constant suffix `"semver-checks-rustdoc"`.
 

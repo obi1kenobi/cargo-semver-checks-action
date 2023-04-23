@@ -23,7 +23,7 @@ inputs:
     required: false
     default: 'stable'
   shared-key:
-    description: 'A cache key that will be used instead of the automatic key based on the name of the GitHub job and values of the inputs `package` and `manifest-path`. Might be provided e.g. to share the cache between the jobs.'
+    description: 'A cache key that will be used instead of the automatic key based on the name of the GitHub job and values of the inputs `package`, `exclude` and `manifest-path`. Might be provided e.g. to share the cache between the jobs.'
     required: false
     default: ''
   prefix-key:
