@@ -86,7 +86,7 @@ The two above might be also used together:
 The action caches the baseline rustdoc for each package in the workspace. The keys used to distinguish the caches consist of four components:
 
  - `prefix-key` input, which defaults to an empty string,
- - `shared-key` input if provided, otherwise a concatenation of the value of environmental variable `GITHUB_JOB`, the values of `package` and `exclude` if they are set, and the hashed value of the `manifest-path` variable (not the file it points to),
+ - `shared-key` input if provided, otherwise the value of environmental variable `GITHUB_JOB` concatenated with a hash of the values of inputs `package`, `exclude` and `manifest-path` (we hash the path itself, not the file it points to),
  - internal, unchangable component, being a concatenation of the runner OS, `rustc` version, `cargo-semver-checks` version and hash of all `Cargo.lock` files in the current workspace,
  - constant suffix `"semver-checks-rustdoc"`.
 
