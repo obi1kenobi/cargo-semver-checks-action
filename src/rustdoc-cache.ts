@@ -5,7 +5,12 @@ import * as cache from "@actions/cache";
 import * as core from "@actions/core";
 import * as rustCore from "@actions-rs/core";
 
-import { getCargoSemverChecksVersion, getRustcVersion, hashFilesOrEmpty } from "./utils";
+import {
+    getCargoSemverChecksVersion,
+    getRustcVersion,
+    hashFilesOrEmpty,
+    hashIfNotEmpty,
+} from "./utils";
 
 export class RustdocCache {
     private readonly cargo;
@@ -53,7 +58,7 @@ export class RustdocCache {
         if (!this.__cacheKey) {
             this.__cacheKey = [
                 rustCore.input.getInput("prefix-key") || "",
-                rustCore.input.getInput("cache-key"),
+                rustCore.input.getInput("shared-key") || this.getRunDependentKey(),
                 os.platform() as string,
                 await getRustcVersion(),
                 await getCargoSemverChecksVersion(this.cargo),
@@ -63,6 +68,14 @@ export class RustdocCache {
         }
 
         return this.__cacheKey;
+    }
+
+    private getRunDependentKey(): string {
+        return [
+            process.env["GITHUB_JOB"] || "",
+            rustCore.input.getInput("package"),
+            hashIfNotEmpty(rustCore.input.getInput("manifest-path")),
+        ].join("-");
     }
 
     private getLocalCacheHash(): string {

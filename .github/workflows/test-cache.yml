@@ -10,8 +10,8 @@ env:
   RUST_BACKTRACE: 1
 
 jobs:
-  test-cache-exists:
-    name: Check if the cache exists after running the action
+  test-cache-exists-shared:
+    name: Check if the cache exists after running the action with shared-key
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the test repository and test with patch change and patch version bump
@@ -27,8 +27,9 @@ jobs:
       - name: Run the action
         uses: ./action/
         with:
+          package: ref_slice
           manifest-path: 'ref_slice/Cargo.toml'
-          cache-key: testkey
+          shared-key: testkey
           prefix-key: testprefix
       - name: Check if the cache directory exists
         run: |
@@ -45,6 +46,56 @@ jobs:
           RUSTC=$(rustc --version | sed -e 's/\s\+/-/g')
           SEMVER_CHECKS=$(cargo semver-checks --version | sed -e 's/\s\+/-/g')
           echo "KEY=testprefix-testkey-linux-$RUSTC-$SEMVER_CHECKS-da39a3ee5e6b4b0d3255bfef95601890afd80709-semver-checks-rustdoc" >> $GITHUB_OUTPUT
+      - name: Download saved cache
+        uses: actions/cache/restore@v3
+        with:
+          path: ${{ github.workspace }}/semver-checks/target/semver-checks/cache
+          fail-on-cache-miss: true
+          key: not_a_prefix
+          restore-keys: |
+            ${{ steps.generate_key.outputs.KEY }}
+      - name: Compare local and downloaded cache files
+        run: |
+          if ! diff -r "semver-checks/target/semver-checks/cache" "action-cache"; then
+            echo "Downloaded cache does not match the local version!"
+            exit 1
+          fi
+
+  test-cache-exists-default:
+    name: Check if the cache exists after running the action without shared-key
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the test repository and test with patch change and patch version bump
+        uses: actions/checkout@v3
+        with:
+          path: 'ref_slice'
+          repository: mgr0dzicki/cargo-semver-action-ref-slice
+          ref: patch_change
+      - name: Checkout the action
+        uses: actions/checkout@v3
+        with:
+          path: action
+      - name: Run the action
+        uses: ./action/
+        with:
+          package: ref_slice
+          manifest-path: 'ref_slice/Cargo.toml'
+          prefix-key: testprefix
+      - name: Check if the cache directory exists
+        run: |
+          if ! grep -q "ref_slice-1.2.1/src/lib.rs" "semver-checks/target/semver-checks/cache/registry-ref_slice-1_2_1.json"; then
+            echo "Non-existent or invalid cache file!"
+            exit 1
+          fi
+      - name: Move the cache created by the action
+        run: |
+          mv semver-checks/target/semver-checks/cache action-cache
+      - name: Generate primary cache key
+        id: generate_key
+        run: |
+          RUSTC=$(rustc --version | sed -e 's/\s\+/-/g')
+          SEMVER_CHECKS=$(cargo semver-checks --version | sed -e 's/\s\+/-/g')
+          echo "KEY=testprefix-test-cache-exists-default-ref_slice-8e11dadaa21a8bf3112b6c764012883b-linux-$RUSTC-$SEMVER_CHECKS-da39a3ee5e6b4b0d3255bfef95601890afd80709-semver-checks-rustdoc" >> $GITHUB_OUTPUT
       - name: Download saved cache
         uses: actions/cache/restore@v3
         with:
