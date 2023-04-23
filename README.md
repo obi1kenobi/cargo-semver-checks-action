@@ -8,7 +8,13 @@ Lint your crate API changes for semver violations.
   run: # your `cargo publish` code here
 ```
 
-# Input options
+* [Input options](#input-options)
+* [Example scenarios](#example-scenarios)
+  * [Use in workspaces with a single crate](#use-in-workspaces-with-a-single-crate)
+  * [Use in workspaces with more than one crate](#use-in-workspaces-with-more-than-one-crate)
+* [Customizing baseline rustdoc caching strategy](#customizing-baseline-rustdoc-caching-strategy)
+
+## Input options
 
 Every argument is optional.
 
@@ -24,7 +30,9 @@ Every argument is optional.
 | `prefix-key`         | Additional prefix of the cache key, can be set to start a new cache manually. | |
 | `github-token`       | The `GITHUB_TOKEN` secret used to download precompiled binaries from GitHub API. If not specified, the [automatic GitHub token](https://docs.github.com/en/actions/security-guides/automatic-token-authentication) provided to the workflow will be used. The token may be alternatively passed in an environment variable `GITHUB_TOKEN`. | `${{ github.token }}` |
 
-# Use in workspaces with a single crate
+## Example scenarios
+
+### Use in workspaces with a single crate
 
 The action will work out-of-the-box if it is run inside the package root directory. When the package location is different, you have to specify the path to its `Cargo.toml` file:
 ```yaml
@@ -34,7 +42,7 @@ The action will work out-of-the-box if it is run inside the package root directo
     manifest-path: semver/my-crate/Cargo.toml  # or just semver/my-crate/
 ```
 
-# Use in workspaces with more than one crate
+### Use in workspaces with more than one crate
 
 By default, if workspace contains multiple crates, all of them are checked for semver violations. You can specify one or more crates to be checked instead using `package`, `exclude` or `manifest-path`.
 
@@ -70,7 +78,7 @@ The two above might be also used together:
     package: my-crate
 ```
 
-# Customizing baseline rustdoc caching strategy
+## Customizing baseline rustdoc caching strategy
 
 The action caches the baseline rustdoc for each package in the workspace. The keys used to distinguish the caches consist of four components:
 
