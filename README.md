@@ -20,6 +20,7 @@ Every argument is optional.
 | `exclude`            | Comma-separated list of the packages that will be excluded from being processed. Has effect only if the input `package` is not specified. | |
 | `manifest-path`      | Path to Cargo.toml of crate or workspace to check. If not specified, the action assumes the manifest is under the default [`GITHUB_WORKSPACE`](https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables) path. | |
 | `verbose`            | Enables verbose output of `cargo-semver-checks`. | `false` |
+| `release-type`       | Sets the release type instead of deriving it from the version number specified in the `Cargo.toml` file. Possible values are `major`, `minor`, `patch`. | |
 | `rust-toolchain`     | Rust toolchain name to use, e.g. `stable`, `nightly` or `1.68.0`. It will be installed if necessary and used regardless of local overrides and the `rust-toolchain.toml` file. However, if the input is set to `manual`, the action assumes some Rust toolchain is already installed and uses the default one. | `stable` |
 | `shared-key`          | A cache key that will be used instead of the automatic key based on the name of the GitHub job and values of the inputs `package`, `exclude` and `manifest-path`. Might be provided e.g. to share the cache between the jobs. | |
 | `prefix-key`         | Additional prefix of the cache key, can be set to start a new cache manually. | |

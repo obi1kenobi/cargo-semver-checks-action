@@ -400,3 +400,21 @@ jobs:
         run: rustup self uninstall -y
       - name: Run the action with default arguments
         uses: ./action/
+
+  test-release-type:
+    name: Test input release-type
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the test repository and test with major change
+        uses: actions/checkout@v3
+        with:
+          repository: mgr0dzicki/cargo-semver-action-ref-slice
+          ref: major_change
+      - name: Checkout the action
+        uses: actions/checkout@v3
+        with:
+          path: action
+      - name: Run the action with release-type set to major
+        uses: ./action/
+        with:
+          release-type: major
