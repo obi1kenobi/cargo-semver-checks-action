@@ -272,8 +272,8 @@ jobs:
             exit 1
           fi
 
-  test-rust-toolchain-empty:
-    name: Test whether action works properly with rust-toolchain set to an empty string
+  test-rust-toolchain-manual:
+    name: Test whether action works properly with rust-toolchain set to 'manual'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the test repository
@@ -289,10 +289,10 @@ jobs:
         uses: dtolnay/rust-toolchain@beta
       - name: Set local override to beta
         run: rustup override set beta
-      - name: Run the action with empty rust-toolchain
+      - name: Run the action with manual rust-toolchain
         uses: ./action/
         with:
-          rust-toolchain: ''
+          rust-toolchain: manual
       - name: Get cache key
         uses: actions/cache/restore@v3
         id: get-cache-key
@@ -310,11 +310,11 @@ jobs:
           exit 1
       - name: Uninstall Rust
         run: rustup self uninstall -y
-      - name: Run the action with empty rust-toolchain (allowed to fail)
+      - name: Run the action with manual rust-toolchain (allowed to fail)
         id: action_without_rust
         uses: ./action/
         with:
-          rust-toolchain: ''
+          rust-toolchain: manual
         continue-on-error: true
       - name: Fail if the action has not returned any errors (but it should have)
         if: steps.action_without_rust.outcome != 'failure'
