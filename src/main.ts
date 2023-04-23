@@ -9,6 +9,7 @@ import {
     getErrorMessage,
     getPlatformMatchingTarget,
     getRustcVersion,
+    optionFromList,
     optionIfValueProvided,
 } from "./utils";
 import { RustdocCache } from "./rustdoc-cache";
@@ -17,7 +18,8 @@ const CARGO_TARGET_DIR = path.join("semver-checks", "target");
 
 function getCheckReleaseArguments(): string[] {
     return [
-        optionIfValueProvided("--package", rustCore.input.getInput("package")),
+        optionFromList("--package", rustCore.input.getInputList("package")),
+        optionFromList("--exclude", rustCore.input.getInputList("exclude")),
         optionIfValueProvided("--manifest-path", rustCore.input.getInput("manifest-path")),
         rustCore.input.getInputBool("verbose") ? ["--verbose"] : [],
     ].flat();

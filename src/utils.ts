@@ -3,7 +3,6 @@ import hashFiles = require("hash-files");
 
 import * as exec from "@actions/exec";
 import * as rustCore from "@actions-rs/core";
-import { createHash } from "node:crypto";
 
 export function getErrorMessage(error: unknown): string {
     if (error instanceof Error) {
@@ -31,16 +30,16 @@ export function optionIfValueProvided(option: string, value?: string): string[] 
     return value ? [option, value] : [];
 }
 
+export function optionFromList(option: string, values: string[]): string[] {
+    return values.map((value) => [option, value]).flat();
+}
+
 export function hashFilesOrEmpty(patterns: string[]): string {
     try {
         return hashFiles.sync({ files: patterns });
     } catch (error) {
         return "";
     }
-}
-
-export function hashIfNotEmpty(str: string): string {
-    return createHash("md5").update(str).digest("hex");
 }
 
 function makeExecOptions(stdout: { s: string }): exec.ExecOptions {

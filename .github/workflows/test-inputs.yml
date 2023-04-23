@@ -26,12 +26,23 @@ jobs:
         uses: ./action/
         with:
           package: ref_slice
-      - name: Run the action on the whole workspace (allowed to fail)
+      - name: Run the action on the whole workspace (expected to fail)
         id: action_all
         uses: ./action/
         continue-on-error: true
       - name: Fail if the action has not returned any errors (but it should have)
         if: steps.action_all.outcome != 'failure'
+        run: |
+          echo "Error! The action should have failed because of checking the dummy crate, but it has not!"
+          exit 1
+      - name: Run the action on ref_slice fork and one dummy crate (expected to fail)
+        id: action_one_dummy
+        uses: ./action/
+        with:
+          package: ref_slice, cargo-semver-action-dummy
+        continue-on-error: true
+      - name: Fail if the action has not returned any errors (but it should have)
+        if: steps.action_one_dummy.outcome != 'failure'
         run: |
           echo "Error! The action should have failed because of checking the dummy crate, but it has not!"
           exit 1
@@ -48,11 +59,61 @@ jobs:
         uses: ./action/.github/workflows/setup-test-workspace
         with:
           ref-slice-ref: major_change
-      - name: Run the action on ref_slice major change (allowed to fail)
+      - name: Run the action on ref_slice major change (expected to fail)
         id: action_major
         uses: ./action/
         with:
           package: ref_slice
+        continue-on-error: true
+      - name: Fail if the action has not returned any errors (but it should have)
+        if: steps.action_major.outcome != 'failure'
+        run: |
+          echo "Error! The action should have failed because of the breaking change, but it has not."
+          exit 1
+
+  test-package-exclude-rio:
+    name: Test inputs package and exclude on Rio library
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the Rio repository
+        uses: actions/checkout@v3
+        with:
+          repository: oxigraph/rio
+          ref: 3bd01c2c977a0b01c918f6840cd05356477db358  # branch main
+      - name: Checkout the action
+        uses: actions/checkout@v3
+        with:
+          path: action
+      - name: Run the action using input package
+        uses: ./action/
+        with:
+          package: rio_api, rio_turtle, rio_xml
+      - name: Run the action using input exclude
+        uses: ./action/
+        with:
+          exclude: rio_testsuite
+
+  test-exclude:
+    name: Test input exclude
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the action
+        uses: actions/checkout@v3
+        with:
+          path: action
+      - name: Setup the workspace with ref_slice patch change
+        uses: ./action/.github/workflows/setup-test-workspace
+        with:
+          ref-slice-ref: patch_change
+      - name: Run the action excluding both dummy crates
+        uses: ./action/
+        with:
+          exclude: cargo-semver-action-dummy, cargo-semver-action-dummy-2
+      - name: Run the action excluding only one of the dummy crates (expected to fail)
+        id: action_major
+        uses: ./action/
+        with:
+          exclude: cargo-semver-action-dummy
         continue-on-error: true
       - name: Fail if the action has not returned any errors (but it should have)
         if: steps.action_major.outcome != 'failure'
@@ -101,7 +162,7 @@ jobs:
         uses: ./action/
         with:
           manifest-path: ref_slice
-      - name: Run the action on the whole workspace (Cargo.toml path, allowed to fail)
+      - name: Run the action on the whole workspace (Cargo.toml path, expected to fail)
         id: action_all_cargo_toml
         uses: ./action/
         with:
@@ -125,7 +186,7 @@ jobs:
         uses: ./action/.github/workflows/setup-test-workspace
         with:
           ref-slice-ref: major_change
-      - name: Run the action on ref_slice major change (Cargo.toml path, allowed to fail)
+      - name: Run the action on ref_slice major change (Cargo.toml path, expected to fail)
         id: action_major_cargo_toml
         uses: ./action/
         with:
@@ -136,7 +197,7 @@ jobs:
         run: |
           echo "Error! The action should have failed because of the breaking change, but it has not."
           exit 1
-      - name: Run the action on ref_slice major change (crate path, allowed to fail)
+      - name: Run the action on ref_slice major change (crate path, expected to fail)
         id: action_major_crate
         uses: ./action/
         with:
@@ -174,7 +235,7 @@ jobs:
           cd "ref slice"
           git fetch origin major_change
           git checkout major_change
-      - name: Run the action (allowed to fail)
+      - name: Run the action (expected to fail)
         id: action_major
         uses: ./action/
         with:
@@ -310,7 +371,7 @@ jobs:
           exit 1
       - name: Uninstall Rust
         run: rustup self uninstall -y
-      - name: Run the action with manual rust-toolchain (allowed to fail)
+      - name: Run the action with manual rust-toolchain (expected to fail)
         id: action_without_rust
         uses: ./action/
         with:
