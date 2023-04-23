@@ -1,16 +1,12 @@
 import os = require("os");
 
 import * as path from "path";
+import * as crypto from "crypto";
 import * as cache from "@actions/cache";
 import * as core from "@actions/core";
 import * as rustCore from "@actions-rs/core";
 
-import {
-    getCargoSemverChecksVersion,
-    getRustcVersion,
-    hashFilesOrEmpty,
-    hashIfNotEmpty,
-} from "./utils";
+import { getCargoSemverChecksVersion, getRustcVersion, hashFilesOrEmpty } from "./utils";
 
 export class RustdocCache {
     private readonly cargo;
@@ -71,17 +67,12 @@ export class RustdocCache {
     }
 
     private getRunDependentKey(): string {
-        return [
-            process.env["GITHUB_JOB"] || "",
-            "package",
-            rustCore.input.getInputList("package").sort(),
-            "exclude",
-            rustCore.input.getInputList("exclude").sort(),
-            "manifest-path",
-            hashIfNotEmpty(rustCore.input.getInput("manifest-path")),
-        ]
-            .flat()
-            .join("-");
+        const hasher = crypto.createHash("md5");
+        hasher.update(JSON.stringify({ package: rustCore.input.getInputList("package").sort() }));
+        hasher.update(JSON.stringify({ exclude: rustCore.input.getInputList("exclude").sort() }));
+        hasher.update(JSON.stringify({ manifest_path: rustCore.input.getInput("manifest-path") }));
+
+        return [process.env["GITHUB_JOB"] || "", hasher.digest("hex").substring(0, 16)].join("-");
     }
 
     private getLocalCacheHash(): string {

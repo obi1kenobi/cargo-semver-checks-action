@@ -3,7 +3,6 @@ import hashFiles = require("hash-files");
 
 import * as exec from "@actions/exec";
 import * as rustCore from "@actions-rs/core";
-import { createHash } from "node:crypto";
 
 export function getErrorMessage(error: unknown): string {
     if (error instanceof Error) {
@@ -41,10 +40,6 @@ export function hashFilesOrEmpty(patterns: string[]): string {
     } catch (error) {
         return "";
     }
-}
-
-export function hashIfNotEmpty(str: string): string {
-    return str ? createHash("md5").update(str).digest("hex") : "";
 }
 
 function makeExecOptions(stdout: { s: string }): exec.ExecOptions {
