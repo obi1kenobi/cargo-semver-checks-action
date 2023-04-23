@@ -1,8 +1,6 @@
 # cargo-semver-checks-action
 Lint your crate API changes for semver violations.
 
-*This is the work-in-progress v2 version of this action. Find the docs for the stable v1 action [here](https://github.com/obi1kenobi/cargo-semver-checks-action/tree/v1.4).*
-
 ```yaml
 - name: Check semver
   uses: obi1kenobi/cargo-semver-checks-action@v2
