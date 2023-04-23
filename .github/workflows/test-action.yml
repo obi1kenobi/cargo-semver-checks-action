@@ -36,7 +36,7 @@ jobs:
         run: |
           git fetch origin major_change
           git checkout major_change
-      - name: Run the action (allowed to fail)
+      - name: Run the action (expected to fail)
         id: action_major
         uses: ./action/
         with:
