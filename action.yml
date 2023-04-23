@@ -5,7 +5,10 @@ branding:
   color: 'green'
 inputs:
   package:
-    description: 'The package whose API to check for semver (in Package Id Specification format, see https://doc.rust-lang.org/cargo/reference/pkgid-spec.html for reference). If not set, all packages defined in the Cargo.toml file are processed.'
+    description: 'Comma-separated list of the packages whose API to check for semver (in Package Id Specification format, see https://doc.rust-lang.org/cargo/reference/pkgid-spec.html for reference). If not set, all packages defined in the Cargo.toml file are processed.'
+    required: false
+  exclude:
+    description: 'Comma-separated list of the packages that will be excluded from being processed. Has effect only if the input `package` is not specified.'
     required: false
   manifest-path:
     description: 'Path to Cargo.toml of crate or workspace to check. If not specified, the action assumes the manifest is under the default `GITHUB_WORKSPACE` path.'
@@ -23,11 +26,10 @@ inputs:
       - minor
       - major
   rust-toolchain:
-    description: 'Rust toolchain name to use, e.g. `stable`, `nightly` or `1.68.0`. It will be installed if necessary and used regardless of local overrides and the `rust-toolchain.toml` file. However, if the input is set to be an empty string, the action assumes some Rust toolchain is already installed and uses the default one.'
-    required: false
+    description: 'Rust toolchain name to use, e.g. `stable`, `nightly` or `1.68.0`. It will be installed if necessary and used regardless of local overrides and the `rust-toolchain.toml` file. However, if the input is set to `manual`, the action assumes some Rust toolchain is already installed and uses the default one.'
     default: 'stable'
   shared-key:
-    description: 'A cache key that will be used instead of the automatic key based on the name of the GitHub job and values of the inputs `package` and `manifest-path`. Might be provided e.g. to share the cache between the jobs.'
+    description: 'A cache key that will be used instead of the automatic key based on the name of the GitHub job and values of the inputs `package`, `exclude` and `manifest-path`. Might be provided e.g. to share the cache between the jobs.'
     required: false
     default: ''
   prefix-key:

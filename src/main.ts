@@ -9,6 +9,7 @@ import {
     getErrorMessage,
     getPlatformMatchingTarget,
     getRustcVersion,
+    optionFromList,
     optionIfValueProvided,
 } from "./utils";
 import { RustdocCache } from "./rustdoc-cache";
@@ -17,7 +18,8 @@ const CARGO_TARGET_DIR = path.join("semver-checks", "target");
 
 function getCheckReleaseArguments(): string[] {
     return [
-        optionIfValueProvided("--package", rustCore.input.getInput("package")),
+        optionFromList("--package", rustCore.input.getInputList("package")),
+        optionFromList("--exclude", rustCore.input.getInputList("exclude")),
         optionIfValueProvided("--manifest-path", rustCore.input.getInput("manifest-path")),
         optionIfValueProvided("--release-type", rustCore.input.getInput("release-type")),
         rustCore.input.getInputBool("verbose") ? ["--verbose"] : [],
@@ -52,8 +54,8 @@ async function getCargoSemverChecksDownloadURL(target: string): Promise<string> 
 }
 
 async function installRustUpIfRequested(): Promise<void> {
-    const toolchain = rustCore.input.getInput("rust-toolchain");
-    if (toolchain) {
+    const toolchain = rustCore.input.getInput("rust-toolchain") || "stable";
+    if (toolchain != "manual") {
         const rustup = await rustCore.RustUp.getOrInstall();
         await rustup.call(["show"]);
         await rustup.setProfile("minimal");
