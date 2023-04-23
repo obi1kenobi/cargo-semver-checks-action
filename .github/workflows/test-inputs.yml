@@ -35,6 +35,17 @@ jobs:
         run: |
           echo "Error! The action should have failed because of checking the dummy crate, but it has not!"
           exit 1
+      - name: Run the action on ref_slice fork and one dummy crate (allowed to fail)
+        id: action_one_dummy
+        uses: ./action/
+        with:
+          package: ref_slice, cargo-semver-action-dummy
+        continue-on-error: true
+      - name: Fail if the action has not returned any errors (but it should have)
+        if: steps.action_one_dummy.outcome != 'failure'
+        run: |
+          echo "Error! The action should have failed because of checking the dummy crate, but it has not!"
+          exit 1
 
   test-package-major:
     name: Test input package (major change)
@@ -59,6 +70,28 @@ jobs:
         run: |
           echo "Error! The action should have failed because of the breaking change, but it has not."
           exit 1
+
+  test-package-exclude-rio:
+    name: Test inputs package and exclude on list of crates from Rio library
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the Rio repository
+        uses: actions/checkout@v3
+        with:
+          repository: oxigraph/rio
+          ref: 3bd01c2c977a0b01c918f6840cd05356477db358  # branch main
+      - name: Checkout the action
+        uses: actions/checkout@v3
+        with:
+          path: action
+      - name: Run the action using input package
+        uses: ./action/
+        with:
+          package: rio_api, rio_turtle, rio_xml
+      - name: Run the action using input exclude
+        uses: ./action/
+        with:
+          exclude: rio_testsuite
 
   test-exclude:
     name: Test input exclude
