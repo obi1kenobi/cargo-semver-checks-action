@@ -16,8 +16,8 @@ inputs:
     required: true
     default: false
   rust-toolchain:
-    description: 'Rust toolchain name to use, e.g. `stable`, `nightly` or `1.68.0`. It will be installed if necessary and used regardless of local overrides and the `rust-toolchain.toml` file. However, if the input is set to be an empty string, the action assumes some Rust toolchain is already installed and uses the default one.'
-    required: false
+    description: 'Rust toolchain name to use, e.g. `stable`, `nightly` or `1.68.0`. It will be installed if necessary and used regardless of local overrides and the `rust-toolchain.toml` file. However, if the input is set to `manual`, the action assumes some Rust toolchain is already installed and uses the default one.'
+    required: true
     default: 'stable'
   shared-key:
     description: 'A cache key that will be used instead of the automatic key based on the name of the GitHub job and values of the inputs `package` and `manifest-path`. Might be provided e.g. to share the cache between the jobs.'
