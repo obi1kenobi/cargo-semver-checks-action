@@ -51,7 +51,7 @@ async function getCargoSemverChecksDownloadURL(target: string): Promise<string> 
 }
 
 async function installRustUpIfRequested(): Promise<void> {
-    const toolchain = rustCore.input.getInput("rust-toolchain");
+    const toolchain = rustCore.input.getInput("rust-toolchain") || "stable";
     if (toolchain != "manual") {
         const rustup = await rustCore.RustUp.getOrInstall();
         await rustup.call(["show"]);
