@@ -79,7 +79,9 @@ export class RustdocCache {
             rustCore.input.getInputList("exclude").sort(),
             "manifest-path",
             hashIfNotEmpty(rustCore.input.getInput("manifest-path")),
-        ].join("-");
+        ]
+            .flat()
+            .join("-");
     }
 
     private getLocalCacheHash(): string {
