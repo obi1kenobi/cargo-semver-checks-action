@@ -37,13 +37,16 @@ export function optionFromList(option: string, values: string[]): string[] {
 }
 
 export async function hashFolderContent(path: string): Promise<string> {
-    return (await hashElement(path, { encoding: "hex", folders: { ignoreRootName: true } })).hash;
+    const node = await hashElement(path, { encoding: "hex", folders: { ignoreRootName: true } });
+    return node.hash;
 }
 
 export async function hashFiles(patterns: string[] = []): Promise<string> {
+    const files = await glob(patterns);
+    const nodes = await Promise.all(files.sort().map((filename) => hashElement(filename)));
+
     const hasher = crypto.createHash("md5");
-    const nodes = (await glob(patterns)).sort().map((filename) => hashElement(filename));
-    (await Promise.all(nodes)).forEach((node) => hasher.update(node.hash));
+    nodes.forEach((node) => hasher.update(node.hash));
     return hasher.digest("hex");
 }
 
