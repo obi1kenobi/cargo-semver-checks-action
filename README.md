@@ -1,18 +1,27 @@
 # cargo-semver-checks-action
 Lint your crate API changes for semver violations.
 
-```yaml
-- name: Check semver
-  uses: obi1kenobi/cargo-semver-checks-action@v2
-- name: Publish to crates.io
-  run: # your `cargo publish` code here
-```
-
+* [Basic usage](#basic-usage)
 * [Input options](#input-options)
 * [Example scenarios](#example-scenarios)
-  * [Use in workspaces with a single crate](#use-in-workspaces-with-a-single-crate)
-  * [Use in workspaces with more than one crate](#use-in-workspaces-with-more-than-one-crate)
+  * [Use outside root directory of a crate or a workspace](#use-outside-root-directory-of-a-crate-or-a-workspace)
+  * [Specify crates to be checked](#specify-crates-to-be-checked)
+  * [Exclude crates from being checked](#exclude-crates-from-being-checked)
+  * [Use toolchain other than `stable`](#use-toolchain-other-than-stable)
 * [Customizing baseline rustdoc caching strategy](#customizing-baseline-rustdoc-caching-strategy)
+
+## Basic usage
+
+If your repository is just a crate or a workspace, the action will work out-of-the-box with sensible defaults:
+```yaml
+semver-checks:
+  runs-on: ubuntu-latest
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Check semver
+      uses: obi1kenobi/cargo-semver-checks-action@v2
+```
 
 ## Input options
 
@@ -32,9 +41,9 @@ Every argument is optional.
 
 ## Example scenarios
 
-### Use in workspaces with a single crate
+### Use outside root directory of a crate or a workspace
 
-The action will work out-of-the-box if it is run inside the package root directory. When the package location is different, you have to specify the path to its `Cargo.toml` file:
+The action will work well with defaults settings if it is run inside the package root directory. When the package location is different, you have to specify the path to its `Cargo.toml` file:
 ```yaml
 - name: Check semver for my-crate
   uses: obi1kenobi/cargo-semver-checks-action@v2
@@ -42,9 +51,17 @@ The action will work out-of-the-box if it is run inside the package root directo
     manifest-path: semver/my-crate/Cargo.toml  # or just semver/my-crate/
 ```
 
-### Use in workspaces with more than one crate
+In the same way you can provide the path to the workspace `Cargo.toml` file, which will result in checking all its crates:
+```yaml
+- name: Check semver for all crates from my-workspace
+  uses: obi1kenobi/cargo-semver-checks-action@v2
+  with:
+    manifest-path: semver/my-workspace/Cargo.toml  # or just semver/my-workspace/
+```
 
-By default, if workspace contains multiple crates, all of them are checked for semver violations. You can specify one or more crates to be checked instead using `package`, `exclude` or `manifest-path`.
+### Specify crates to be checked
+
+By default, all packages defined in the `Cargo.toml` file are processed. You can specify one or more packages to be checked instead using input `package`.
 
 For example, this will check `my-crate-api` and `my-crate-core`:
 ```yaml
@@ -53,23 +70,8 @@ For example, this will check `my-crate-api` and `my-crate-core`:
   with:
     package: my-crate-api, my-crate-core
 ```
-And this will process all crates from the current workspace except `my-crate-tests`:
-```yaml
-- name: Check semver for all crates except my-crate-tests
-  uses: obi1kenobi/cargo-semver-checks-action@v2
-  with:
-    exclude: my-crate-tests
-```
 
-If the action is not run inside the workspace root directory, you again have to specify the path to its `Cargo.toml` file:
-```yaml
-- name: Check semver for all crates from my-workspace
-  uses: obi1kenobi/cargo-semver-checks-action@v2
-  with:
-    manifest-path: semver/my-workspace/Cargo.toml  # or just semver/my-workspace/
-```
-
-The two above might be also used together:
+Inputs `package` and `manifest-path` might be used together:
 ```yaml
 - name: Check semver for my-crate from my-workspace
   uses: obi1kenobi/cargo-semver-checks-action@v2
@@ -77,6 +79,36 @@ The two above might be also used together:
     manifest-path: semver/my-workspace/Cargo.toml  # or just semver/my-workspace/
     package: my-crate
 ```
+
+### Exclude crates from being checked
+This will process all crates from the current workspace except `my-crate-tests`:
+```yaml
+- name: Check semver for all crates except my-crate-tests
+  uses: obi1kenobi/cargo-semver-checks-action@v2
+  with:
+    exclude: my-crate-tests
+```
+
+### Use toolchain other than `stable`
+By default, the actions installs (if necessary) and then uses the `stable` toolchain regardless of local overrides and the `rust-toolchain.toml` file. You can force using a different toolchain using `rust-toolchain`:
+```yaml
+- name: Check semver
+  uses: obi1kenobi/cargo-semver-checks-action@v2
+  with:
+    rust-toolchain: nightly
+```
+If you want to setup the toolchain manually, you can set `rust-toolchain` to `manual`. In this case, the action assumes some Rust toolchain is already installed and uses the default one:
+```yaml
+- name: Setup Rust
+  uses: dtolnay/rust-toolchain@master
+  with:
+    toolchain: stable 18 months ago
+- name: Check semver
+  uses: obi1kenobi/cargo-semver-checks-action@v2
+  with:
+    rust-toolchain: manual
+```
+
 
 ## Customizing baseline rustdoc caching strategy
 
