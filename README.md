@@ -1,6 +1,13 @@
 # cargo-semver-checks-action
 Lint your crate API changes for semver violations.
 
+```yaml
+- name: Check semver
+  uses: obi1kenobi/cargo-semver-checks-action@v2
+- name: Publish to crates.io
+  run: # your `cargo publish` code here
+```
+
 * [Basic usage](#basic-usage)
 * [Input options](#input-options)
 * [Example scenarios](#example-scenarios)
@@ -81,6 +88,7 @@ Inputs `package` and `manifest-path` might be used together:
 ```
 
 ### Exclude crates from being checked
+
 This will process all crates from the current workspace except `my-crate-tests`:
 ```yaml
 - name: Check semver for all crates except my-crate-tests
@@ -90,6 +98,7 @@ This will process all crates from the current workspace except `my-crate-tests`:
 ```
 
 ### Use toolchain other than `stable`
+
 By default, the actions installs (if necessary) and then uses the `stable` toolchain regardless of local overrides and the `rust-toolchain.toml` file. You can force using a different toolchain using `rust-toolchain`:
 ```yaml
 - name: Check semver
@@ -108,7 +117,6 @@ If you want to setup the toolchain manually, you can set `rust-toolchain` to `ma
   with:
     rust-toolchain: manual
 ```
-
 
 ## Customizing baseline rustdoc caching strategy
 
