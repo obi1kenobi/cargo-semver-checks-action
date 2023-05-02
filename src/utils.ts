@@ -1,6 +1,8 @@
 import os = require("os");
-import hashFiles = require("hash-files");
 
+import * as crypto from "crypto";
+import { glob } from "glob";
+import { hashElement } from "folder-hash";
 import * as exec from "@actions/exec";
 import * as rustCore from "@actions-rs/core";
 
@@ -34,12 +36,18 @@ export function optionFromList(option: string, values: string[]): string[] {
     return values.map((value) => [option, value]).flat();
 }
 
-export function hashFilesOrEmpty(patterns: string[]): string {
-    try {
-        return hashFiles.sync({ files: patterns });
-    } catch (error) {
-        return "";
-    }
+export async function hashFolderContent(path: string): Promise<string> {
+    const node = await hashElement(path, { encoding: "hex", folders: { ignoreRootName: true } });
+    return node.hash;
+}
+
+export async function hashFiles(patterns: string[] = []): Promise<string> {
+    const files = await glob(patterns);
+    const nodes = await Promise.all(files.sort().map((filename) => hashElement(filename)));
+
+    const hasher = crypto.createHash("md5");
+    nodes.forEach((node) => hasher.update(node.hash));
+    return hasher.digest("hex");
 }
 
 function makeExecOptions(stdout: { s: string }): exec.ExecOptions {

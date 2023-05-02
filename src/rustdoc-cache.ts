@@ -6,7 +6,12 @@ import * as cache from "@actions/cache";
 import * as core from "@actions/core";
 import * as rustCore from "@actions-rs/core";
 
-import { getCargoSemverChecksVersion, getRustcVersion, hashFilesOrEmpty } from "./utils";
+import {
+    getCargoSemverChecksVersion,
+    getRustcVersion,
+    hashFiles,
+    hashFolderContent,
+} from "./utils";
 
 export class RustdocCache {
     private readonly cargo;
@@ -22,7 +27,7 @@ export class RustdocCache {
     }
 
     async save(): Promise<void> {
-        const cacheKeyWithLocalHash = `${await this.cacheKey()}-${this.getLocalCacheHash()}`;
+        const cacheKeyWithLocalHash = `${await this.cacheKey()}-${await this.getLocalCacheHash()}`;
         if (this.restoredCacheKey == cacheKeyWithLocalHash) {
             core.info("Rustdoc cache is up to date, skipping saving.");
         } else {
@@ -58,7 +63,7 @@ export class RustdocCache {
                 os.platform() as string,
                 await getRustcVersion(),
                 await getCargoSemverChecksVersion(this.cargo),
-                this.getCargoLocksHash(),
+                await this.getCargoLocksHash(),
                 "semver-checks-rustdoc",
             ].join("-");
         }
@@ -75,11 +80,11 @@ export class RustdocCache {
         return [process.env["GITHUB_JOB"] || "", hasher.digest("hex").substring(0, 16)].join("-");
     }
 
-    private getLocalCacheHash(): string {
-        return hashFilesOrEmpty([path.join(this.cachePath, "**")]);
+    private async getLocalCacheHash(): Promise<string> {
+        return await hashFolderContent(this.cachePath);
     }
 
-    private getCargoLocksHash(): string {
-        return hashFilesOrEmpty([path.join(this.workspaceRoot, "**", "Cargo.lock")]);
+    private async getCargoLocksHash(): Promise<string> {
+        return await hashFiles([path.join(this.workspaceRoot, "**", "Cargo.lock")]);
     }
 }
