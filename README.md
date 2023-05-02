@@ -31,7 +31,8 @@ semver-checks:
     - name: Check semver
       uses: obi1kenobi/cargo-semver-checks-action@v2
 ```
-**Warning:** this will use the latest stable Rust toolchain, ignoring the `rust-toolchain.toml` file and any local overrides. If you want to change the default behavior, see [Use toolchain other than `stable`](#use-toolchain-other-than-stable).
+> **Note**
+> By default, the action always installs the latest stable Rust and ignores the `rust-toolchain.toml` file and any local overrides. This ensures we use the latest version of rustdoc, taking advantage of the latest bugfixes and avoiding false-positives. If you want to change this default behavior, see [Use toolchain other than `stable`](#use-toolchain-other-than-stable).
 
 ## Input options
 
@@ -114,7 +115,7 @@ If you want to setup the toolchain manually, you can set `rust-toolchain` to `ma
 - name: Setup Rust
   uses: dtolnay/rust-toolchain@master
   with:
-    toolchain: stable 18 months ago
+    toolchain: stable 2 months ago
 - name: Check semver
   uses: obi1kenobi/cargo-semver-checks-action@v2
   with:
