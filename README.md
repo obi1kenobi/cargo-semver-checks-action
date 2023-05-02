@@ -19,6 +19,8 @@ Lint your crate API changes for semver violations.
 
 ## Basic usage
 
+The action is designed to be used right before `cargo publish`. It will check the API of your crate for semver violations, comparing it to the latest normal (not pre-release or yanked) version published on crates.io. At the moment, the action does not support checking against other baselines, such as the destination branch of a pull request.
+
 If your repository is just a crate or a workspace, the action will work out-of-the-box with sensible defaults:
 ```yaml
 semver-checks:
@@ -29,6 +31,7 @@ semver-checks:
     - name: Check semver
       uses: obi1kenobi/cargo-semver-checks-action@v2
 ```
+**Warning:** this will use the latest stable Rust toolchain, ignoring the `rust-toolchain.toml` file and any local overrides. If you want to change the default behavior, see [Use toolchain other than `stable`](#use-toolchain-other-than-stable).
 
 ## Input options
 
