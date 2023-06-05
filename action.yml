@@ -18,6 +18,10 @@ inputs:
     type: boolean
     required: true
     default: false
+  version:
+    description: 'Which version of the `cargo semver-checks tool to install.'
+    required: false
+    default: 'latest'
   release-type:
     description: 'Sets the release type instead of deriving it from the version number specified in the `Cargo.toml` file.'
     required: false

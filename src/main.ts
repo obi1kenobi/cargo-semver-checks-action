@@ -34,13 +34,23 @@ function getGitHubToken(): string {
     return token;
 }
 
-async function getCargoSemverChecksDownloadURL(target: string): Promise<string> {
+async function getCargoSemverChecksDownloadURL(target: string, version: 'latest' | string): Promise<string> {
     const octokit = github.getOctokit(getGitHubToken());
 
-    const getReleaseUrl = await octokit.rest.repos.getLatestRelease({
-        owner: "obi1kenobi",
-        repo: "cargo-semver-checks",
-    });
+    let getReleaseUrl;
+
+    if (version === 'latest') {
+        getReleaseUrl = await octokit.rest.repos.getLatestRelease({
+            owner: "obi1kenobi",
+            repo: "cargo-semver-checks",
+        });
+    } else {
+        getReleaseUrl = octokit.rest.repos.getReleaseByTag({
+            owner: "obi1kenobi",
+            repo: "cargo-semver-checks",
+            tag: version,
+        });
+    }
 
     const asset = getReleaseUrl.data.assets.find((asset) => {
         return asset["name"].endsWith(`${target}.tar.gz`);
@@ -91,8 +101,8 @@ async function runCargoSemverChecks(cargo: rustCore.Cargo): Promise<void> {
     await cargo.call(["semver-checks", "check-release"].concat(getCheckReleaseArguments()));
 }
 
-async function installCargoSemverChecksFromPrecompiledBinary(): Promise<void> {
-    const url = await getCargoSemverChecksDownloadURL(getPlatformMatchingTarget());
+async function installCargoSemverChecksFromPrecompiledBinary(version: 'latest' | string): Promise<void> {
+    const url = await getCargoSemverChecksDownloadURL(getPlatformMatchingTarget(), version);
 
     core.info(`downloading cargo-semver-checks from ${url}`);
     const tarballPath = await toolCache.downloadTool(url, undefined, `token ${getGitHubToken()}`, {
@@ -108,7 +118,7 @@ async function installCargoSemverChecksUsingCargo(cargo: rustCore.Cargo): Promis
     await cargo.call(["install", "cargo-semver-checks", "--locked"]);
 }
 
-async function installCargoSemverChecks(cargo: rustCore.Cargo): Promise<void> {
+async function installCargoSemverChecks(cargo: rustCore.Cargo, version: 'latest' | string): Promise<void> {
     if ((await io.which("cargo-semver-checks")) != "") {
         return;
     }
@@ -116,7 +126,7 @@ async function installCargoSemverChecks(cargo: rustCore.Cargo): Promise<void> {
     core.info("cargo-semver-checks is not installed, installing now...");
 
     try {
-        await installCargoSemverChecksFromPrecompiledBinary();
+        await installCargoSemverChecksFromPrecompiledBinary(version);
     } catch (error) {
         core.info("Failed to download precompiled binary of cargo-semver-checks.");
         core.info(`Error: ${getErrorMessage(error)}`);
@@ -128,13 +138,14 @@ async function installCargoSemverChecks(cargo: rustCore.Cargo): Promise<void> {
 
 async function run(): Promise<void> {
     const manifestPath = path.resolve(rustCore.input.getInput("manifest-path") || "./");
+    const version = rustCore.input.getInput("version") || "latest";
     const manifestDir = path.extname(manifestPath) ? path.dirname(manifestPath) : manifestPath;
 
     await installRustUpIfRequested();
 
     const cargo = await rustCore.Cargo.get();
 
-    await installCargoSemverChecks(cargo);
+    await installCargoSemverChecks(cargo, version);
 
     const cache = new RustdocCache(
         cargo,
