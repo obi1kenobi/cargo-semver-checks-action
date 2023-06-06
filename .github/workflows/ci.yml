@@ -10,6 +10,37 @@ env:
   RUST_BACKTRACE: 1
 
 jobs:
+  ci-everything:
+    name: All CI stages
+    runs-on: ubuntu-latest
+    needs:
+      - test-build
+      - test-action
+      - test-inputs
+      - test-cache
+    if: ${{ success() || failure() }}  # Run this job even if a dependency has failed.
+    steps:
+      - name: Job outcomes
+        run: |
+          echo "test-build: ${{ needs.test-build.result }}"
+          echo "test-action: ${{ needs.test-action.result }}"
+          echo "test-inputs: ${{ needs.test-inputs.result }}"
+          echo "test-cache: ${{ needs.test-cache.result }}"
+
+      # Fail this required job if any of its dependent jobs have failed.
+      #
+      # Do not attempt to consolidate these steps into one step, it won't work.
+      # Multi-line `if` clauses are not evaluated properly: see the intermediate commits in
+      # https://github.com/obi1kenobi/cargo-semver-checks/pull/405
+      - if: ${{ needs.test-build.result != 'success' }}
+        run: exit 1
+      - if: ${{ needs.test-action.result != 'success' }}
+        run: exit 1
+      - if: ${{ needs.test-inputs.result != 'success' }}
+        run: exit 1
+      - if: ${{ needs.test-cache.result != 'success' }}
+        run: exit 1
+
   test-build:
     name: Test build
     uses: ./.github/workflows/test-build.yml
