@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        toolchain: ['1.66', '1.67', 'stable', 'beta', 'nightly']
+        toolchain: ['1.67', 'stable', 'beta', 'nightly']
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout the test repository and test with patch change and patch version bump
