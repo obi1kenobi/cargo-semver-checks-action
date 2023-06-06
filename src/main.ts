@@ -22,8 +22,25 @@ function getCheckReleaseArguments(): string[] {
         optionFromList("--exclude", rustCore.input.getInputList("exclude")),
         optionIfValueProvided("--manifest-path", rustCore.input.getInput("manifest-path")),
         optionIfValueProvided("--release-type", rustCore.input.getInput("release-type")),
+        getFeatureGroup(rustCore.input.getInput("feature-group")),
+        optionFromList("--feature", rustCore.input.getInputList("feature")),
         rustCore.input.getInputBool("verbose") ? ["--verbose"] : [],
     ].flat();
+}
+
+function getFeatureGroup(name = ""): string[] {
+    switch (name) {
+        case "all-features":
+            return ["--all-features"];
+        case "default-features":
+            return ["--default-features"];
+        case "only-explicit-features":
+            return ["--only-explicit-features"];
+        case "":
+            return [];
+        default:
+            throw new Error(`Unsupported feature group: ${name}`);
+    }
 }
 
 function getGitHubToken(): string {
