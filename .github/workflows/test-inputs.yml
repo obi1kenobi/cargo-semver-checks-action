@@ -92,6 +92,17 @@ jobs:
         uses: ./action/
         with:
           exclude: rio_testsuite
+      - name: Run with only default features
+        uses: ./action/
+        with:
+          package: rio_api, rio_turtle
+          feature-group: default-features
+      - name: Run with explicit features only
+        uses: ./action/
+        with:
+          package: rio_api, rio_turtle
+          feature-group: only-explicit-features
+          feature: generalized
 
   test-exclude:
     name: Test input exclude
