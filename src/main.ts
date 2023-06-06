@@ -37,7 +37,7 @@ function getFeatureGroup(name = ""): string[] {
         case "only-explicit-features":
             return ["--only-explicit-features"];
         case "":
-            return [""];
+            return [];
         default:
             throw new Error(`Unsupported feature group: ${name}`);
     }
