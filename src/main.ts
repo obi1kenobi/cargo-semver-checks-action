@@ -50,26 +50,11 @@ function getGitHubToken(): string {
     }
     return token;
 }
-
 async function getCargoSemverChecksDownloadURL(target: string, version: 'latest' | string): Promise<string> {
     const octokit = github.getOctokit(getGitHubToken());
+    const release = await getRelease(version, octokit);
 
-    let getReleaseUrl;
-
-    if (version === 'latest') {
-        getReleaseUrl = await octokit.rest.repos.getLatestRelease({
-            owner: "obi1kenobi",
-            repo: "cargo-semver-checks",
-        });
-    } else {
-        getReleaseUrl = octokit.rest.repos.getReleaseByTag({
-            owner: "obi1kenobi",
-            repo: "cargo-semver-checks",
-            tag: version,
-        });
-    }
-
-    const asset = getReleaseUrl.data.assets.find((asset) => {
+    const asset = release.data.assets.find((asset) => {
         return asset["name"].endsWith(`${target}.tar.gz`);
     });
 
@@ -78,6 +63,32 @@ async function getCargoSemverChecksDownloadURL(target: string, version: 'latest'
     }
 
     return asset.url;
+}
+
+async function getRelease(version: "latest" | string, octokit: any) {
+    if (version === 'latest') {
+        return await octokit.rest.repos.getLatestRelease({
+            owner: "obi1kenobi",
+            repo: "cargo-semver-checks",
+        });
+    }
+
+    try {
+        return octokit.rest.repos.getReleaseByTag({
+            owner: "obi1kenobi",
+            repo: "cargo-semver-checks",
+            tag: version,
+        });
+    } catch (e) {
+        const releases = await octokit.rest.repos.listReleases({
+            owner: "obi1kenobi",
+            repo: "cargo-semver-checks",
+        });
+
+        const availableReleases = releases.data.map(r => r.tag_name).join(', ');
+
+        throw new Error(`Failed to find release '${version}'. Try one of [${availableReleases}].`)
+    }
 }
 
 async function installRustUpIfRequested(): Promise<void> {

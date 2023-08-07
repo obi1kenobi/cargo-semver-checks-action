@@ -24,7 +24,7 @@ inputs:
     required: true
     default: 'false'
   version:
-    description: 'Which version of the `cargo-semver-checks` tool to install.'
+    description: 'Which version of the `cargo-semver-checks` tool to install, referenced by the tag of the release, i.e. `v0.22.1`.'
     required: false
     default: 'latest'
   release-type:
