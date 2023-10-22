@@ -38,17 +38,17 @@ semver-checks:
 
 Every argument is optional.
 
-| Input              | Description                                                                                                                       | Default |
-|--------------------|-----------------------------------------------------------------------------------------------------------------------------------|---------|
+| Input                | Description                                                                                                                       | Default |
+|----------------------|-----------------------------------------------------------------------------------------------------------------------------------|---------|
 | `package`            | Comma-separated list of the packages whose API to check for semver (in Package Id Specification format, see https://doc.rust-lang.org/cargo/reference/pkgid-spec.html for reference). If not set, all packages defined in the Cargo.toml file are processed. | |
 | `exclude`            | Comma-separated list of the packages that will be excluded from being processed. Has effect only if the input `package` is not specified. | |
 | `manifest-path`      | Path to Cargo.toml of crate or workspace to check. If not specified, the action assumes the manifest is under the default [`GITHUB_WORKSPACE`](https://docs.github.com/en/actions/learn-github-actions/variables#default-environment-variables) path. | |
 | `feature-group`      | Which [feature group](https://github.com/obi1kenobi/cargo-semver-checks#what-features-does-cargo-semver-checks-enable-in-the-tested-crates) to enable. When not set, the action heuristically enables all features that are not unstable, nightly, or internal-only. Possible values: `all-features`, `default-features`, `only-explicit-features`. | |
-| `feature`            | Explicitly enable a list of features when checking. Corresponds to [the tool's `--feature` flag](https://github.com/obi1kenobi/cargo-semver-checks#what-features-does-cargo-semver-checks-enable-in-the-tested-crates). | |
+| `features`           | Explicitly enable a list of features when checking. Corresponds to [the tool's `--features` flag](https://github.com/obi1kenobi/cargo-semver-checks#what-features-does-cargo-semver-checks-enable-in-the-tested-crates). | |
 | `verbose`            | Enables verbose output of `cargo-semver-checks`. | `false` |
 | `release-type`       | Sets the release type instead of deriving it from the version number specified in the `Cargo.toml` file. Possible values are `major`, `minor`, `patch`. | |
 | `rust-toolchain`     | Rust toolchain name to use, e.g. `stable`, `nightly` or `1.68.0`. It will be installed if necessary and used regardless of local overrides and the `rust-toolchain.toml` file. However, if the input is set to `manual`, the action assumes some Rust toolchain is already installed and uses the default one. | `stable` |
-| `shared-key`          | A cache key that will be used instead of the automatic key based on the name of the GitHub job and values of the inputs `package`, `exclude` and `manifest-path`. Might be provided e.g. to share the cache between the jobs. | |
+| `shared-key`         | A cache key that will be used instead of the automatic key based on the name of the GitHub job and values of the inputs `package`, `exclude` and `manifest-path`. Might be provided e.g. to share the cache between the jobs. | |
 | `prefix-key`         | Additional prefix of the cache key, can be set to start a new cache manually. | |
 | `github-token`       | The `GITHUB_TOKEN` secret used to download precompiled binaries from GitHub API. If not specified, the [automatic GitHub token](https://docs.github.com/en/actions/security-guides/automatic-token-authentication) provided to the workflow will be used. The token may be alternatively passed in an environment variable `GITHUB_TOKEN`. | `${{ github.token }}` |
 
