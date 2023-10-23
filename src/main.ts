@@ -16,7 +16,7 @@ import { RustdocCache } from "./rustdoc-cache";
 
 const CARGO_TARGET_DIR = path.join("semver-checks", "target");
 
-function getCheckReleaseArguments(): string[] {
+function getCheckReleaseArguments(Target : string): string[] {
     return [
         optionFromList("--package", rustCore.input.getInputList("package")),
         optionFromList("--exclude", rustCore.input.getInputList("exclude")),
@@ -25,6 +25,7 @@ function getCheckReleaseArguments(): string[] {
         getFeatureGroup(rustCore.input.getInput("feature-group")),
         optionFromList("--features", rustCore.input.getInputList("features")),
         rustCore.input.getInputBool("verbose") ? ["--verbose"] : [],
+        `--target=${Target}`
     ].flat();
 }
 
@@ -99,13 +100,13 @@ async function installRustUpIfRequested(): Promise<void> {
     }
 }
 
-async function runCargoSemverChecks(cargo: rustCore.Cargo): Promise<void> {
+async function runCargoSemverChecks(cargo: rustCore.Cargo,Target: string): Promise<void> {
     // The default location of the target directory varies depending on whether
     // the action is run inside a workspace or on a single crate. We therefore
     // need to set the target directory explicitly.
     process.env["CARGO_TARGET_DIR"] = CARGO_TARGET_DIR;
 
-    await cargo.call(["semver-checks", "check-release"].concat(getCheckReleaseArguments()));
+    await cargo.call(["semver-checks", "check-release"].concat(getCheckReleaseArguments(Target)));
 }
 
 async function installCargoSemverChecksFromPrecompiledBinary(): Promise<void> {
@@ -146,6 +147,7 @@ async function installCargoSemverChecks(cargo: rustCore.Cargo): Promise<void> {
 async function run(): Promise<void> {
     const manifestPath = path.resolve(rustCore.input.getInput("manifest-path") || "./");
     const manifestDir = path.extname(manifestPath) ? path.dirname(manifestPath) : manifestPath;
+    const Target = rustCore.input.getInput("target-name");
 
     await installRustUpIfRequested();
 
@@ -156,11 +158,12 @@ async function run(): Promise<void> {
     const cache = new RustdocCache(
         cargo,
         path.join(CARGO_TARGET_DIR, "semver-checks", "cache"),
-        manifestDir
+        manifestDir,
+        Target
     );
 
     await cache.restore();
-    await runCargoSemverChecks(cargo);
+    await runCargoSemverChecks(cargo,Target);
     await cache.save();
 }
 
