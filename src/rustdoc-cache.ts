@@ -17,13 +17,15 @@ export class RustdocCache {
     private readonly cargo;
     private readonly cachePath;
     private readonly workspaceRoot;
+    private readonly target;
     private restoredCacheKey = "";
     private __cacheKey = "";
 
-    constructor(cargo: rustCore.Cargo, cachePath: string, workspaceRoot: string) {
+    constructor(cargo: rustCore.Cargo, cachePath: string, workspaceRoot: string,Target: string) {
         this.cargo = cargo;
         this.cachePath = path.resolve(cachePath);
         this.workspaceRoot = path.resolve(workspaceRoot);
+        this.target = Target;
     }
 
     async save(): Promise<void> {
@@ -65,6 +67,7 @@ export class RustdocCache {
                 await getCargoSemverChecksVersion(this.cargo),
                 await this.getCargoLocksHash(),
                 "semver-checks-rustdoc",
+                this.target,
             ].join("-");
         }
 
