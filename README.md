@@ -21,15 +21,28 @@ Lint your crate API changes for semver violations.
 
 The action is designed to be used right before `cargo publish`. It will check the API of your crate for semver violations, comparing it to the latest normal (not pre-release or yanked) version published on crates.io. At the moment, the action does not support checking against other baselines, such as the destination branch of a pull request.
 
-If your repository is just a crate or a workspace, the action will work out-of-the-box with sensible defaults:
+If your repository is just a crate or a workspace, the action will work out-of-the-box with sensible defaults. Feel free to modify the example below as needed, in particular if you are going to be modifying it to also publish then you may not want it to also run on pull requests.
 ```yaml
-semver-checks:
-  runs-on: ubuntu-latest
-  steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-    - name: Check semver
-      uses: obi1kenobi/cargo-semver-checks-action@v2
+name: Check Semver
+
+on:
+  push: 
+    branches:
+      - main
+  pull_request: 
+    branches:
+      - main
+env:
+  CARGO_TERM_COLOR: always
+  
+jobs:
+  semver-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Check semver
+        uses: obi1kenobi/cargo-semver-checks-action@v2
 ```
 > **Note**
 > By default, the action always installs the latest stable Rust and ignores the `rust-toolchain.toml` file and any local overrides. This ensures we use the latest version of rustdoc, taking advantage of the latest bugfixes and avoiding false-positives. If you want to change this default behavior, see [Use toolchain other than `stable`](#use-toolchain-other-than-stable).
