@@ -21,7 +21,7 @@ Lint your crate API changes for semver violations.
 
 The action is designed to be used right before `cargo publish`. It will check the API of your crate for semver violations, comparing it to the latest normal (not pre-release or yanked) version published on crates.io. At the moment, the action does not support checking against other baselines, such as the destination branch of a pull request.
 
-If your repository is just a crate or a workspace, the action will work out-of-the-box with sensible defaults. Feel free to modify the example below as needed, in particular if you are going to be modifying it to also publish then you may not want it to also run on pull requests.
+If your repository is just a crate or a workspace, the action will work out-of-the-box with sensible defaults. Feel free to modify the example below as needed, in particular if you are going to be modifying it to also publish then you may not want it to also run on pull requests. To use the example, put the following in a yaml file in `.github/workflows` as per [GitHub Docs](https://docs.github.com/en/actions/using-workflows/about-workflows#about-workflows).
 ```yaml
 name: Check Semver
 
