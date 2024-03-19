@@ -156,7 +156,7 @@ async function run(): Promise<void> {
     const cache = new RustdocCache(
         cargo,
         path.join(CARGO_TARGET_DIR, "semver-checks", "cache"),
-        manifestDir
+        manifestDir,
     );
 
     await cache.restore();

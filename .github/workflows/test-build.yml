@@ -10,10 +10,12 @@ jobs:
     steps:
       - name: Checkout the action
         uses: actions/checkout@v4
-      - name: Setup Node.js 16.x
+        
+      - name: Setup Node.js 20.x
         uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 20
+          
       - name: Install npm-cli-login
         run: npm install -g npm-cli-login
       - name: Login to GitHub npm registry
@@ -22,10 +24,12 @@ jobs:
         run: |
           npm-cli-login -s @actions-rs -r https://npm.pkg.github.com \
             -u does_not_matter -p ${{ secrets.GITHUB_TOKEN }} -e does_not_m@ter.com
+            
       - name: Install dependencies
         run: npm ci
       - name: Rebuild the action and run tests
         run: npm run all
+        
       - name: Compare the expected and actual src/ directories
         run: |
           if [ "$(git diff src/ | wc -l)" -gt "0" ]; then
@@ -33,12 +37,14 @@ jobs:
             exit 1
           fi
         id: diff_src
+        
       - name: Upload the expected version of src/ in case of failure
         uses: actions/upload-artifact@v4
         if: ${{ failure() && steps.diff_src.conclusion == 'failure' }}
         with:
           name: expected-src
           path: src/
+          
       - name: Compare the expected and actual dist/ directories
         run: |
           if [ "$(git diff dist/ | wc -l)" -gt "0" ]; then
@@ -46,6 +52,7 @@ jobs:
             exit 1
           fi
         id: diff_dist
+        
       - name: Upload the expected version of dist/ in case of failure
         uses: actions/upload-artifact@v4
         if: ${{ failure() && steps.diff_dist.conclusion == 'failure' }}
