@@ -58,7 +58,7 @@ export class RustdocCache {
     private async cacheKey(): Promise<string> {
         if (!this.__cacheKey) {
             this.__cacheKey = [
-                rustCore.input.getInput("prefix-key") || "",
+                rustCore.input.getInput("prefix-key") || "semver",
                 rustCore.input.getInput("shared-key") || this.getRunDependentKey(),
                 os.platform() as string,
                 await getRustcVersion(),
