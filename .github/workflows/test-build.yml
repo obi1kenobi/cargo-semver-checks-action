@@ -10,10 +10,10 @@ jobs:
     steps:
       - name: Checkout the action
         uses: actions/checkout@v3
-      - name: Setup Node.js 16.x
+      - name: Setup Node.js 20.x
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 20
       - name: Install npm-cli-login
         run: npm install -g npm-cli-login
       - name: Login to GitHub npm registry
