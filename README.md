@@ -182,3 +182,53 @@ as both runs will use separate caches, but providing the shared key will lead to
   with:
     prefix-key: v1
 ```
+
+## Using the error message as output
+
+In case the semver check fails, this action will populate the `error_message` output.
+
+[An output can be used in other steps](https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs), for example to comment the error message onto the pull request.
+
+```yml
+name: "Check PR"
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - edited
+      - synchronize
+
+jobs:
+  main:
+    name: Check semver
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run cargo-semver-checks
+        id: check_semver
+        uses: obi1kenobi/cargo-semver-checks-action@v2
+
+      - uses: marocchino/sticky-pull-request-comment@v2
+        # When the previous steps fails, the workflow would stop. By adding this
+        # condition you can continue the execution with the populated error message.
+        if: always()
+        with:
+          header: pr-semver-check-error
+          message: |
+            Thank you for opening this pull request!
+
+            Reviewer note: [cargo-semver-checks](https://github.com/obi1kenobi/cargo-semver-checks) reported the current version number is not SemVer-compatible with the changes made since the last release.
+
+            Details:
+
+            ```
+            ${{ steps.check_semver.outputs.error_message }}
+            ```
+
+      # Delete a previous comment when the issue has been resolved
+      - if: ${{ steps.check_semver.outputs.error_message == null }}
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: pr-semver-check-error
+          delete: true
+```

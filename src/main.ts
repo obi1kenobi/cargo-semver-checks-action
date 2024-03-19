@@ -168,7 +168,9 @@ async function main() {
     try {
         await run();
     } catch (error) {
-        core.setFailed(getErrorMessage(error));
+        const error_message = getErrorMessage(error);
+        core.setOutput("error_message", error_message);
+        core.setFailed(error_message);
     }
 }
 
