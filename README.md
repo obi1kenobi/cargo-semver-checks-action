@@ -221,7 +221,9 @@ jobs:
 
             Details:
 
-            > ${{ steps.check_semver.outputs.error_message }}
+            ```
+            ${{ steps.check_semver.outputs.error_message }}
+            ```
 
       # Delete a previous comment when the issue has been resolved
       - if: ${{ steps.check_semver.outputs.error_message == null }}
