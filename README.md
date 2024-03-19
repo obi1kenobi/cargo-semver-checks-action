@@ -217,7 +217,7 @@ jobs:
           message: |
             Thank you for opening this pull request!
 
-            There seems to be semver incompatibility issues reported by [cargo-semver-checks](https://github.com/obi1kenobi/cargo-semver-checks).
+            Reviewer note: [cargo-semver-checks](https://github.com/obi1kenobi/cargo-semver-checks) reported the current version number is not SemVer-compatible with the changes made since the last release.
 
             Details:
 
