@@ -3,8 +3,9 @@
         "module": "commonjs",
         "outDir": "dist",
         "strict": true,
+        "target": "ES2022"
     },
     "include": [
         "src/**/*.ts"
-    ]
+    ],
 }
