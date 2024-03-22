@@ -209,7 +209,7 @@ jobs:
 
       - name: Run cargo-semver-checks
         id: check_semver
-        uses: orhun/cargo-semver-checks-action@feat/add_action_output
+        uses: obi1kenobi/cargo-semver-checks-action@v2
 
   comment-on-pr:
     name: Comment on pull request
