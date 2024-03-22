@@ -193,25 +193,35 @@ In case the semver check fails, this action will populate the `error_message` ou
 name: "Check PR"
 
 on:
-  pull_request_target:
-    types:
-      - opened
-      - edited
-      - synchronize
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  main:
+  check-semver:
     name: Check semver
     runs-on: ubuntu-latest
+    outputs:
+      error_message: ${{ steps.check_semver.outputs.error_message }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Run cargo-semver-checks
         id: check_semver
-        uses: obi1kenobi/cargo-semver-checks-action@v2
+        uses: orhun/cargo-semver-checks-action@feat/add_action_output
 
-      - uses: marocchino/sticky-pull-request-comment@v2
-        # When the previous steps fails, the workflow would stop. By adding this
-        # condition you can continue the execution with the populated error message.
-        if: always()
+  comment-on-pr:
+    name: Comment on pull request
+    runs-on: ubuntu-latest
+    needs: check-semver
+    if: always()
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Comment
+        if: ${{ needs.check-semver.outputs.error_message != null }}
+        uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: pr-semver-check-error
           message: |
@@ -222,11 +232,11 @@ jobs:
             Details:
 
             ```
-            ${{ steps.check_semver.outputs.error_message }}
+            ${{ needs.check-semver.outputs.error_message }}
             ```
 
-      # Delete a previous comment when the issue has been resolved
-      - if: ${{ steps.check_semver.outputs.error_message == null }}
+      - name: Delete comment
+        if: ${{ needs.check-semver.outputs.error_message == null }}
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: pr-semver-check-error
