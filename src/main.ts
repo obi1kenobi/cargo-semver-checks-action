@@ -4,6 +4,7 @@ import * as github from "@actions/github";
 import * as io from "@actions/io";
 import * as toolCache from "@actions/tool-cache";
 import * as rustCore from "@actions-rs/core";
+import stripAnsi from "strip-ansi";
 
 import {
     getErrorMessage,
@@ -181,7 +182,7 @@ async function main() {
     try {
         await run();
     } catch (error) {
-        core.setOutput("error_message", SEMVER_CHECKS_OUTPUT);
+        core.setOutput("error_message", stripAnsi(SEMVER_CHECKS_OUTPUT));
         const error_message = getErrorMessage(error);
         core.setFailed(error_message);
     }
