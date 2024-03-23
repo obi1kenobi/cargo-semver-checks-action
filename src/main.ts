@@ -15,7 +15,7 @@ import {
 import { RustdocCache } from "./rustdoc-cache";
 
 const CARGO_TARGET_DIR = path.join("semver-checks", "target");
-var SEMVER_CHECKS_OUTPUT: string;
+let SEMVER_CHECKS_OUTPUT: string;
 
 function getCheckReleaseArguments(): string[] {
     return [
@@ -181,8 +181,8 @@ async function main() {
     try {
         await run();
     } catch (error) {
-        const error_message = getErrorMessage(error);
         core.setOutput("error_message", SEMVER_CHECKS_OUTPUT);
+        const error_message = getErrorMessage(error);
         core.setFailed(error_message);
     }
 }
