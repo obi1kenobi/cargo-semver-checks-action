@@ -182,9 +182,9 @@ async function main() {
     try {
         await run();
     } catch (error) {
-        core.setOutput("error_message", stripAnsi(SEMVER_CHECKS_OUTPUT));
-        const error_message = getErrorMessage(error);
-        core.setFailed(error_message);
+        core.setOutput("logs", stripAnsi(SEMVER_CHECKS_OUTPUT));
+        const logs = getErrorMessage(error);
+        core.setFailed(logs);
     }
 }
 

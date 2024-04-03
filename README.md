@@ -185,7 +185,7 @@ as both runs will use separate caches, but providing the shared key will lead to
 
 ## Using the error message as output
 
-In case the semver check fails, this action will populate the `error_message` output.
+In case the semver check fails, this action will populate the `logs` output.
 
 [An output can be used in other steps](https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs), for example to comment the error message onto the pull request.
 
@@ -202,7 +202,7 @@ jobs:
     name: Check semver
     runs-on: ubuntu-latest
     outputs:
-      error_message: ${{ steps.check_semver.outputs.error_message }}
+      logs: ${{ steps.check_semver.outputs.logs }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -220,7 +220,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Comment
-        if: ${{ needs.check-semver.outputs.error_message != null }}
+        if: ${{ needs.check-semver.outputs.logs != null }}
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: pr-semver-check-error
@@ -232,11 +232,11 @@ jobs:
             Details:
 
             ```
-            ${{ needs.check-semver.outputs.error_message }}
+            ${{ needs.check-semver.outputs.logs }}
             ```
 
       - name: Delete comment
-        if: ${{ needs.check-semver.outputs.error_message == null }}
+        if: ${{ needs.check-semver.outputs.logs == null }}
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: pr-semver-check-error
