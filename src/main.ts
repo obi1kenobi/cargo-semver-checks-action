@@ -108,13 +108,14 @@ async function runCargoSemverChecks(cargo: rustCore.Cargo): Promise<void> {
     process.env["CARGO_TARGET_DIR"] = CARGO_TARGET_DIR;
 
     const options: any = {};
+    const handleEventData = (data: Buffer) => {
+        if (data && data.length > 0) {
+            SEMVER_CHECKS_OUTPUT += data.toString();
+        }
+    };
     options.listeners = {
-        stdout: (data: Buffer) => {
-            SEMVER_CHECKS_OUTPUT += data.toString();
-        },
-        stderr: (data: Buffer) => {
-            SEMVER_CHECKS_OUTPUT += data.toString();
-        },
+        stdout: handleEventData,
+        stderr: handleEventData,
     };
     await cargo.call(
         ["semver-checks", "check-release"].concat(getCheckReleaseArguments()),
