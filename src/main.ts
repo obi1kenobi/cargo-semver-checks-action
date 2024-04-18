@@ -22,11 +22,11 @@ function getCheckReleaseArguments(): string[] {
         optionFromList("--exclude", rustCore.input.getInputList("exclude")),
         optionIfValueProvided("--manifest-path", rustCore.input.getInput("manifest-path")),
         optionIfValueProvided("--release-type", rustCore.input.getInput("release-type")),
+        optionIfValueProvided("--baseline-version", rustCore.input.getInput("baseline-version")),
+        optionIfValueProvided("--baseline-rev", rustCore.input.getInput("baseline-rev")),
         getFeatureGroup(rustCore.input.getInput("feature-group")),
         optionFromList("--features", rustCore.input.getInputList("features")),
         rustCore.input.getInputBool("verbose") ? ["--verbose"] : [],
-        optionIfValueProvided("--baseline-version", rustCore.input.getInput("baseline-version")),
-        optionIfValueProvided("--baseline-rev", rustCore.input.getInput("baseline-rev")),
     ].flat();
 }
 
