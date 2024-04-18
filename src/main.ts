@@ -107,6 +107,7 @@ async function runCargoSemverChecks(cargo: rustCore.Cargo): Promise<void> {
     // need to set the target directory explicitly.
     process.env["CARGO_TARGET_DIR"] = CARGO_TARGET_DIR;
 
+    console.log(["Running cargo semver-checks check-release "].concat(getCheckReleaseArguments()));
     await cargo.call(["semver-checks", "check-release"].concat(getCheckReleaseArguments()));
 }
 
