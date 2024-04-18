@@ -40,6 +40,12 @@ inputs:
     description: 'The `GITHUB_TOKEN` secret used to download precompiled binaries from GitHub API. If not specified, the automatic GitHub token provided to the workflow will be used.'
     required: false
     default: ${{ github.token }}
+  baseline-version:
+    description: 'TODO'
+    required: false
+  baseline-rev:
+    description: 'TODO'
+    required: false
 runs:
   using: 'node20'
   main: 'dist/index.js'
