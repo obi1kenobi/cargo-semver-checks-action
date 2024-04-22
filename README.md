@@ -220,7 +220,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Comment
-        if: ${{ needs.check-semver.outputs.logs != null }}
+        if: ${{ needs.check-semver.result != 'success' }}
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: pr-semver-check-error
@@ -236,7 +236,7 @@ jobs:
             ```
 
       - name: Delete comment
-        if: ${{ needs.check-semver.outputs.logs == null }}
+        if: ${{ needs.check-semver.result == 'success' }}
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: pr-semver-check-error
