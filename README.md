@@ -185,7 +185,7 @@ as both runs will use separate caches, but providing the shared key will lead to
 
 ## Using the error message as output
 
-In case the semver check fails, this action will populate the `logs` output.
+The action populates the `logs` output and it can be used in case of the semver check fails.
 
 [An output can be used in other steps](https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs), for example to comment the error message onto the pull request.
 

@@ -16,7 +16,6 @@ import {
 import { RustdocCache } from "./rustdoc-cache";
 
 const CARGO_TARGET_DIR = path.join("semver-checks", "target");
-let SEMVER_CHECKS_OUTPUT: string;
 
 function getCheckReleaseArguments(): string[] {
     return [
@@ -101,16 +100,17 @@ async function installRustUpIfRequested(): Promise<void> {
     }
 }
 
-async function runCargoSemverChecks(cargo: rustCore.Cargo): Promise<void> {
+async function runCargoSemverChecks(cargo: rustCore.Cargo): Promise<string> {
     // The default location of the target directory varies depending on whether
     // the action is run inside a workspace or on a single crate. We therefore
     // need to set the target directory explicitly.
     process.env["CARGO_TARGET_DIR"] = CARGO_TARGET_DIR;
 
+    let output: string = "";
     const options: any = {};
     const handleEventData = (data: Buffer) => {
         if (data && data.length > 0) {
-            SEMVER_CHECKS_OUTPUT += data.toString();
+            output += data.toString();
         }
     };
     options.listeners = {
@@ -121,6 +121,7 @@ async function runCargoSemverChecks(cargo: rustCore.Cargo): Promise<void> {
         ["semver-checks", "check-release"].concat(getCheckReleaseArguments()),
         options
     );
+    return output;
 }
 
 async function installCargoSemverChecksFromPrecompiledBinary(): Promise<void> {
@@ -158,7 +159,7 @@ async function installCargoSemverChecks(cargo: rustCore.Cargo): Promise<void> {
     }
 }
 
-async function run(): Promise<void> {
+async function run(): Promise<string> {
     const manifestPath = path.resolve(rustCore.input.getInput("manifest-path") || "./");
     const manifestDir = path.extname(manifestPath) ? path.dirname(manifestPath) : manifestPath;
 
@@ -175,15 +176,16 @@ async function run(): Promise<void> {
     );
 
     await cache.restore();
-    await runCargoSemverChecks(cargo);
+    const output = await runCargoSemverChecks(cargo);
+    core.setOutput("logs", stripAnsi(output));
     await cache.save();
+    return output;
 }
 
 async function main() {
     try {
         await run();
     } catch (error) {
-        core.setOutput("logs", stripAnsi(SEMVER_CHECKS_OUTPUT));
         const logs = getErrorMessage(error);
         core.setFailed(logs);
     }
