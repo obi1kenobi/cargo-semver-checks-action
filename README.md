@@ -133,7 +133,7 @@ The action caches the baseline rustdoc for each package in the workspace. The ke
  - internal, unchangable component, being a concatenation of the runner OS, `rustc` version, `cargo-semver-checks` version and hash of all `Cargo.lock` files in the current workspace,
  - constant suffix `"semver-checks-rustdoc"`.
 
-Runs that differ in at least one of the above components will use separate caches. Inputs `shared-key` and `cache-key` might be therefore used to customize the caching strategy. For example, the two following jobs will share the key even despite using different `manifest-path`:
+Runs that differ in at least one of the above components will use separate caches. Inputs `prefix-key` and `shared-key` might be therefore used to customize the caching strategy. For example, the two following jobs will share the key even despite using different `manifest-path`:
 ```yaml
 semver:
   runs-on: ubuntu-latest
