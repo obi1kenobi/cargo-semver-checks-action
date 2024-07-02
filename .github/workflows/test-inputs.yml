@@ -286,9 +286,9 @@ jobs:
           path: ${{ github.workspace }}/semver-checks/target/semver-checks/cache
           fail-on-cache-miss: true
           lookup-only: true
-          key: -${{ github.job }}
+          key: semver-${{ github.job }}
           restore-keys: |
-            -${{ github.job }}
+            semver-${{ github.job }}
       - name: Fail if the toolchain used by the action is invalid
         if: ${{ ! contains(steps.get-cache-key.outputs.cache-matched-key, 'nightly') }}
         run: |
@@ -329,9 +329,9 @@ jobs:
           path: ${{ github.workspace }}/semver-checks/target/semver-checks/cache
           fail-on-cache-miss: true
           lookup-only: true
-          key: -${{ github.job }}
+          key: semver-${{ github.job }}
           restore-keys: |
-            -${{ github.job }}
+            semver-${{ github.job }}
       - name: Fail if the toolchain used by the action is invalid
         if: ${{ ! contains(steps.get-cache-key.outputs.cache-matched-key, 'nightly') }}
         run: |
@@ -372,9 +372,9 @@ jobs:
           path: ${{ github.workspace }}/semver-checks/target/semver-checks/cache
           fail-on-cache-miss: true
           lookup-only: true
-          key: -${{ github.job }}
+          key: semver-${{ github.job }}
           restore-keys: |
-            -${{ github.job }}
+            semver-${{ github.job }}
       - name: Fail if the toolchain used by the action is invalid
         if: ${{ ! contains(steps.get-cache-key.outputs.cache-matched-key, 'beta') }}
         run: |
