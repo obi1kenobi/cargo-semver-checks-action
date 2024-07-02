@@ -27,7 +27,7 @@ semver-checks:
   runs-on: ubuntu-latest
   steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Check semver
       uses: obi1kenobi/cargo-semver-checks-action@v2
 ```
@@ -139,7 +139,7 @@ semver:
   runs-on: ubuntu-latest
   steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Check semver
       uses: obi1kenobi/cargo-semver-checks-action@v2
       with:
@@ -149,7 +149,7 @@ semver2:
   runs-on: ubuntu-latest
   steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         path: semver
     - name: Check semver
@@ -167,7 +167,7 @@ semver:
       crate: ['api', 'core']
   steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Check semver
       uses: obi1kenobi/cargo-semver-checks-action@v2
       with:
