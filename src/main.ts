@@ -20,6 +20,7 @@ function getCheckReleaseArguments(): string[] {
     return [
         optionFromList("--package", rustCore.input.getInputList("package")),
         optionFromList("--exclude", rustCore.input.getInputList("exclude")),
+        optionIfValueProvided("--target", rustCore.input.getInput("rust-target")),
         optionIfValueProvided("--manifest-path", rustCore.input.getInput("manifest-path")),
         optionIfValueProvided("--release-type", rustCore.input.getInput("release-type")),
         getFeatureGroup(rustCore.input.getInput("feature-group")),
@@ -77,6 +78,11 @@ async function installRustUpIfRequested(): Promise<void> {
         await rustup.call(["show"]);
         await rustup.setProfile("minimal");
         await rustup.installToolchain(toolchain);
+
+        const target = rustCore.input.getInput("rust-target");
+        if (target) {
+            await rustup.addTarget(target, toolchain);
+        }
 
         // Setting the environment variable here affects only processes spawned
         // by this action, so it will not override the default toolchain globally.
