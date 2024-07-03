@@ -107,7 +107,7 @@ This will process all crates from the current workspace except `my-crate-tests`:
 
 ### Use toolchain other than `stable`
 
-By default, the actions installs (if necessary) and then uses the `stable` toolchain regardless of local overrides and the `rust-toolchain.toml` file. You can force using a different toolchain using `rust-toolchain`:
+By default, the action installs (if necessary) and then uses the `stable` toolchain regardless of local overrides and the `rust-toolchain.toml` file. You can force using a different toolchain using `rust-toolchain`:
 ```yaml
 - name: Check semver
   uses: obi1kenobi/cargo-semver-checks-action@v2
