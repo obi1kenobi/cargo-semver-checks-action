@@ -18,7 +18,14 @@ jobs:
         toolchain: ['1.74', 'stable', 'beta']
         experimental: [false]
         include:
-          - toolchain: 'nightly'
+          - os: 'ubuntu-latest'
+            toolchain: 'nightly'
+            experimental: true
+          - os: 'windows-latest'
+            toolchain: 'nightly'
+            experimental: true
+          - os: 'macos-latest'
+            toolchain: 'nightly'
             experimental: true
     continue-on-error: ${{ matrix.experimental }}
     runs-on: ${{ matrix.os }}
