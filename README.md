@@ -135,7 +135,7 @@ By default, the action uses the default target (based on the host platform). You
   with:
     rust-target: aarch64-apple-darwin
 ```
-If you want to setup the toolchain manually, you can set `rust-toolchain` to `manual`. In this case, the action assumes the specified target is already installed and uses it:
+If you want to set up the toolchain manually, you can set `rust-toolchain` to `manual`. In this case, the action will *not* attempt to install the target — instead, it assumes the target is already set up:
 ```yaml
 - name: Setup Rust
   uses: dtolnay/rust-toolchain@master
