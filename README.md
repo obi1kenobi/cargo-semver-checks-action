@@ -141,6 +141,7 @@ If you want to set up the toolchain manually, you can set `rust-toolchain` to `m
   uses: dtolnay/rust-toolchain@master
   with:
     toolchain: stable 2 months ago
+    target: aarch64-apple-darwin
 - name: Check semver
   uses: obi1kenobi/cargo-semver-checks-action@v2
   with:
