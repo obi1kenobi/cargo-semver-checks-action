@@ -117,7 +117,7 @@ By default, the action installs (if necessary) and then uses the `stable` toolch
 If you want to setup the toolchain manually, you can set `rust-toolchain` to `manual`. In this case, the action assumes some Rust toolchain is already installed and uses the default one:
 ```yaml
 - name: Setup Rust
-  uses: dtolnay/rust-toolchain@master
+  uses: actions-rust-lang/setup-rust-toolchain@v1
   with:
     toolchain: stable 2 months ago
 - name: Check semver
@@ -138,7 +138,7 @@ By default, the action uses the default target (based on the host platform). You
 If you want to set up the toolchain manually, you can set `rust-toolchain` to `manual`. In this case, the action will *not* attempt to install the target — instead, it assumes the target is already set up:
 ```yaml
 - name: Setup Rust
-  uses: dtolnay/rust-toolchain@master
+  uses: actions-rust-lang/setup-rust-toolchain@v1
   with:
     toolchain: stable 2 months ago
     target: aarch64-apple-darwin
