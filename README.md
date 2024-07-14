@@ -119,7 +119,7 @@ If you want to setup the toolchain manually, you can set `rust-toolchain` to `ma
 - name: Setup Rust
   uses: actions-rust-lang/setup-rust-toolchain@v1
   with:
-    toolchain: stable 2 months ago
+    toolchain: stable
 - name: Check semver
   uses: obi1kenobi/cargo-semver-checks-action@v2
   with:
@@ -140,7 +140,7 @@ If you want to set up the toolchain manually, you can set `rust-toolchain` to `m
 - name: Setup Rust
   uses: actions-rust-lang/setup-rust-toolchain@v1
   with:
-    toolchain: stable 2 months ago
+    toolchain: stable
     target: aarch64-apple-darwin
 - name: Check semver
   uses: obi1kenobi/cargo-semver-checks-action@v2
