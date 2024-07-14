@@ -128,7 +128,7 @@ If you want to setup the toolchain manually, you can set `rust-toolchain` to `ma
 
 ### Build for target other than default
 
-By default, the action uses the default target (based on the host platform). You can force using a different target (which will be installed if missing) using `rust-target`:
+By default, the action uses the default target based on the host platform. You can force using a different target (which will be installed if missing) using `rust-target`. For example, you can check an `aarch64-apple-darwin` build while using the default Linux-based GitHub Actions runner:
 ```yaml
 - name: Check semver
   uses: obi1kenobi/cargo-semver-checks-action@v2
