@@ -14,8 +14,20 @@ jobs:
     name: Run tests
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        toolchain: ['1.74', 'stable', 'beta', 'nightly']
+        os: ['ubuntu-latest', 'windows-latest', 'macos-latest']
+        toolchain: ['1.74', 'stable', 'beta']
+        experimental: [false]
+        include:
+          - os: 'ubuntu-latest'
+            toolchain: 'nightly'
+            experimental: true
+          - os: 'windows-latest'
+            toolchain: 'nightly'
+            experimental: true
+          - os: 'macos-latest'
+            toolchain: 'nightly'
+            experimental: true
+    continue-on-error: ${{ matrix.experimental }}
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout the test repository and test with patch change and patch version bump

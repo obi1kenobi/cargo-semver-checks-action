@@ -102,7 +102,7 @@ jobs:
         with:
           package: rio_api, rio_turtle
           feature-group: only-explicit-features
-          feature: generalized
+          features: generalized
 
   test-exclude:
     name: Test input exclude
@@ -271,14 +271,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: action
-      - name: Install latest beta
-        uses: dtolnay/rust-toolchain@beta
-      - name: Set local override to beta
-        run: rustup override set beta
-      - name: Run the action with rust-toolchain set to nightly
+      - name: Install latest stable
+        uses: dtolnay/rust-toolchain@stable
+      - name: Set local override to stable
+        run: rustup override set stable
+      - name: Run the action with rust-toolchain set to beta
         uses: ./action/
         with:
-          rust-toolchain: nightly
+          rust-toolchain: beta
       - name: Get cache key
         uses: actions/cache/restore@v4
         id: get-cache-key
@@ -290,14 +290,14 @@ jobs:
           restore-keys: |
             semver-${{ github.job }}
       - name: Fail if the toolchain used by the action is invalid
-        if: ${{ ! contains(steps.get-cache-key.outputs.cache-matched-key, 'nightly') }}
+        if: ${{ ! contains(steps.get-cache-key.outputs.cache-matched-key, 'beta') }}
         run: |
-          echo "The toolchain used by the action should be nightly, but it is not!"
+          echo "The toolchain used by the action should be beta, but it is not!"
           exit 1
       - name: Check the active toolchain
         run: |
-          if ! rustup show active-toolchain | grep -q "beta"; then
-            echo "The active toolchain should be still beta, but it is $(rustup show active-toolchain)!"
+          if ! rustup show active-toolchain | grep -q "stable"; then
+            echo "The active toolchain should be still stable, but it is $(rustup show active-toolchain)!"
             exit 1
           fi
 
@@ -314,14 +314,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: action
-      - name: Install latest beta
-        uses: dtolnay/rust-toolchain@beta
-      - name: Set override to beta in rust-toolchain.toml file
-        run: echo -e "[toolchain]\nchannel = \"beta\"" > rust-toolchain.toml
-      - name: Run the action with rust-toolchain set to nightly
+      - name: Install latest stable
+        uses: dtolnay/rust-toolchain@stable
+      - name: Set override to stable in rust-toolchain.toml file
+        run: echo -e "[toolchain]\nchannel = \"stable\"" > rust-toolchain.toml
+      - name: Run the action with rust-toolchain set to beta
         uses: ./action/
         with:
-          rust-toolchain: nightly
+          rust-toolchain: beta
       - name: Get cache key
         uses: actions/cache/restore@v4
         id: get-cache-key
@@ -333,14 +333,14 @@ jobs:
           restore-keys: |
             semver-${{ github.job }}
       - name: Fail if the toolchain used by the action is invalid
-        if: ${{ ! contains(steps.get-cache-key.outputs.cache-matched-key, 'nightly') }}
+        if: ${{ ! contains(steps.get-cache-key.outputs.cache-matched-key, 'beta') }}
         run: |
-          echo "The toolchain used by the action should be nightly, but it is not!"
+          echo "The toolchain used by the action should be beta, but it is not!"
           exit 1
       - name: Check the active toolchain
         run: |
-          if ! rustup show active-toolchain | grep -q "beta"; then
-            echo "The active toolchain should be still beta, but it is $(rustup show active-toolchain)!"
+          if ! rustup show active-toolchain | grep -q "stable"; then
+            echo "The active toolchain should be still stable, but it is $(rustup show active-toolchain)!"
             exit 1
           fi
 
