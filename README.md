@@ -15,6 +15,7 @@ Lint your crate API changes for semver violations.
   * [Specify crates to be checked](#specify-crates-to-be-checked)
   * [Exclude crates from being checked](#exclude-crates-from-being-checked)
   * [Use toolchain other than `stable`](#use-toolchain-other-than-stable)
+  * [Build for target other than default](#build-for-target-other-than-default)
 * [Customizing baseline rustdoc caching strategy](#customizing-baseline-rustdoc-caching-strategy)
 
 ## Basic usage
@@ -48,6 +49,7 @@ Every argument is optional.
 | `verbose`            | Enables verbose output of `cargo-semver-checks`. | `false` |
 | `release-type`       | Sets the release type instead of deriving it from the version number specified in the `Cargo.toml` file. Possible values are `major`, `minor`, `patch`. | |
 | `rust-toolchain`     | Rust toolchain name to use, e.g. `stable`, `nightly` or `1.68.0`. It will be installed if necessary and used regardless of local overrides and the `rust-toolchain.toml` file. However, if the input is set to `manual`, the action assumes some Rust toolchain is already installed and uses the default one. | `stable` |
+| `rust-target`        | Rust target to build for, e.g. `x86_64-pc-windows-msvc` or `aarch64-apple-darwin`. It will be installed if necessary and used regardless of the `.cargo/config.toml` file. However, if `rust-toolchain` is set to `manual`, the action assumes the target is already installed. | |
 | `shared-key`         | A cache key that will be used instead of the automatic key based on the name of the GitHub job and values of the inputs `package`, `exclude` and `manifest-path`. Might be provided e.g. to share the cache between the jobs. | |
 | `prefix-key`         | Additional prefix of the cache key, can be set to start a new cache manually. | |
 | `github-token`       | The `GITHUB_TOKEN` secret used to download precompiled binaries from GitHub API. If not specified, the [automatic GitHub token](https://docs.github.com/en/actions/security-guides/automatic-token-authentication) provided to the workflow will be used. The token may be alternatively passed in an environment variable `GITHUB_TOKEN`. | `${{ github.token }}` |
@@ -105,7 +107,7 @@ This will process all crates from the current workspace except `my-crate-tests`:
 
 ### Use toolchain other than `stable`
 
-By default, the actions installs (if necessary) and then uses the `stable` toolchain regardless of local overrides and the `rust-toolchain.toml` file. You can force using a different toolchain using `rust-toolchain`:
+By default, the action installs (if necessary) and then uses the `stable` toolchain regardless of local overrides and the `rust-toolchain.toml` file. You can force using a different toolchain using `rust-toolchain`:
 ```yaml
 - name: Check semver
   uses: obi1kenobi/cargo-semver-checks-action@v2
@@ -115,13 +117,36 @@ By default, the actions installs (if necessary) and then uses the `stable` toolc
 If you want to setup the toolchain manually, you can set `rust-toolchain` to `manual`. In this case, the action assumes some Rust toolchain is already installed and uses the default one:
 ```yaml
 - name: Setup Rust
-  uses: dtolnay/rust-toolchain@master
+  uses: actions-rust-lang/setup-rust-toolchain@v1
   with:
-    toolchain: stable 2 months ago
+    toolchain: stable
 - name: Check semver
   uses: obi1kenobi/cargo-semver-checks-action@v2
   with:
     rust-toolchain: manual
+```
+
+### Build for target other than default
+
+By default, the action uses the default target based on the host platform. You can force using a different target (which will be installed if missing) using `rust-target`. For example, you can check an `aarch64-apple-darwin` build while using the default Linux-based GitHub Actions runner:
+```yaml
+- name: Check semver
+  uses: obi1kenobi/cargo-semver-checks-action@v2
+  with:
+    rust-target: aarch64-apple-darwin
+```
+If you want to set up the toolchain manually, you can set `rust-toolchain` to `manual`. In this case, the action will *not* attempt to install the target — instead, it assumes the target is already set up:
+```yaml
+- name: Setup Rust
+  uses: actions-rust-lang/setup-rust-toolchain@v1
+  with:
+    toolchain: stable
+    target: aarch64-apple-darwin
+- name: Check semver
+  uses: obi1kenobi/cargo-semver-checks-action@v2
+  with:
+    rust-toolchain: manual
+    rust-target: aarch64-apple-darwin
 ```
 
 ## Customizing baseline rustdoc caching strategy
