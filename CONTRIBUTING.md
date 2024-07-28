@@ -10,6 +10,19 @@ A good general description on how to develop a GitHub JavaScript action can be f
 
 - Node 20
 
+### Logging in to GitHub package registry
+
+1. Create a classic Personal Access Token (PAT) for your GitHub profile,  
+with permission `read:packages`:  
+https://github.com/settings/tokens
+
+1. Use that token to log in to the registry:  
+`npm login --registry https://npm.pkg.github.com --scope @actions-rs`  
+Username: dummy  
+Password: \<paste your PAT here\>
+
+This allows `@actions-rs` npm packages to be downloaded.
+
 ### Installing dependencies
 
 `npm install`
