@@ -1,0 +1,20 @@
+name: "PR Comment"
+on:
+  pull_request:
+
+jobs:
+  post-comment:
+    name: Post a new comment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = context.payload.pull_request.number;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body: "Hello!"
+            });
