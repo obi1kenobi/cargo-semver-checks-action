@@ -12,7 +12,7 @@ function getGitHubToken(): string {
 
 async function postPullRequestComment(): Promise<void> {
     const octokit = github.getOctokit(getGitHubToken());
-    const pullRequest = github.context.payload.pull_request
+    const pullRequest = github.context.payload.pull_request;
 
     if (!pullRequest) {
         core.info("Not a pull_request event. No further actions required.");
