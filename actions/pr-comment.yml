@@ -1,0 +1,12 @@
+name: "PR Comment Action"
+description: "Posts a comment on pull requests."
+
+inputs:
+  github_token:
+    description: "GitHub token to authenticate API calls"
+    required: false
+    default: ${{ github.token }}
+
+runs:
+  using: "node20"
+  main: "dist/pr-comment.js"

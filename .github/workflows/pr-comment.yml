@@ -3,18 +3,11 @@ on:
   pull_request:
 
 jobs:
-  post-comment:
+  pr-comment:
     name: Post a new comment
     runs-on: ubuntu-latest
     steps:
-      - name: Comment
-        uses: actions/github-script@v7
+      - name: Run PR Comment action
+        uses: ./actions/pr-comment.yml
         with:
-          script: |
-            const prNumber = context.payload.pull_request.number;
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: prNumber,
-              body: "Hello!"
-            });
+          github_token: ${{ secrets.GITHUB_TOKEN }}
