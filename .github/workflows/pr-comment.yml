@@ -8,6 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run PR Comment action
-        uses: ./actions/pr-comment.yml
+        uses: ./actions/pr-comment
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
