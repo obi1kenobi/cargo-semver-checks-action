@@ -2,8 +2,8 @@ name: "PR Comment Action"
 description: "Posts a comment on pull requests."
 
 inputs:
-  github_token:
-    description: "GitHub token to authenticate API calls"
+  github-token:
+    description: 'The `GITHUB_TOKEN` secret used to download precompiled binaries from GitHub API. If not specified, the automatic GitHub token provided to the workflow will be used.'
     required: false
     default: ${{ github.token }}
 

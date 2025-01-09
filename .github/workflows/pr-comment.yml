@@ -13,4 +13,4 @@ jobs:
       - name: Run PR Comment action
         uses: ./actions/pr-comment/
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
