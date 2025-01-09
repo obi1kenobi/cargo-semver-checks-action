@@ -3,7 +3,7 @@ description: "Posts a comment on pull requests."
 
 inputs:
   github-token:
-    description: 'The `GITHUB_TOKEN` secret used to download precompiled binaries from GitHub API. If not specified, the automatic GitHub token provided to the workflow will be used.'
+    description: 'The `GITHUB_TOKEN` secret used to post comments on pull requests. If not specified, the automatic GitHub token provided to the workflow will be used.'
     required: false
     default: ${{ github.token }}
 
