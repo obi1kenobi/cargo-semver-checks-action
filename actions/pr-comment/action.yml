@@ -9,4 +9,4 @@ inputs:
 
 runs:
   using: "node20"
-  main: "dist/pr-comment.js"
+  main: "dist/index.js"
