@@ -4,8 +4,8 @@
   "description": "Lint your crate API changes for semver violations.",
   "main": "index.js",
   "scripts": {
-    "build:main": "ncc build src/main.ts --license licenses.txt --minify",
-    "build:pr-comment": "ncc build src/main.ts --license licenses.txt --minify",
+    "build:main": "ncc build src/main.ts --license licenses.txt --minify -o dist/index",
+    "build:pr-comment": "ncc build src/main.ts --license licenses.txt --minify -o dist/pr-comment",
 
     "build": "npm run build:main && npm run build:pr-comment",
     "format": "prettier --write src/**/*.ts",
