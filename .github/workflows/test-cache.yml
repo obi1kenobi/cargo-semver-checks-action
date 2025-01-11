@@ -33,7 +33,7 @@ jobs:
           prefix-key: testprefix
       - name: Check if the cache directory exists
         run: |
-          if ! grep -q "ref_slice-1.2.1/src/lib.rs" "semver-checks/target/semver-checks/cache/registry-ref_slice-1_2_1.json"; then
+          if ! grep -q "ref_slice-1.2.1/src/lib.rs" "semver-checks/target/semver-checks/cache/ref_slice-1_2_1*.json"; then
             echo "Non-existent or invalid cache file!"
             exit 1
           fi
@@ -81,11 +81,11 @@ jobs:
           package: ref_slice
           manifest-path: 'ref_slice/Cargo.toml'
           prefix-key: testprefix
-      - name: 'List cache directory'
+      - name: List cache directory (DEBUG)
         run: ls -R semver-checks/target/semver-checks/cache || true
       - name: Check if the cache directory exists
         run: |
-          if ! grep -q "ref_slice-1.2.1/src/lib.rs" "semver-checks/target/semver-checks/cache/registry-ref_slice-1_2_1.json"; then
+          if ! grep -q "ref_slice-1.2.1/src/lib.rs" "semver-checks/target/semver-checks/cache/ref_slice-1_2_1*.json"; then
             echo "Non-existent or invalid cache file!"
             exit 1
           fi
