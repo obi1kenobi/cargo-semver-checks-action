@@ -81,8 +81,6 @@ jobs:
           package: ref_slice
           manifest-path: 'ref_slice/Cargo.toml'
           prefix-key: testprefix
-      - name: List cache directory (DEBUG)
-        run: ls -R semver-checks/target/semver-checks/cache || true
       - name: Check if the cache directory exists
         run: |
           if ! grep -q "ref_slice-1.2.1/src/lib.rs" semver-checks/target/semver-checks/cache/ref_slice-1_2_1*.json; then
