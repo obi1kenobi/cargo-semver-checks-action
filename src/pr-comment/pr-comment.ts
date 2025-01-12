@@ -4,7 +4,6 @@ import * as core from "@actions/core";
 import * as github from "@actions/github";
 import { getErrorMessage } from "../utils";
 
-
 /*********/
 /* TYPES */
 /*********/
@@ -13,7 +12,7 @@ enum ResultType {
     Minor = "minor",
     Major = "major",
     Warning = "warning",
-    Error = "error"
+    Error = "error",
 }
 
 class ResultSummary {
@@ -27,7 +26,7 @@ class ResultSummary {
         minors: CargoSemverChecksMinor[],
         majors: CargoSemverChecksMajor[],
         warnings: CargoSemverChecksWarning[],
-        errors: CargoSemverChecksError[]
+        errors: CargoSemverChecksError[],
     ) {
         this.minors = minors;
         this.majors = majors;
@@ -52,30 +51,17 @@ class ResultSummary {
     }
 }
 
-class Result {
+class Result {}
 
-}
+class SemverBreakingResult extends Result {}
 
-class SemverBreakingResult extends Result {
+class CargoSemverChecksMinor extends SemverBreakingResult {}
 
-}
+class CargoSemverChecksMajor extends SemverBreakingResult {}
 
-class CargoSemverChecksMinor extends SemverBreakingResult {
+class CargoSemverChecksWarning extends Result {}
 
-}
-
-class CargoSemverChecksMajor extends SemverBreakingResult {
-
-}
-
-class CargoSemverChecksWarning extends Result {
-
-}
-
-class CargoSemverChecksError extends Result {
-
-}
-
+class CargoSemverChecksError extends Result {}
 
 /***********/
 /* HELPERS */
@@ -104,7 +90,7 @@ function replaceTemplatePlaceholders(template: string, resultSummary: ResultSumm
         minorCount: resultSummary.minors.length.toString(),
         majorCount: resultSummary.majors.length.toString(),
         warningCount: resultSummary.warnings.length.toString(),
-        errorCount: resultSummary.errors.length.toString()
+        errorCount: resultSummary.errors.length.toString(),
     };
 
     for (const key in replacements) {
@@ -130,7 +116,7 @@ function parseCargoSemverChecksOutput(): ResultSummary {
         parseMinors(output),
         parseMajors(output),
         parseWarnings(output),
-        parseErrors(output)
+        parseErrors(output),
     );
 
     core.info(`Parsed summary: ${resultSummary}`);
@@ -152,7 +138,6 @@ function parseWarnings(output: string): CargoSemverChecksWarning[] {
 function parseErrors(output: string): CargoSemverChecksError[] {
     return [];
 }
-
 
 /************/
 /* COMMENTS */
@@ -188,7 +173,6 @@ async function commentMajor(resultSummary: ResultSummary): Promise<void> {}
 async function commentMinor(resultSummary: ResultSummary): Promise<void> {}
 
 async function commentPatch(resultSummary: ResultSummary): Promise<void> {}
-
 
 /**********/
 /* RUNNER */
