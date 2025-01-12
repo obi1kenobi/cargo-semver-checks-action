@@ -14,3 +14,4 @@ jobs:
         uses: ./actions/pr-comment/
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          cargo-semver-checks-output: 'Hello!'

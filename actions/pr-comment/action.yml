@@ -6,6 +6,9 @@ inputs:
     description: 'The `GITHUB_TOKEN` secret used to post comments on pull requests. If not specified, the automatic GitHub token provided to the workflow will be used.'
     required: false
     default: ${{ github.token }}
+  cargo-semver-checks-output:
+    description: 'Output from cargo-semver-checks. If not specified, the action will not comment any results.'
+    required: false
 
 runs:
   using: "node20"
