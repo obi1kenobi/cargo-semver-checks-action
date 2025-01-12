@@ -173,7 +173,6 @@ async function postPullRequestComment(resultSummary: ResultSummary): Promise<voi
     core.info(`Comment posted on pull request #${pullRequest.number}`);
 }
 
-
 /**********/
 /* RUNNER */
 /**********/

@@ -1,4 +1,7 @@
-No breaking changes have been found when running cargo-semver-checks.
+This pull request has been verified against the repository's `HEAD` using cargo-semver-checks.
+
+> [!NOTE]
+> The tool has not found any major or minor changes.
 
 | Event | Count |
 |--------|--------|
@@ -12,7 +15,6 @@ No breaking changes have been found when running cargo-semver-checks.
 
 - [ ] some issue
 - [ ] another issue
-- [ ] fixed issue
 
 </p>
-</details> 
+</details>

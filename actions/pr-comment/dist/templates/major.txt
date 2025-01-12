@@ -1,7 +1,10 @@
 This pull request has been verified against the repository's `HEAD` using cargo-semver-checks.
 
-> [!NOTE]
-> The tool has not found any major or minor changes.
+> [!IMPORTANT]
+> The tool has found {{majorCount}} major (breaking) changes.
+
+> [!IMPORTANT]
+> The tool has found {{minorCount}} minor changes.
 
 | Event | Count |
 |--------|--------|
@@ -10,7 +13,16 @@ This pull request has been verified against the repository's `HEAD` using cargo-
 | Warning | {{warningCount}} |
 | Error | {{errorCount}} |
 
-<details><summary>Details listed as tasks</summary>
+<details><summary>Reported major (breaking) changes</summary>
+<p>
+
+- [ ] some issue
+- [ ] another issue
+
+</p>
+</details>
+
+<details><summary>Reported minor changes</summary>
 <p>
 
 - [ ] some issue
