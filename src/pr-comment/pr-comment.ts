@@ -36,6 +36,15 @@ class ResultSummary {
         this.result = this.determineResultType();
     }
 
+    toString(): string {
+        return `ResultSummary:
+        Result: ${this.result}
+        Minors (${this.minors.length}): ${this.minors}
+        Majors (${this.majors.length}): ${this.majors}
+        Warnings (${this.warnings.length}): ${this.warnings}
+        Errors (${this.errors.length}): ${this.errors}`;
+    }
+
     private determineResultType(): ResultType {
         if (this.errors.length) {
             return ResultType.Error;

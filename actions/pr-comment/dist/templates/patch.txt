@@ -1,1 +1,18 @@
-Hello!
+No breaking changes have been found when running cargo-semver-checks.
+
+| Event | Count |
+|--------|--------|
+| Minor change | {{minorCount}} |
+| Major change | {{majorCount}} |
+| Warning | {{warningCount}} |
+| Error | {{errorCount}} |
+
+<details><summary>Details listed as tasks</summary>
+<p>
+
+- [ ] some issue
+- [ ] another issue
+- [ ] fixed issue
+
+</p>
+</details> 
