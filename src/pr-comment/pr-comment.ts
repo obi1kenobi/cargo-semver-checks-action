@@ -173,15 +173,6 @@ async function postPullRequestComment(resultSummary: ResultSummary): Promise<voi
     core.info(`Comment posted on pull request #${pullRequest.number}`);
 }
 
-async function commentError(resultSummary: ResultSummary): Promise<void> {}
-
-async function commentWarning(resultSummary: ResultSummary): Promise<void> {}
-
-async function commentMajor(resultSummary: ResultSummary): Promise<void> {}
-
-async function commentMinor(resultSummary: ResultSummary): Promise<void> {}
-
-async function commentPatch(resultSummary: ResultSummary): Promise<void> {}
 
 /**********/
 /* RUNNER */
