@@ -429,3 +429,56 @@ jobs:
         uses: ./action/
         with:
           release-type: major
+
+  test-baseline-version:
+    name: Test baseline lookup with version from registry
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the test repository and test with major change
+        uses: actions/checkout@v4
+        with:
+          repository: mgr0dzicki/cargo-semver-action-ref-slice
+          ref: major_change
+      - name: Checkout the action
+        uses: actions/checkout@v4
+        with:
+          path: action
+      - name: Run the action on ref_slice patch change
+        uses: ./action/
+        with:
+          baseline-version: 1.2.1
+
+  test-baseline-revision:
+    name: Test baseline lookup with git revision
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the test repository and test with major change
+        uses: actions/checkout@v4
+        with:
+          repository: mgr0dzicki/cargo-semver-action-ref-slice
+          ref: major_change
+      - name: Checkout the action
+        uses: actions/checkout@v4
+        with:
+          path: action
+      - name: Run the action on ref_slice patch change
+        uses: ./action/
+        with:
+          baseline-revision: 4dee011b55f36ac44bbdbb72323cd8f09cfd22df
+  test-baseline-root:
+    name: Test baseline lookup with directory of cargo source
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the test repository and test with major change
+        uses: actions/checkout@v4
+        with:
+          repository: mgr0dzicki/cargo-semver-action-ref-slice
+          ref: major_change
+      - name: Checkout the action
+        uses: actions/checkout@v4
+        with:
+          path: action
+      - name: Run the action on ref_slice patch change
+        uses: ./action/
+        with:
+          baseline-root: /where
