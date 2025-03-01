@@ -53,6 +53,10 @@ Every argument is optional.
 | `shared-key`         | A cache key that will be used instead of the automatic key based on the name of the GitHub job and values of the inputs `package`, `exclude` and `manifest-path`. Might be provided e.g. to share the cache between the jobs. | |
 | `prefix-key`         | Additional prefix of the cache key, can be set to start a new cache manually. | |
 | `github-token`       | The `GITHUB_TOKEN` secret used to download precompiled binaries from GitHub API. If not specified, the [automatic GitHub token](https://docs.github.com/en/actions/security-guides/automatic-token-authentication) provided to the workflow will be used. The token may be alternatively passed in an environment variable `GITHUB_TOKEN`. | `${{ github.token }}` |
+| `baseline-version`   | Version from registry to lookup for a baselin. | |
+| `baseline-rev`       | Git revision to lookup for a baseline. | |
+| `baseline-root`      | Directory containing baseline crate source. | |
+| `baseline-rustdoc`   | The rustdoc json file to use aa semver baseline. | |
 
 ## Example scenarios
 

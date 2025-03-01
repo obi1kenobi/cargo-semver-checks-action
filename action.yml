@@ -43,6 +43,22 @@ inputs:
     description: 'The `GITHUB_TOKEN` secret used to download precompiled binaries from GitHub API. If not specified, the automatic GitHub token provided to the workflow will be used.'
     required: false
     default: ${{ github.token }}
+  baseline-version:
+    description: 'Version from registry to lookup for a baseline'
+    required: false
+    default: ''
+  baseline-rev:
+    description: 'Git revision to lookup for a baseline'
+    required: false
+    default: ''
+  baseline-root:
+    description: 'Directory containing baseline crate source'
+    required: false
+    default: ''
+  baseline-rustdoc:
+    description: 'The rustdoc json file to use as a semver baseline'
+    required: false
+    default: ''
 runs:
   using: 'node20'
   main: 'dist/index.js'
