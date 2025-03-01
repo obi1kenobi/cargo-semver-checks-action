@@ -28,7 +28,6 @@ function getCheckReleaseArguments(): string[] {
         optionIfValueProvided("--baseline-version", rustCore.input.getInput("baseline-version")),
         optionIfValueProvided("--baseline-rev", rustCore.input.getInput("baseline-rev")),
         optionIfValueProvided("--baseline-root", rustCore.input.getInput("baseline-root")),
-        optionIfValueProvided("--baseline-rustdoc", rustCore.input.getInput("baseline-rustdoc")),
         rustCore.input.getInputBool("verbose") ? ["--verbose"] : [],
     ].flat();
 }

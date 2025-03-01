@@ -12,6 +12,7 @@ Lint your crate API changes for semver violations.
 * [Input options](#input-options)
 * [Example scenarios](#example-scenarios)
   * [Use outside root directory of a crate or a workspace](#use-outside-root-directory-of-a-crate-or-a-workspace)
+  * [Crate is not published on crates.io](#crate-is-not-published-on-cratesio)
   * [Specify crates to be checked](#specify-crates-to-be-checked)
   * [Exclude crates from being checked](#exclude-crates-from-being-checked)
   * [Use toolchain other than `stable`](#use-toolchain-other-than-stable)
@@ -53,10 +54,9 @@ Every argument is optional.
 | `shared-key`         | A cache key that will be used instead of the automatic key based on the name of the GitHub job and values of the inputs `package`, `exclude` and `manifest-path`. Might be provided e.g. to share the cache between the jobs. | |
 | `prefix-key`         | Additional prefix of the cache key, can be set to start a new cache manually. | |
 | `github-token`       | The `GITHUB_TOKEN` secret used to download precompiled binaries from GitHub API. If not specified, the [automatic GitHub token](https://docs.github.com/en/actions/security-guides/automatic-token-authentication) provided to the workflow will be used. The token may be alternatively passed in an environment variable `GITHUB_TOKEN`. | `${{ github.token }}` |
-| `baseline-version`   | Version from registry to lookup for a baselin. | |
+| `baseline-version`   | Version from registry to lookup for a baseline. | |
 | `baseline-rev`       | Git revision to lookup for a baseline. | |
 | `baseline-root`      | Directory containing baseline crate source. | |
-| `baseline-rustdoc`   | The rustdoc json file to use aa semver baseline. | |
 
 ## Example scenarios
 
@@ -76,6 +76,35 @@ In the same way you can provide the path to the workspace `Cargo.toml` file, whi
   uses: obi1kenobi/cargo-semver-checks-action@v2
   with:
     manifest-path: semver/my-workspace/Cargo.toml  # or just semver/my-workspace/
+```
+
+### Crate is not published on crates.io
+
+By default [`cargo-semver-check`](https://github.com/obi1kenobi/cargo-semver-checks) uses crates.io to look up the previous version of the crate, which is used as
+the baseline for semver-checking the current version of the crate. The following inputs can be used to explicitly specify a baseline instead:
+
+Use a version from registry to lookup for a baseline:
+```yaml
+- name: Check semver
+  uses: obi1kenobi/cargo-semver-checks-action@v2
+  with:
+    baseline-version: 4.9.1
+```
+
+Use a git revision to lookup for a baseline
+```yaml
+- name: Check semver
+  uses: obi1kenobi/cargo-semver-checks-action@v2
+  with:
+    baseline-revision: b0fd440798ab3cfb05c60a1a1bd2894e1618479e
+```
+
+Point to a directory that contains the baseline crate source
+```yaml
+- name: Check semver
+  uses: obi1kenobi/cargo-semver-checks-action@v2
+  with:
+    baseline-root: test_crates/template/old
 ```
 
 ### Specify crates to be checked
