@@ -78,7 +78,7 @@ In the same way you can provide the path to the workspace `Cargo.toml` file, whi
     manifest-path: semver/my-workspace/Cargo.toml  # or just semver/my-workspace/
 ```
 
-### Crate is not published on crates.io
+### Specifying a baseline
 
 By default [`cargo-semver-check`](https://github.com/obi1kenobi/cargo-semver-check) uses crates.io to look up the previous version of the crate, which is used as
 the baseline for semver-checking the current version of the crate. The following inputs can be used to explicitly specify a baseline instead:

@@ -1,5 +1,6 @@
 import os = require("os");
 
+import * as io from "@actions/io";
 import * as path from "path";
 import * as crypto from "crypto";
 import * as cache from "@actions/cache";
@@ -38,6 +39,8 @@ export class RustdocCache {
     }
 
     async restore(): Promise<boolean> {
+        await io.mkdirP(this.cachePath);
+
         core.info("Restoring rustdoc cache...");
         core.info(`Rustdoc cache path: ${this.cachePath}.`);
         core.info(`Rustdoc cache key: ${await this.cacheKey()}.`);
