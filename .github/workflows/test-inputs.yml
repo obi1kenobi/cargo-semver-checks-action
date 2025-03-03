@@ -434,51 +434,73 @@ jobs:
     name: Test baseline lookup with version from registry
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout the test repository and test with major change
-        uses: actions/checkout@v4
-        with:
-          repository: mgr0dzicki/cargo-semver-action-ref-slice
-          ref: major_change
       - name: Checkout the action
         uses: actions/checkout@v4
         with:
           path: action
-      - name: Run the action on ref_slice patch change
+      - name: Setup the workspace with ref_slice major change
+        uses: ./action/.github/workflows/setup-test-workspace
+        with:
+          ref-slice-ref: major_change
+      - name: Run the action on ref_slice major change (expected to fail)
+        id: action_major
         uses: ./action/
         with:
+          package: ref_slice
           baseline-version: 1.2.1
+        continue-on-error: true
+      - name: Fail if the action has not returned any errors (but it should have)
+        if: steps.action_major.outcome != 'failure'
+        run: |
+          echo "Error! The action should have failed because of the breaking change, but it has not."
+          exit 1
 
   test-baseline-revision:
     name: Test baseline lookup with git revision
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout the test repository and test with major change
-        uses: actions/checkout@v4
-        with:
-          repository: mgr0dzicki/cargo-semver-action-ref-slice
-          ref: major_change
       - name: Checkout the action
         uses: actions/checkout@v4
         with:
           path: action
-      - name: Run the action on ref_slice patch change
+      - name: Setup the workspace with ref_slice major change
+        uses: ./action/.github/workflows/setup-test-workspace
+        with:
+          ref-slice-ref: major_change
+      - name: Run the action on ref_slice major change (expected to fail)
+        id: action_major
         uses: ./action/
         with:
-          baseline-revision: 4dee011b55f36ac44bbdbb72323cd8f09cfd22df
+          package: ref_slice
+          baseline-rev: 4dee011b55f36ac44bbdbb72323cd8f09cfd22df
+        continue-on-error: true
+      - name: Fail if the action has not returned any errors (but it should have)
+        if: steps.action_major.outcome != 'failure'
+        run: |
+          echo "Error! The action should have failed because of the breaking change, but it has not."
+          exit 1
+
   test-baseline-root:
-    name: Test baseline lookup with directory of cargo source
+    name: Test baseline lookup with directory of crate source
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout the test repository and test with major change
-        uses: actions/checkout@v4
-        with:
-          repository: mgr0dzicki/cargo-semver-action-ref-slice
-          ref: major_change
       - name: Checkout the action
         uses: actions/checkout@v4
         with:
           path: action
-      - name: Run the action on ref_slice patch change
+      - name: Setup the workspace with ref_slice major change
+        uses: ./action/.github/workflows/setup-test-workspace
+        with:
+          ref-slice-ref: major_change
+      - name: Run the action on ref_slice major change (expected to fail)
+        id: action_major
         uses: ./action/
         with:
-          baseline-root: /where
+          package: ref_slice
+          baseline-root: ./
+        continue-on-error: true
+      - name: Fail if the action has not returned any errors (but it should have)
+        if: steps.action_major.outcome != 'failure'
+        run: |
+          echo "Error! The action should have failed because of the breaking change, but it has not."
+          exit 1

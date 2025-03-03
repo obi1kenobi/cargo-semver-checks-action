@@ -80,7 +80,7 @@ In the same way you can provide the path to the workspace `Cargo.toml` file, whi
 
 ### Crate is not published on crates.io
 
-By default [`cargo-semver-check`](https://github.com/obi1kenobi/cargo-semver-checks) uses crates.io to look up the previous version of the crate, which is used as
+By default [`cargo-semver-check`](https://github.com/obi1kenobi/cargo-semver-check) uses crates.io to look up the previous version of the crate, which is used as
 the baseline for semver-checking the current version of the crate. The following inputs can be used to explicitly specify a baseline instead:
 
 Use a version from registry to lookup for a baseline:
