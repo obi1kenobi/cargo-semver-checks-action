@@ -55,7 +55,7 @@ class ResultSummary {
         } else if (this.minors.length) {
             return ResultType.Minor;
         } else {
-            return ResultType.Patch;
+            return ResultType.Major;
         }
     }
 }
