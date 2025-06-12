@@ -533,8 +533,8 @@ jobs:
           repository: mgr0dzicki/cargo-semver-action-ref-slice
           # This is the parent of major_change; still contains the major change
           ref: a0e3a68ac0f909553cb700bf1cd69a6e3a5eb8ef
-          path: ${runner.temp}/baseline
+          path: ${{ runner.temp }}/baseline
       - name: Run the action on ref_slice patch change
         uses: ./action/
         with:
-          baseline-root: ${runner.temp}/baseline
+          baseline-root: ${{ runner.temp }}/baseline
