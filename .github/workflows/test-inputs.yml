@@ -448,6 +448,12 @@ jobs:
         uses: ./action/
         with:
           baseline-version: 1.2.1
+        continue-on-error: true
+      - name: Fail if the action has not returned any errors (but it should have)
+        if: steps.action_without_rust.outcome != 'failure'
+        run: |
+          echo "Error! The action should have failed because major_change is not compatible with crates.io 1.2.1"
+          exit 1
 
   test-baseline-revision:
     # Should pass because revision points to latest
@@ -471,7 +477,37 @@ jobs:
       - name: Run the action on ref_slice patch change
         uses: ./action/
         with:
+          # This is the tip of major_change (as of 2025-06)
           baseline-rev: 4d64380252c8fbda023cca58406fa40a27ad1177
+
+  test-baseline-revision-with-diff:
+    # Should fail because the branch (major_change) is not semver
+    # compatible with the baseline revision (patch_change).
+    name: Test baseline lookup with git revision
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the test repository
+        uses: actions/checkout@v4
+        with:
+          repository: mgr0dzicki/cargo-semver-action-ref-slice
+          ref: major_change
+      - name: Checkout the action
+        uses: actions/checkout@v4
+        with:
+          path: action
+      - name: debug
+        run: ls -la
+        shell: bash
+      - name: Run the action on ref_slice patch change
+        uses: ./action/
+        with:
+          baseline-rev: patch_change
+        continue-on-error: true
+      - name: Fail if the action has not returned any errors (but it should have)
+        if: steps.action_without_rust.outcome != 'failure'
+        run: |
+          echo "Error! The action should have failed because major_change is not compatible with patch_change"
+          exit 1
 
   test-baseline-root:
     # Should pass because root points to crate source which has
@@ -489,7 +525,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: action
+      - name: Checkout the revision to compare against
+        uses: actions/checkout@v4
+        with:
+          repository: mgr0dzicki/cargo-semver-action-ref-slice
+          # This is the parent of major_change; still contains the major change
+          ref: a0e3a68ac0f909553cb700bf1cd69a6e3a5eb8ef
+          path: baseline
       - name: Run the action on ref_slice patch change
         uses: ./action/
         with:
-          baseline-root: ./
+          baseline-root: ./baseline
