@@ -445,12 +445,13 @@ jobs:
         with:
           path: action
       - name: Run the action on ref_slice patch change
+        id: semver_check_step
         uses: ./action/
         with:
           baseline-version: 1.2.1
         continue-on-error: true
       - name: Fail if the action has not returned any errors (but it should have)
-        if: steps.action_without_rust.outcome != 'failure'
+        if: steps.semver_check_step.outcome != 'failure'
         run: |
           echo "Error! The action should have failed because major_change is not compatible with crates.io 1.2.1"
           exit 1
@@ -499,12 +500,13 @@ jobs:
         run: ls -la
         shell: bash
       - name: Run the action on ref_slice patch change
+        id: semver_check_step
         uses: ./action/
         with:
           baseline-rev: patch_change
         continue-on-error: true
       - name: Fail if the action has not returned any errors (but it should have)
-        if: steps.action_without_rust.outcome != 'failure'
+        if: steps.semver_check_step.outcome != 'failure'
         run: |
           echo "Error! The action should have failed because major_change is not compatible with patch_change"
           exit 1
@@ -531,8 +533,8 @@ jobs:
           repository: mgr0dzicki/cargo-semver-action-ref-slice
           # This is the parent of major_change; still contains the major change
           ref: a0e3a68ac0f909553cb700bf1cd69a6e3a5eb8ef
-          path: baseline
+          path: ${runner.temp}/baseline
       - name: Run the action on ref_slice patch change
         uses: ./action/
         with:
-          baseline-root: ./baseline
+          baseline-root: ${runner.temp}/baseline
