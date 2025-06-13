@@ -12,7 +12,7 @@ Lint your crate API changes for semver violations.
 * [Input options](#input-options)
 * [Example scenarios](#example-scenarios)
   * [Use outside root directory of a crate or a workspace](#use-outside-root-directory-of-a-crate-or-a-workspace)
-  * [Crate is not published on crates.io](#crate-is-not-published-on-cratesio)
+  * [Specifying a baseline](#specifying-a-baseline)
   * [Specify crates to be checked](#specify-crates-to-be-checked)
   * [Exclude crates from being checked](#exclude-crates-from-being-checked)
   * [Use toolchain other than `stable`](#use-toolchain-other-than-stable)
@@ -80,7 +80,7 @@ In the same way you can provide the path to the workspace `Cargo.toml` file, whi
 
 ### Specifying a baseline
 
-By default [`cargo-semver-check`](https://github.com/obi1kenobi/cargo-semver-check) uses crates.io to look up the previous version of the crate, which is used as
+By default [`cargo-semver-checks`](https://github.com/obi1kenobi/cargo-semver-checks) uses crates.io to look up the previous version of the crate, which is used as
 the baseline for semver-checking the current version of the crate. The following inputs can be used to explicitly specify a baseline instead:
 
 Use a version from registry to lookup for a baseline:
