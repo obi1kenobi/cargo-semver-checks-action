@@ -83,7 +83,7 @@ In the same way you can provide the path to the workspace `Cargo.toml` file, whi
 By default [`cargo-semver-checks`](https://github.com/obi1kenobi/cargo-semver-checks) uses crates.io to look up the previous version of the crate, which is used as
 the baseline for semver-checking the current version of the crate. The following inputs can be used to explicitly specify a baseline instead:
 
-Use a version from registry to lookup for a baseline:
+Use a specific version from registry as the baseline:
 ```yaml
 - name: Check semver
   uses: obi1kenobi/cargo-semver-checks-action@v2
@@ -91,7 +91,7 @@ Use a version from registry to lookup for a baseline:
     baseline-version: 4.9.1
 ```
 
-Use a git revision to lookup for a baseline
+Use a git revision as the baseline:
 ```yaml
 - name: Check semver
   uses: obi1kenobi/cargo-semver-checks-action@v2
@@ -99,7 +99,7 @@ Use a git revision to lookup for a baseline
     baseline-revision: b0fd440798ab3cfb05c60a1a1bd2894e1618479e
 ```
 
-Point to a directory that contains the baseline crate source
+Point to a directory that contains the baseline crate source:
 ```yaml
 - name: Check semver
   uses: obi1kenobi/cargo-semver-checks-action@v2

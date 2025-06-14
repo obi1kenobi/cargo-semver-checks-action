@@ -431,7 +431,6 @@ jobs:
           release-type: major
 
   test-baseline-version:
-    # WIP: Help
     name: Test baseline lookup with version from registry
     runs-on: ubuntu-latest
     steps:
@@ -472,9 +471,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: action
-      - name: debug
-        run: ls -la
-        shell: bash
       - name: Run the action on ref_slice patch change
         uses: ./action/
         with:
@@ -496,9 +492,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: action
-      - name: debug
-        run: ls -la
-        shell: bash
       - name: Run the action on ref_slice patch change
         id: semver_check_step
         uses: ./action/
