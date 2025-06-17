@@ -55,10 +55,6 @@ inputs:
     description: 'Directory containing baseline crate source'
     required: false
     default: ''
-  baseline-rustdoc:
-    description: 'The rustdoc json file to use as a semver baseline'
-    required: false
-    default: ''
 runs:
   using: 'node20'
   main: 'dist/index.js'
