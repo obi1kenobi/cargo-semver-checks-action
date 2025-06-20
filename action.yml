@@ -44,11 +44,11 @@ inputs:
     required: false
     default: ${{ github.token }}
   baseline-version:
-    description: 'Version from registry to lookup for a baseline'
+    description: 'Version from registry to look up as a baseline'
     required: false
     default: ''
   baseline-rev:
-    description: 'Git revision to lookup for a baseline'
+    description: 'Git revision, branch, or tag to use as a baseline'
     required: false
     default: ''
   baseline-root:

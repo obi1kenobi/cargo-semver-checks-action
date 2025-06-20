@@ -54,8 +54,8 @@ Every argument is optional.
 | `shared-key`         | A cache key that will be used instead of the automatic key based on the name of the GitHub job and values of the inputs `package`, `exclude` and `manifest-path`. Might be provided e.g. to share the cache between the jobs. | |
 | `prefix-key`         | Additional prefix of the cache key, can be set to start a new cache manually. | |
 | `github-token`       | The `GITHUB_TOKEN` secret used to download precompiled binaries from GitHub API. If not specified, the [automatic GitHub token](https://docs.github.com/en/actions/security-guides/automatic-token-authentication) provided to the workflow will be used. The token may be alternatively passed in an environment variable `GITHUB_TOKEN`. | `${{ github.token }}` |
-| `baseline-version`   | Version from registry to lookup for a baseline. | |
-| `baseline-rev`       | Git revision to lookup for a baseline. | |
+| `baseline-version`   | Version from registry to look up as a baseline. | |
+| `baseline-rev`       | Git revision, branch, or tag to use as a baseline. | |
 | `baseline-root`      | Directory containing baseline crate source. | |
 
 ## Example scenarios
@@ -91,7 +91,7 @@ Use a specific version from registry as the baseline:
     baseline-version: 4.9.1
 ```
 
-Use a git revision as the baseline:
+Use a git revision, branch, or tag as the baseline:
 ```yaml
 - name: Check semver
   uses: obi1kenobi/cargo-semver-checks-action@v2
