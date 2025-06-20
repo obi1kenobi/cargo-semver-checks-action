@@ -59,5 +59,6 @@ The following places need to be updated
 
 - action.yml
 - src/main.ts (`getCheckReleaseArguments()`)
+- .github/workflows/test-inputs.yml
 - dist/index.js (automatically generated)
 - README.md
