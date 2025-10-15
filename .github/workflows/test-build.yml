@@ -11,10 +11,10 @@ jobs:
       - name: Checkout the action
         uses: actions/checkout@v5
         
-      - name: Setup Node.js 20.x
+      - name: Setup Node.js 24.x
         uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 24
           
       - name: Install npm-cli-login
         run: npm install -g npm-cli-login
