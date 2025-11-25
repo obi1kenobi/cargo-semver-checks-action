@@ -39,7 +39,7 @@ jobs:
         id: diff_src
         
       - name: Upload the expected version of src/ in case of failure
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: ${{ failure() && steps.diff_src.conclusion == 'failure' }}
         with:
           name: expected-src
@@ -54,7 +54,7 @@ jobs:
         id: diff_dist
         
       - name: Upload the expected version of dist/ in case of failure
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: ${{ failure() && steps.diff_dist.conclusion == 'failure' }}
         with:
           name: expected-dist
