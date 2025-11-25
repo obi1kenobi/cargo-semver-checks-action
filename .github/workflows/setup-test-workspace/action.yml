@@ -7,7 +7,7 @@ runs:
   using: 'composite'
   steps:
       - name: Checkout the ref-slice fork
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: mgr0dzicki/cargo-semver-action-ref-slice
           ref: ${{ inputs.ref-slice-ref }}
