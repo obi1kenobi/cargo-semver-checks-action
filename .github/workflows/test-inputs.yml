@@ -280,7 +280,7 @@ jobs:
         with:
           rust-toolchain: beta
       - name: Get cache key
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         id: get-cache-key
         with:
           path: ${{ github.workspace }}/semver-checks/target/semver-checks/cache
@@ -323,7 +323,7 @@ jobs:
         with:
           rust-toolchain: beta
       - name: Get cache key
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         id: get-cache-key
         with:
           path: ${{ github.workspace }}/semver-checks/target/semver-checks/cache
@@ -366,7 +366,7 @@ jobs:
         with:
           rust-toolchain: manual
       - name: Get cache key
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         id: get-cache-key
         with:
           path: ${{ github.workspace }}/semver-checks/target/semver-checks/cache
