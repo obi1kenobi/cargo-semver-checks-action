@@ -47,7 +47,7 @@ jobs:
           SEMVER_CHECKS=$(cargo semver-checks --version | sed -e 's/\s\+/-/g')
           echo "KEY=testprefix-testkey-linux-$RUSTC-$SEMVER_CHECKS-d41d8cd98f00b204e9800998ecf8427e-semver-checks-rustdoc" >> $GITHUB_OUTPUT
       - name: Download saved cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: ${{ github.workspace }}/semver-checks/target/semver-checks/cache
           fail-on-cache-miss: true
@@ -97,7 +97,7 @@ jobs:
           SEMVER_CHECKS=$(cargo semver-checks --version | sed -e 's/\s\+/-/g')
           echo "KEY=testprefix-test-cache-exists-default-d45618ed191f0a73-linux-$RUSTC-$SEMVER_CHECKS-d41d8cd98f00b204e9800998ecf8427e-semver-checks-rustdoc" >> $GITHUB_OUTPUT
       - name: Download saved cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: ${{ github.workspace }}/semver-checks/target/semver-checks/cache
           fail-on-cache-miss: true
