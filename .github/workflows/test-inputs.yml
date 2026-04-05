@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the action
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: action
       - name: Setup the workspace with ref_slice patch change
@@ -52,7 +52,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the action
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: action
       - name: Setup the workspace with ref_slice major change
@@ -76,12 +76,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the Rio repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: oxigraph/rio
           ref: 3bd01c2c977a0b01c918f6840cd05356477db358  # branch main
       - name: Checkout the action
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: action
       - name: Run the action using input package
@@ -109,7 +109,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the action
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: action
       - name: Setup the workspace with ref_slice patch change
@@ -140,12 +140,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the test repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: mgr0dzicki/cargo-semver-action-ref-slice
           ref: patch_change
       - name: Checkout the action
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: action
       - name: Run the action on ref_slice patch change
@@ -158,7 +158,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the action
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: action
       - name: Setup the workspace with ref_slice patch change
@@ -190,7 +190,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the action
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: action
       - name: Setup the workspace with ref_slice major change
@@ -225,7 +225,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the test repository and test with patch change and patch version bump
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           # Space inside the directory name is used in order to ensure it will
           # be handled properly by the action.
@@ -234,7 +234,7 @@ jobs:
           ref: patch_change
           persist-credentials: true
       - name: Checkout the action
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: action
       - name: Run the action
@@ -263,12 +263,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the test repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: mgr0dzicki/cargo-semver-action-ref-slice
           ref: patch_change
       - name: Checkout the action
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: action
       - name: Install latest stable
@@ -306,12 +306,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the test repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: mgr0dzicki/cargo-semver-action-ref-slice
           ref: patch_change
       - name: Checkout the action
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: action
       - name: Install latest stable
@@ -349,12 +349,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the test repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: mgr0dzicki/cargo-semver-action-ref-slice
           ref: patch_change
       - name: Checkout the action
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: action
       - name: Install latest beta
@@ -399,12 +399,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the test repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: mgr0dzicki/cargo-semver-action-ref-slice
           ref: patch_change
       - name: Checkout the action
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: action
       - name: Uninstall Rust
@@ -417,12 +417,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the test repository and test with major change
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: mgr0dzicki/cargo-semver-action-ref-slice
           ref: major_change
       - name: Checkout the action
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: action
       - name: Run the action with release-type set to major
@@ -435,12 +435,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the test repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: mgr0dzicki/cargo-semver-action-ref-slice
           ref: major_change
       - name: Checkout the action
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: action
       - name: Run the action on ref_slice patch change
@@ -463,12 +463,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the test repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: mgr0dzicki/cargo-semver-action-ref-slice
           ref: major_change
       - name: Checkout the action
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: action
       - name: Run the action on ref_slice patch change
@@ -484,12 +484,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the test repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: mgr0dzicki/cargo-semver-action-ref-slice
           ref: major_change
       - name: Checkout the action
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: action
       - name: Run the action on ref_slice patch change
@@ -512,16 +512,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the test repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: mgr0dzicki/cargo-semver-action-ref-slice
           ref: major_change
       - name: Checkout the action
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: action
       - name: Checkout the revision to compare against
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: mgr0dzicki/cargo-semver-action-ref-slice
           # This is the parent of major_change; still contains the major change
