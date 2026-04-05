@@ -8,7 +8,7 @@ A good general description on how to develop a GitHub JavaScript action can be f
 
 ### Prerequisites
 
-- Node 20
+- Node 24
 
 ### Logging in to GitHub package registry
 

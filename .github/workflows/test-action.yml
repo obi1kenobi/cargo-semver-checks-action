@@ -31,13 +31,13 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout the test repository and test with patch change and patch version bump
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: mgr0dzicki/cargo-semver-action-ref-slice
           ref: patch_change
           persist-credentials: true
       - name: Checkout the action
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           path: action
       - name: Run the action
