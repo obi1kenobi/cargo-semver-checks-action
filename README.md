@@ -96,7 +96,7 @@ Use a git revision, branch, or tag as the baseline:
 - name: Check semver
   uses: obi1kenobi/cargo-semver-checks-action@v2
   with:
-    baseline-revision: b0fd440798ab3cfb05c60a1a1bd2894e1618479e
+    baseline-rev: b0fd440798ab3cfb05c60a1a1bd2894e1618479e
 ```
 
 Point to a directory that contains the baseline crate source:

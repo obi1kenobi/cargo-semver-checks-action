@@ -32,20 +32,22 @@ jobs:
       - name: Rebuild the action and run tests
         run: npm run all
         
-      - name: Compare the expected and actual src/ directories
+      - name: Compare the expected and actual source directories
         run: |
-          if [ "$(git diff src/ | wc -l)" -gt "0" ]; then
+          if [ "$(git diff -- src/ __tests__/ | wc -l)" -gt "0" ]; then
             echo "Source files are not properly formatted!"
             exit 1
           fi
         id: diff_src
         
-      - name: Upload the expected version of src/ in case of failure
+      - name: Upload the expected version of source files in case of failure
         uses: actions/upload-artifact@v7
         if: ${{ failure() && steps.diff_src.conclusion == 'failure' }}
         with:
-          name: expected-src
-          path: src/
+          name: expected-source
+          path: |
+            src/
+            __tests__/
           
       - name: Compare the expected and actual dist/ directories
         run: |
