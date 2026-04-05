@@ -33,6 +33,24 @@ This repository contains a JavaScript GitHub Action that runs `cargo semver-chec
 - Generated artifacts are committed. `dist/index.js` and `dist/licenses.txt` come from `npm run build` via `@vercel/ncc`.
 - Contributor setup requires GitHub Packages auth for the `@actions-rs` scope; see `CONTRIBUTING.md`.
 
+## Release tags
+
+The repository's git tags are the source of truth for released versions. Current tag history reviewed on 2026-04-05:
+
+- Major-only tags: `v1`, `v2`, etc.
+- Full release tags: for example `v1.0`, `v1.4`, `v2.0`, `v2.8`, etc.
+- Existing release tags are lightweight tags rather than annotated tags
+
+Release policy:
+
+- Treat `v<major>` tags as movable aliases that point to the latest release in that major series.
+- Treat `v<major>.<minor>` tags as permanent release tags. Do not retarget them after publishing.
+- Keep `package.json` and `package-lock.json` aligned with the latest full release tag using a `.0` patch component, so `v2.8` corresponds to package version `2.8.0`.
+- Release in two stages:
+  - `scripts/create-minor-release-pr.sh` must be run from a clean `main` checkout. It creates a dedicated release branch, bumps `package.json` and `package-lock.json`, pushes the branch, opens a PR to `main`, and enables squash auto-merge.
+  - `scripts/tag-minor-release.sh` must be run from a clean `main` checkout after the version-bump PR has merged. It reads the committed `package.json` version, creates the new `v<major>.<minor>` tag, moves the `v<major>` tag, and pushes both tags to `origin`.
+  - `scripts/cut-minor-release.sh` is the convenience wrapper that runs the PR script, waits for the version bump to appear on `main`, and then runs the tag script.
+
 ## Scripts
 
 - `npm run build`: bundle `src/main.ts` into `dist/`
@@ -41,6 +59,9 @@ This repository contains a JavaScript GitHub Action that runs `cargo semver-chec
 - `npm run lint`
 - `npm test`
 - `npm run all`: format, lint, build, then test
+- `scripts/create-minor-release-pr.sh`: create the version-bump release branch and PR, then enable squash auto-merge
+- `scripts/tag-minor-release.sh`: publish the minor release tags from the merged `main` commit
+- `scripts/cut-minor-release.sh`: convenience wrapper that waits for the merged version bump and then publishes tags
 
 ## CI and test strategy
 
