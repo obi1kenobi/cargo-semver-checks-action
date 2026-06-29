@@ -13,8 +13,9 @@ Publishes the git tags for the minor release that is already merged on `main`.
 - Reads the current version from `package.json`
 - Verifies that version is the next minor release after the latest full tag
 - Creates the permanent `v<major>.<minor>` tag
-- Moves the matching movable `v<major>` tag
-- Pushes both tags to `origin`
+- Pushes the permanent tag to `origin`
+- Creates the latest GitHub Release with generated notes from the previous full tag
+- Moves the matching movable `v<major>` tag on `origin`
 EOF
 }
 
@@ -39,6 +40,8 @@ git rev-parse --is-inside-work-tree >/dev/null 2>&1 || fatal_error "run this scr
 [[ "$(git branch --show-current)" == "main" ]] || fatal_error "run this script from the 'main' branch"
 [[ -f package.json ]] || fatal_error "package.json was not found"
 command -v node >/dev/null 2>&1 || fatal_error "node is required to read package.json"
+command -v gh >/dev/null 2>&1 || fatal_error "gh is required to create the GitHub Release"
+gh auth status >/dev/null 2>&1 || fatal_error "gh must be authenticated before creating the GitHub Release"
 
 if [[ -n "$(git status --porcelain)" ]]; then
   fatal_error "working tree is not clean; commit, stash, or remove changes before tagging a release"
@@ -91,17 +94,32 @@ if git rev-parse --verify --quiet "refs/tags/${new_full_tag}" >/dev/null; then
 fi
 
 echo "Package version:         ${package_version}"
+echo "Previous full tag:       ${latest_full_tag}"
 echo "New full release tag:    ${new_full_tag}"
 echo "Movable major tag:       ${major_tag}"
 echo "Target commit:           ${target_commit}"
 
 git tag "${new_full_tag}" "${target_commit}"
-git tag -f "${major_tag}" "${target_commit}"
 
 echo "Pushing ${new_full_tag} to origin..."
 git push origin "refs/tags/${new_full_tag}"
+
+# Keep the GitHub Release tied to the permanent tag, not the movable major alias.
+# Moving the major alias comes after this succeeds so a failed release does not advance the public alias.
+echo "Creating latest GitHub Release for ${new_full_tag}..."
+release_url="$(
+  gh release create "${new_full_tag}" \
+    --latest \
+    --title "${new_full_tag}" \
+    --generate-notes \
+    --notes-start-tag "${latest_full_tag}" \
+    --verify-tag
+)"
+
+git tag -f "${major_tag}" "${target_commit}"
 
 echo "Force-updating ${major_tag} on origin..."
 git push --force origin "refs/tags/${major_tag}"
 
 echo "Release tags published: ${new_full_tag}, ${major_tag}"
+echo "GitHub Release created: ${release_url}"

@@ -47,9 +47,10 @@ Release policy:
 - Treat `v<major>.<minor>` tags as permanent release tags. Do not retarget them after publishing.
 - Keep `package.json` and `package-lock.json` aligned with the latest full release tag using a `.0` patch component, so `v2.8` corresponds to package version `2.8.0`.
 - Release in two stages:
-  - `scripts/create-minor-release-pr.sh` must be run from a clean `main` checkout. It creates a dedicated release branch, bumps `package.json` and `package-lock.json`, pushes the branch, opens a PR to `main`, and enables squash auto-merge.
-  - `scripts/tag-minor-release.sh` must be run from a clean `main` checkout after the version-bump PR has merged. It reads the committed `package.json` version, creates the new `v<major>.<minor>` tag, moves the `v<major>` tag, and pushes both tags to `origin`.
-  - `scripts/cut-minor-release.sh` is the convenience wrapper that runs the PR script, waits for the version bump to appear on `main`, and then runs the tag script.
+  - Stage 1: `scripts/create-minor-release-pr.sh` must be run from a clean `main` checkout. It creates a dedicated release branch, bumps `package.json` and `package-lock.json`, pushes the branch, opens a PR to `main`, and enables squash auto-merge.
+  - Stage 2: `scripts/tag-minor-release.sh` must be run from a clean `main` checkout after the version-bump PR has merged. It reads the committed `package.json` version, creates and pushes the new `v<major>.<minor>` tag, creates the latest GitHub Release for that permanent tag with generated notes starting from the previous full release tag, then moves the `v<major>` tag on `origin`.
+- GitHub Release creation is intentionally part of the tagging stage, not a later manual publishing step, so users can install the new full release tag immediately. Edit the generated notes afterward if needed.
+- `scripts/cut-minor-release.sh` is the convenience wrapper that runs the PR script, waits for the version bump to appear on `main`, and then runs the tag script, including GitHub Release creation.
 
 ## Scripts
 
@@ -60,8 +61,8 @@ Release policy:
 - `npm test`
 - `npm run all`: format, lint, build, then test
 - `scripts/create-minor-release-pr.sh`: create the version-bump release branch and PR, then enable squash auto-merge
-- `scripts/tag-minor-release.sh`: publish the minor release tags from the merged `main` commit
-- `scripts/cut-minor-release.sh`: convenience wrapper that waits for the merged version bump and then publishes tags
+- `scripts/tag-minor-release.sh`: publish the minor release tags from the merged `main` commit and create the latest GitHub Release
+- `scripts/cut-minor-release.sh`: convenience wrapper that waits for the merged version bump, publishes tags, and creates the latest GitHub Release
 
 ## CI and test strategy
 
