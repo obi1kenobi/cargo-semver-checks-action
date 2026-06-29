@@ -161,6 +161,7 @@ async function run(): Promise<void> {
     const cargo = await rustCore.Cargo.get();
 
     await installCargoSemverChecks(cargo);
+    core.setOutput("rustc-version", await getRustcVersion());
 
     const cache = new RustdocCache(
         cargo,

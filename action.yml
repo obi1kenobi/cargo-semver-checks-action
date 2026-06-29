@@ -55,6 +55,9 @@ inputs:
     description: 'Directory containing baseline crate source'
     required: false
     default: ''
+outputs:
+  rustc-version:
+    description: 'The rustc version used in the cargo-semver-checks run.'
 runs:
   using: 'node24'
   main: 'dist/index.js'

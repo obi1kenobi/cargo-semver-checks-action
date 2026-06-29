@@ -276,23 +276,14 @@ jobs:
       - name: Set local override to stable
         run: rustup override set stable
       - name: Run the action with rust-toolchain set to beta
+        id: semver_checks
         uses: ./action/
         with:
           rust-toolchain: beta
-      - name: Get cache key
-        uses: actions/cache/restore@v5
-        id: get-cache-key
-        with:
-          path: ${{ github.workspace }}/semver-checks/target/semver-checks/cache
-          fail-on-cache-miss: true
-          lookup-only: true
-          key: semver-${{ github.job }}
-          restore-keys: |
-            semver-${{ github.job }}
       - name: Fail if the toolchain used by the action is invalid
-        if: ${{ ! contains(steps.get-cache-key.outputs.cache-matched-key, 'beta') }}
+        if: ${{ ! contains(steps.semver_checks.outputs['rustc-version'], 'beta') }}
         run: |
-          echo "The toolchain used by the action should be beta, but it is not!"
+          echo "The toolchain used by the action should be beta, but it was '${{ steps.semver_checks.outputs['rustc-version'] }}'!"
           exit 1
       - name: Check the active toolchain
         run: |
@@ -319,23 +310,14 @@ jobs:
       - name: Set override to stable in rust-toolchain.toml file
         run: echo -e "[toolchain]\nchannel = \"stable\"" > rust-toolchain.toml
       - name: Run the action with rust-toolchain set to beta
+        id: semver_checks
         uses: ./action/
         with:
           rust-toolchain: beta
-      - name: Get cache key
-        uses: actions/cache/restore@v5
-        id: get-cache-key
-        with:
-          path: ${{ github.workspace }}/semver-checks/target/semver-checks/cache
-          fail-on-cache-miss: true
-          lookup-only: true
-          key: semver-${{ github.job }}
-          restore-keys: |
-            semver-${{ github.job }}
       - name: Fail if the toolchain used by the action is invalid
-        if: ${{ ! contains(steps.get-cache-key.outputs.cache-matched-key, 'beta') }}
+        if: ${{ ! contains(steps.semver_checks.outputs['rustc-version'], 'beta') }}
         run: |
-          echo "The toolchain used by the action should be beta, but it is not!"
+          echo "The toolchain used by the action should be beta, but it was '${{ steps.semver_checks.outputs['rustc-version'] }}'!"
           exit 1
       - name: Check the active toolchain
         run: |
@@ -362,23 +344,14 @@ jobs:
       - name: Set local override to beta
         run: rustup override set beta
       - name: Run the action with manual rust-toolchain
+        id: semver_checks
         uses: ./action/
         with:
           rust-toolchain: manual
-      - name: Get cache key
-        uses: actions/cache/restore@v5
-        id: get-cache-key
-        with:
-          path: ${{ github.workspace }}/semver-checks/target/semver-checks/cache
-          fail-on-cache-miss: true
-          lookup-only: true
-          key: semver-${{ github.job }}
-          restore-keys: |
-            semver-${{ github.job }}
       - name: Fail if the toolchain used by the action is invalid
-        if: ${{ ! contains(steps.get-cache-key.outputs.cache-matched-key, 'beta') }}
+        if: ${{ ! contains(steps.semver_checks.outputs['rustc-version'], 'beta') }}
         run: |
-          echo "The toolchain used by the action should be beta, but it is not!"
+          echo "The toolchain used by the action should be beta, but it was '${{ steps.semver_checks.outputs['rustc-version'] }}'!"
           exit 1
       - name: Uninstall Rust
         run: rustup self uninstall -y

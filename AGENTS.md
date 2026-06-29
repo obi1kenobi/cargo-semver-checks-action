@@ -68,7 +68,7 @@ Release policy:
 CI is workflow-heavy and provides most of the confidence:
 
 - `.github/workflows/test-build.yml`: installs dependencies, runs `npm run all`, and fails if rebuilt `src/` or `dist/` differ from committed contents.
-- `.github/workflows/test-action.yml`: smoke tests on `ubuntu`, `windows`, and `macos`, across `stable` and `beta`, with `nightly` marked experimental.
+- `.github/workflows/test-action.yml`: smoke tests on `ubuntu`, `windows`, and `macos`, across `stable` and `beta`.
 - `.github/workflows/test-inputs.yml`: exercises input handling, manifest-path behavior, feature-group options, and expected failure cases.
 - `.github/workflows/test-cache.yml`: verifies rustdoc cache save/restore semantics and cache key behavior.
 - `.github/workflows/ci.yml`: aggregates the above reusable workflows into the required CI status.
