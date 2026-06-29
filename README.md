@@ -10,6 +10,7 @@ Lint your crate API changes for semver violations.
 
 * [Basic usage](#basic-usage)
 * [Input options](#input-options)
+* [Action outputs](#action-outputs)
 * [Example scenarios](#example-scenarios)
   * [Use outside root directory of a crate or a workspace](#use-outside-root-directory-of-a-crate-or-a-workspace)
   * [Specifying a baseline](#specifying-a-baseline)
@@ -57,6 +58,12 @@ Every argument is optional.
 | `baseline-version`   | Version from registry to look up as a baseline. | |
 | `baseline-rev`       | Git revision, branch, or tag to use as a baseline. | |
 | `baseline-root`      | Directory containing baseline crate source. | |
+
+## Action outputs
+
+| Output          | Description |
+|-----------------|-------------|
+| `rustc-version` | The rustc version used in the `cargo-semver-checks` run. |
 
 ## Example scenarios
 
