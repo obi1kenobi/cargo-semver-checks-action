@@ -12,9 +12,8 @@ Publishes the git tags for the minor release that is already merged on `main`.
 - Requires a clean `main` checkout
 - Reads the current version from `package.json`
 - Verifies that version is the next minor release after the latest full tag
-- Creates the permanent `v<major>.<minor>` tag
-- Pushes the permanent tag to `origin`
-- Creates the latest GitHub Release with generated notes from the previous full tag
+- Ensures the permanent `v<major>.<minor>` tag exists on `origin`
+- Creates or updates the latest GitHub Release with generated notes from the previous full tag
 - Moves the matching movable `v<major>` tag on `origin`
 EOF
 }
@@ -67,13 +66,17 @@ fi
 
 package_major="${BASH_REMATCH[1]}"
 package_minor="${BASH_REMATCH[2]}"
+new_full_tag="v${package_major}.${package_minor}"
+major_tag="v${package_major}"
+target_commit="$(git rev-parse HEAD)"
 
-# Cross-check the committed package version against the current tag history so this script only publishes the next minor release.
+# Exclude the release being published so reruns after tag creation still validate against
+# the previous permanent release tag and generate notes from that same boundary.
 latest_full_tag="$(
-  git tag --list "v*.*" --sort=-version:refname | grep -E '^v[0-9]+\.[0-9]+$' | head -n 1 || true
+  git tag --list "v*.*" --sort=-version:refname | grep -E '^v[0-9]+\.[0-9]+$' | grep -vFx "${new_full_tag}" | head -n 1 || true
 )"
 
-[[ -n "$latest_full_tag" ]] || fatal_error "could not find an existing full release tag"
+[[ -n "$latest_full_tag" ]] || fatal_error "could not find an existing full release tag before '${new_full_tag}'"
 
 if [[ ! "$latest_full_tag" =~ ^v([0-9]+)\.([0-9]+)$ ]]; then
   fatal_error "latest full release tag '$latest_full_tag' does not match the expected v<major>.<minor> format"
@@ -85,12 +88,16 @@ expected_package_version="${latest_major}.$((latest_minor + 1)).0"
 
 [[ "$package_version" == "$expected_package_version" ]] || fatal_error "package.json version '$package_version' does not match the expected next minor release '$expected_package_version'"
 
-new_full_tag="v${package_major}.${package_minor}"
-major_tag="v${package_major}"
-target_commit="$(git rev-parse HEAD)"
-
 if git rev-parse --verify --quiet "refs/tags/${new_full_tag}" >/dev/null; then
-  fatal_error "tag '${new_full_tag}' already exists"
+  new_full_tag_target="$(git rev-list -n 1 "${new_full_tag}")"
+  [[ "$new_full_tag_target" == "$target_commit" ]] || fatal_error "tag '${new_full_tag}' already exists but points to '${new_full_tag_target}', expected '${target_commit}'"
+fi
+
+remote_full_tag_sha="$(git ls-remote --tags --refs origin "refs/tags/${new_full_tag}" | awk '{ print $1 }')"
+if [[ -n "$remote_full_tag_sha" ]]; then
+  git rev-parse --verify --quiet "refs/tags/${new_full_tag}" >/dev/null || fatal_error "tag '${new_full_tag}' exists on origin but was not fetched locally"
+  remote_full_tag_target="$(git rev-list -n 1 "${new_full_tag}")"
+  [[ "$remote_full_tag_target" == "$target_commit" ]] || fatal_error "tag '${new_full_tag}' exists on origin but points to '${remote_full_tag_target}', expected '${target_commit}'"
 fi
 
 echo "Package version:         ${package_version}"
@@ -99,22 +106,30 @@ echo "New full release tag:    ${new_full_tag}"
 echo "Movable major tag:       ${major_tag}"
 echo "Target commit:           ${target_commit}"
 
-git tag "${new_full_tag}" "${target_commit}"
-
-echo "Pushing ${new_full_tag} to origin..."
-git push origin "refs/tags/${new_full_tag}"
-
 # Keep the GitHub Release tied to the permanent tag, not the movable major alias.
 # Moving the major alias comes after this succeeds so a failed release does not advance the public alias.
-echo "Creating latest GitHub Release for ${new_full_tag}..."
-release_url="$(
-  gh release create "${new_full_tag}" \
-    --latest \
-    --title "${new_full_tag}" \
-    --generate-notes \
-    --notes-start-tag "${latest_full_tag}" \
-    --verify-tag
-)"
+if gh release view "${new_full_tag}" >/dev/null 2>&1; then
+  echo "GitHub Release already exists for ${new_full_tag}; marking it published and latest."
+  gh release edit "${new_full_tag}" --draft=false --latest
+  release_url="$(gh release view "${new_full_tag}" --json url --jq .url)"
+else
+  echo "Creating latest GitHub Release for ${new_full_tag}..."
+  release_args=(
+    "${new_full_tag}"
+    --latest
+    --title "${new_full_tag}"
+    --generate-notes
+    --notes-start-tag "${latest_full_tag}"
+  )
+
+  if [[ -n "$remote_full_tag_sha" ]]; then
+    release_args+=(--verify-tag)
+  else
+    release_args+=(--target "${target_commit}")
+  fi
+
+  release_url="$(gh release create "${release_args[@]}")"
+fi
 
 git tag -f "${major_tag}" "${target_commit}"
 

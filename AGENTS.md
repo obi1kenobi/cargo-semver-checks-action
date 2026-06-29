@@ -48,8 +48,8 @@ Release policy:
 - Keep `package.json` and `package-lock.json` aligned with the latest full release tag using a `.0` patch component, so `v2.8` corresponds to package version `2.8.0`.
 - Release in two stages:
   - Stage 1: `scripts/create-minor-release-pr.sh` must be run from a clean `main` checkout. It creates a dedicated release branch, bumps `package.json` and `package-lock.json`, pushes the branch, opens a PR to `main`, and enables squash auto-merge.
-  - Stage 2: `scripts/tag-minor-release.sh` must be run from a clean `main` checkout after the version-bump PR has merged. It reads the committed `package.json` version, creates and pushes the new `v<major>.<minor>` tag, creates the latest GitHub Release for that permanent tag with generated notes starting from the previous full release tag, then moves the `v<major>` tag on `origin`.
-- GitHub Release creation is intentionally part of the tagging stage, not a later manual publishing step, so users can install the new full release tag immediately. Edit the generated notes afterward if needed.
+  - Stage 2: `scripts/tag-minor-release.sh` must be run from a clean `main` checkout after the version-bump PR has merged. It reads the committed `package.json` version, ensures the new `v<major>.<minor>` tag and latest GitHub Release exist with generated notes starting from the previous full release tag, then moves the `v<major>` tag on `origin`.
+- GitHub Release creation is intentionally part of the tagging stage, not a later manual publishing step, so users can install the new full release tag immediately. The tagging stage is resumable if a previous attempt already created the permanent full tag or release for the current `main` commit. Edit the generated notes afterward if needed.
 - `scripts/cut-minor-release.sh` is the convenience wrapper that runs the PR script, waits for the version bump to appear on `main`, and then runs the tag script, including GitHub Release creation.
 
 ## Scripts
