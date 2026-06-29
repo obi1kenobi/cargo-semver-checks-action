@@ -11,7 +11,7 @@ Runs the full minor release flow.
 
 - Creates the release PR for the next minor version
 - Waits for that version bump to land on `main`
-- Publishes the release tags from the merged `main` commit
+- Publishes the release tags and creates the latest GitHub Release
 
 The script waits up to 30 minutes, checking `main` once per minute.
 EOF
