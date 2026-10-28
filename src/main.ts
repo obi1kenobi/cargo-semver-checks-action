@@ -58,9 +58,12 @@ function getGitHubToken(): string {
 async function getCargoSemverChecksDownloadURL(target: string): Promise<string> {
     const octokit = github.getOctokit(getGitHubToken());
 
-    const getReleaseUrl = await octokit.rest.repos.getLatestRelease({
+    const version = rustCore.input.getInput("version") || "latest";
+
+    const getReleaseUrl = await octokit.rest.repos.getReleaseByTag({
         owner: "obi1kenobi",
         repo: "cargo-semver-checks",
+        tag: version,
     });
 
     const asset = getReleaseUrl.data.assets.find((asset) => {

@@ -79,7 +79,7 @@ jobs:
         uses: actions/checkout@v7
         with:
           repository: oxigraph/rio
-          ref: 3bd01c2c977a0b01c918f6840cd05356477db358  # branch main
+          ref: 3bd01c2c977a0b01c918f6840cd05356477db358 # branch main
       - name: Checkout the action
         uses: actions/checkout@v7
         with:
@@ -507,3 +507,26 @@ jobs:
         uses: ./action/
         with:
           baseline-root: ${{ runner.temp }}/baseline
+
+  test-version:
+    name: Test input version
+    runs-on: ubuntu-latest
+    env:
+      VERSION: 0.50.0
+    steps:
+      - name: Checkout the test repository
+        uses: actions/checkout@v7
+        with:
+          repository: mgr0dzicki/cargo-semver-action-ref-slice
+          ref: patch_change
+      - name: Checkout the action
+        uses: actions/checkout@v7
+        with:
+          path: action
+      - name: Run the action on ref_slice patch change
+        uses: ./action/
+        with:
+          version: ${{ env.VERSION }} 
+      - name: Check the actual version installed
+        run: |
+          [ "$(cargo semver-checks --version | awk '{ print $2 }')" == "${VERSION}" ]

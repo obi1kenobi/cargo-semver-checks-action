@@ -58,6 +58,7 @@ Every argument is optional.
 | `baseline-version`   | Version from registry to look up as a baseline. | |
 | `baseline-rev`       | Git revision, branch, or tag to use as a baseline. | |
 | `baseline-root`      | Directory containing baseline crate source. | |
+| `version`            | Cargo semver-checks' version to use. | latest |
 
 ## Action outputs
 

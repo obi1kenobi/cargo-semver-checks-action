@@ -55,6 +55,10 @@ inputs:
     description: 'Directory containing baseline crate source'
     required: false
     default: ''
+  version:
+    description: "Cargo semver-checks' version to use."
+    required: false
+    default: 'latest'
 outputs:
   rustc-version:
     description: 'The rustc version used in the cargo-semver-checks run.'
